@@ -23,7 +23,10 @@ git clone https://github.com/flutter/flutter.git -b stable
 setx PATH "%PATH%;C:\src\flutter\bin"
 
 # Add to PATH (Mac/Linux)
-export PATH="$PATH:`pwd`/flutter/bin"
+cd flutter
+export PATH="$PWD/bin:$PATH"
+echo 'export PATH="$HOME/safe_guard_sg/flutter/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
 
 # Verify installation
 flutter doctor
