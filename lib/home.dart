@@ -3,6 +3,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'heatmap.dart';
+import 'report_incident.dart';
+import 'recent_report.dart';
+import 'language.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -12,6 +15,9 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  int _currentIndex = 0; // Current index of the selected tab
+  final PageController _pageController = PageController();
+
   LatLng? _currentPosition;
   bool _isLoading = true;
   final MapController _mapController = MapController();
@@ -42,6 +48,20 @@ class _MainPageState extends State<MainPage> {
       name: "Checkpoint C",
       description: "Low risk zone",
     ),
+  ];
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  // List of pages corresponding to the BottomNavigationBar tabs
+  final List<Widget> _pages = [
+    const MainPage(), // Replace with your home page widget
+    const HeatMapPage(),
+    const ReportIncidentPage(),
+    // const SettingsPage(),
   ];
 
   @override
@@ -159,8 +179,16 @@ class _MainPageState extends State<MainPage> {
           ),
           IconButton(
             icon: const Icon(Icons.language),
-            onPressed: () {},
-          ),
+            onPressed: () {
+                // Navigate to the LanguagePage when the icon is pressed
+                Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const LanguagePage(),
+                ),
+                );
+            },
+            ),
         ],
       ),
       body: SingleChildScrollView(
@@ -352,21 +380,29 @@ class _MainPageState extends State<MainPage> {
                 width: double.infinity,
                 height: 60,
                 child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
+                    onPressed: () {
+                    // Navigate to ReportIncidentPage when pressed
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                        builder: (context) => const ReportIncidentPage(),
+                        ),
+                    );
+                    },
+                    style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFFFD88E),
                     foregroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(16),
                     ),
                     textStyle: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  child: const Text("Report Now!"),
+                    ),
+                    child: const Text("Report Now!"),
                 ),
-              ),
+                ),
               
               const SizedBox(height: 20),
               
@@ -429,14 +465,14 @@ class _MainPageState extends State<MainPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  // onTap: () {
-                  //   Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) => const ReportIncidentPage(),
-                  //     ),
-                  //   );
-                  // },
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RecentReportPage(),
+                      ),
+                    );
+                  },
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   title: const Text(
                     'Recent Reports',
@@ -462,9 +498,15 @@ class _MainPageState extends State<MainPage> {
     
       
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+            _pageController.jumpToPage(index); // Change the page view on tap
+          });
+        },
         type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xFF85CFCD),
+        backgroundColor: const Color(0xFF73D3D0),
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.white,
         items: const [

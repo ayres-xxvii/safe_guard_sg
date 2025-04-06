@@ -1,4 +1,3 @@
-// Make sure this is at the top
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -15,54 +14,160 @@ class HeatMapPage extends StatefulWidget {
 class _HeatMapPageState extends State<HeatMapPage> {
   LatLng? _currentPosition;
   bool _isLoading = true;
+
+  // Singapore's approximate bounding coordinates
+  final LatLngBounds singaporeBounds = LatLngBounds(
+    LatLng(1.15, 103.6), // Southwest corner
+    LatLng(1.47, 104.05), // Northeast corner
+  );
+
+
   final MapController _mapController = MapController();
   DateTime _selectedDate = DateTime.now();
   String _selectedTimeFrame = 'Day';
   String _selectedIncidentType = 'All';
   
-  // List of severity areas (heat zones)
+  // List heat zones across the North, East, and West sides of Singapore
   final List<HeatZone> _heatZones = [
-    // High risk zones (red)
+    // High risk zones (red) - North
     HeatZone(
-      center: LatLng(1.433500, 103.840300),
-      radius: 150,
+      center: LatLng(1.4400, 103.8040), // Sembawang
+      radius: 250, // Increased radius
       severity: SeverityLevel.high,
-      incidentCount: 12,
+      incidentCount: 10,
       incidentType: 'Fire',
     ),
     HeatZone(
-      center: LatLng(1.427800, 103.833200),
-      radius: 120,
+      center: LatLng(1.3700, 103.8220), // Woodlands Waterfront
+      radius: 230, // Increased radius
       severity: SeverityLevel.high,
-      incidentCount: 8,
+      incidentCount: 9,
       incidentType: 'Crime',
     ),
-    // Medium risk zones (orange)
+    
+    // Medium risk zones (orange) - North
     HeatZone(
-      center: LatLng(1.437200, 103.831200),
-      radius: 180,
+      center: LatLng(1.4000, 103.7590), // Admiralty
+      radius: 180, // Increased radius
       severity: SeverityLevel.medium,
-      incidentCount: 5,
+      incidentCount: 6,
       incidentType: 'Accident',
     ),
     HeatZone(
-      center: LatLng(1.423500, 103.822500),
-      radius: 200,
+      center: LatLng(1.4600, 103.8190), // Khatib
+      radius: 200, // Increased radius
       severity: SeverityLevel.medium,
-      incidentCount: 6,
+      incidentCount: 4,
       incidentType: 'Crime',
     ),
-    // Low risk zones (yellow)
+    
+    // Low risk zones (yellow) - North
     HeatZone(
-      center: LatLng(1.421800, 103.843500),
-      radius: 200,
+      center: LatLng(1.4250, 103.8240), // Yishun Central
+      radius: 150, // Increased radius
       severity: SeverityLevel.low,
       incidentCount: 3,
       incidentType: 'Fire',
     ),
     HeatZone(
-      center: LatLng(1.416500, 103.828000),
-      radius: 170,
+      center: LatLng(1.3700, 103.8200), // Marsiling
+      radius: 150, // Increased radius
+      severity: SeverityLevel.low,
+      incidentCount: 2,
+      incidentType: 'Accident',
+    ),
+    
+    // High risk zones (red) - East
+    HeatZone(
+      center: LatLng(1.3750, 103.9740), // Changi Village
+      radius: 250, // Increased radius
+      severity: SeverityLevel.high,
+      incidentCount: 12,
+      incidentType: 'Fire',
+    ),
+    HeatZone(
+      center: LatLng(1.2950, 103.9350), // Loyang
+      radius: 230, // Increased radius
+      severity: SeverityLevel.high,
+      incidentCount: 8,
+      incidentType: 'Crime',
+    ),
+    
+    // Medium risk zones (orange) - East
+    HeatZone(
+      center: LatLng(1.3400, 103.9760), // Bedok Reservoir
+      radius: 200, // Increased radius
+      severity: SeverityLevel.medium,
+      incidentCount: 6,
+      incidentType: 'Accident',
+    ),
+    HeatZone(
+      center: LatLng(1.3190, 103.9320), // Pasir Ris East
+      radius: 200, // Increased radius
+      severity: SeverityLevel.medium,
+      incidentCount: 5,
+      incidentType: 'Crime',
+    ),
+    
+    // Low risk zones (yellow) - East
+    HeatZone(
+      center: LatLng(1.3680, 103.9370), // Tampines
+      radius: 150, // Increased radius
+      severity: SeverityLevel.low,
+      incidentCount: 3,
+      incidentType: 'Fire',
+    ),
+    HeatZone(
+      center: LatLng(1.2810, 103.9730), // Changi Business Park
+      radius: 150, // Increased radius
+      severity: SeverityLevel.low,
+      incidentCount: 2,
+      incidentType: 'Accident',
+    ),
+    
+    // High risk zones (red) - West
+    HeatZone(
+      center: LatLng(1.3380, 103.7000), // Jurong East
+      radius: 250, // Increased radius
+      severity: SeverityLevel.high,
+      incidentCount: 12,
+      incidentType: 'Fire',
+    ),
+    HeatZone(
+      center: LatLng(1.3220, 103.7050), // Clementi
+      radius: 230, // Increased radius
+      severity: SeverityLevel.high,
+      incidentCount: 10,
+      incidentType: 'Crime',
+    ),
+    
+    // Medium risk zones (orange) - West
+    HeatZone(
+      center: LatLng(1.3160, 103.7500), // Bukit Batok East
+      radius: 200, // Increased radius
+      severity: SeverityLevel.medium,
+      incidentCount: 5,
+      incidentType: 'Accident',
+    ),
+    HeatZone(
+      center: LatLng(1.3130, 103.7590), // Tengah
+      radius: 200, // Increased radius
+      severity: SeverityLevel.medium,
+      incidentCount: 4,
+      incidentType: 'Crime',
+    ),
+    
+    // Low risk zones (yellow) - West
+    HeatZone(
+      center: LatLng(1.3730, 103.7500), // Queenstown
+      radius: 150, // Increased radius
+      severity: SeverityLevel.low,
+      incidentCount: 3,
+      incidentType: 'Fire',
+    ),
+    HeatZone(
+      center: LatLng(1.2940, 103.7650), // Bukit Panjang
+      radius: 150, // Increased radius
       severity: SeverityLevel.low,
       incidentCount: 2,
       incidentType: 'Accident',
@@ -97,9 +202,23 @@ class _HeatMapPageState extends State<HeatMapPage> {
     ),
   ];
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _getCurrentLocation();
+  // }
   @override
   void initState() {
     super.initState();
+    // Show all of Singapore first
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _mapController.fitBounds(
+        singaporeBounds,
+        options: FitBoundsOptions(
+          padding: EdgeInsets.all(16.0),
+        ),
+      );
+    });
     _getCurrentLocation();
   }
 
@@ -298,9 +417,9 @@ class _HeatMapPageState extends State<HeatMapPage> {
               const Text(
                 "Heat Map Analysis",
                 style: TextStyle(
-                  fontSize: 30,
+                  fontSize: 25,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF04971F),
+                  color: Colors.black,
                 ),
               ),
               const SizedBox(height: 10),
@@ -399,15 +518,15 @@ class _HeatMapPageState extends State<HeatMapPage> {
                   : FlutterMap(
                     mapController: _mapController,
                     options: MapOptions(
-                      center: _currentPosition ?? LatLng(1.429387, 103.835090),
-                      zoom: 14.0,
+                      center: _currentPosition ?? LatLng(1.3521, 103.8198),
+                      zoom: 10.5,
                       maxZoom: 18,
                       minZoom: 5,
                       interactiveFlags: InteractiveFlag.all,
                     ),
                     children: [
                       TileLayer(
-                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
                         userAgentPackageName: 'com.example.safe_guard_sg',
                       ),
                       
@@ -426,25 +545,25 @@ class _HeatMapPageState extends State<HeatMapPage> {
                       ),
                       
                       // Recent incident markers
-                      MarkerLayer(
-                        markers: _recentIncidents
-                            .where((incident) => _selectedIncidentType == 'All' || incident.type == _selectedIncidentType)
-                            .map((incident) => 
-                          Marker(
-                            width: 40.0,
-                            height: 40.0,
-                            point: incident.position,
-                            child: GestureDetector(
-                              onTap: () => _showIncidentInfo(context, incident),
-                              child: Icon(
-                                Icons.emergency,
-                                color: _getSeverityIconColor(incident.severity),
-                                size: 28,
-                              ),
-                            ),
-                          )
-                        ).toList(),
-                      ),
+                      // MarkerLayer(
+                      //   markers: _recentIncidents
+                      //       .where((incident) => _selectedIncidentType == 'All' || incident.type == _selectedIncidentType)
+                      //       .map((incident) => 
+                      //     Marker(
+                      //       width: 40.0,
+                      //       height: 40.0,
+                      //       point: incident.position,
+                      //       child: GestureDetector(
+                      //         onTap: () => _showIncidentInfo(context, incident),
+                      //         child: Icon(
+                      //           Icons.emergency,
+                      //           color: _getSeverityIconColor(incident.severity),
+                      //           size: 28,
+                      //         ),
+                      //       ),
+                      //     )
+                      //   ).toList(),
+                      // ),
                       
                       // Current user location marker (blue)
                       MarkerLayer(
@@ -554,24 +673,24 @@ class _HeatMapPageState extends State<HeatMapPage> {
                             ),
                           ),
                           // Display heat zones button
-                          Positioned(
-                            top: 10,
-                            right: 10,
-                            child: FloatingActionButton(
-                              mini: true,
-                              heroTag: 'toggle_heat',
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.red,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                side: const BorderSide(color: Colors.red),
-                              ),
-                              onPressed: () {
-                                // Toggle heat map visibility (to be implemented)
-                              },
-                              child: const Icon(Icons.local_fire_department),
-                            ),
-                          ),
+                          // Positioned(
+                          //   top: 10,
+                          //   right: 10,
+                          //   child: FloatingActionButton(
+                          //     mini: true,
+                          //     heroTag: 'toggle_heat',
+                          //     backgroundColor: Colors.white,
+                          //     foregroundColor: Colors.red,
+                          //     shape: RoundedRectangleBorder(
+                          //       borderRadius: BorderRadius.circular(16),
+                          //       side: const BorderSide(color: Colors.red),
+                          //     ),
+                          //     onPressed: () {
+                          //       // Toggle heat map visibility (to be implemented)
+                          //     },
+                          //     child: const Icon(Icons.local_fire_department),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ],
@@ -683,7 +802,7 @@ class _HeatMapPageState extends State<HeatMapPage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 1, // Heat map tab
         type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xFF85CFCD),
+        backgroundColor: const Color(0xFF73D3D0),
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.white,
         items: const [
@@ -847,42 +966,3 @@ enum SeverityLevel {
   medium,
   low,
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       title: const Text("Heat Map"),
-  //     ),
-  //     body: const Center(
-  //       child: Text("Heatmap screen goes here"),
-  //     ),
-  //   );
-  // }
-// }
