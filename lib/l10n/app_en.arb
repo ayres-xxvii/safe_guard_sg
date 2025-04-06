@@ -1,0 +1,22 @@
+{
+    "languagePageHeading": "Choose your preferred language",
+    "@languagePageHeading": {
+        "description": "Language page header"
+    },
+    "english": "English",
+    "@english": {
+        "description": "Word English"
+    },
+    "mandarin": "Mandarin",
+    "@mandarin": {
+        "description": "Word Mandarin"
+    },
+    "malay": "Malay",
+    "@malay": {
+        "description": "Word Malay"
+    },
+    "tamil": "Tamil",
+    "@tamil": {
+        "description": "Word Tamil"
+    }
+}
