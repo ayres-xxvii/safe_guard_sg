@@ -159,12 +159,13 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Row(
           children: [
             Image.asset(
               'assets/images/logo.jpeg',
-              height: 40,
-              width: 40,
+              height: 60,
+              width: 60,
             ),
             const SizedBox(width: 10),
             const Text('SafeGuard.SG', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -180,7 +181,6 @@ class _MainPageState extends State<MainPage> {
           IconButton(
             icon: const Icon(Icons.language),
             onPressed: () {
-                // Navigate to the LanguagePage when the icon is pressed
                 Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -197,15 +197,15 @@ class _MainPageState extends State<MainPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Home",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 20),
+            //   const Text(
+            //     "Home",
+            //     style: TextStyle(
+            //       fontSize: 30,
+            //       fontWeight: FontWeight.bold,
+            //       color: Colors.black,
+            //     ),
+            //   ),
+            //   const SizedBox(height: 20),
               
               // Map with user location and checkpoints
               SizedBox(

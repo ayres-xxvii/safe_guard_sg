@@ -386,13 +386,13 @@ class _HeatMapPageState extends State<HeatMapPage> {
       appBar: AppBar(
         title: Row(
           children: [
-            Image.asset(
-              'assets/images/logo.jpeg',
-              height: 40,
-              width: 40,
-            ),
+            // Image.asset(
+            //   'assets/images/logo.jpeg',
+            //   height: 60,
+            //   width: 60,
+            // ),
             const SizedBox(width: 10),
-            const Text('SafeGuard.SG', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text('Heat Map Analysis', style: TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
         backgroundColor: Colors.white,
@@ -414,15 +414,15 @@ class _HeatMapPageState extends State<HeatMapPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Heat Map Analysis",
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(height: 10),
+              // const Text(
+              //   "Heat Map Analysis",
+              //   style: TextStyle(
+              //     fontSize: 25,
+              //     fontWeight: FontWeight.bold,
+              //     color: Colors.black,
+              //   ),
+              // ),
+              // const SizedBox(height: 10),
               
               // Filter controls
               SingleChildScrollView(
