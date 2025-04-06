@@ -54,46 +54,34 @@ class MyHomePage extends StatelessWidget {
           children: <Widget>[
             const Text('Welcome to SafeGuardSG!'),
             const SizedBox(height: 20),
-  ElevatedButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MainPage()),
-    );
-  },
-  style: ElevatedButton.styleFrom(
-    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-    textStyle: const TextStyle(fontSize: 18),
-  ),
-  child: const Text('Get Started'),
-),
-  ElevatedButton(
-    onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => LanguagesPage()),
-      );
-    },
-    style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-      textStyle: const TextStyle(fontSize: 18),
-    ),
-    child: const Text('Languages'),
-  ),
             ElevatedButton(
-              onPressed: () {
+            onPressed: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MainPage()),
+                context,
+                MaterialPageRoute(builder: (context) => const MainPage()),
                 );
-              },
-              style: ElevatedButton.styleFrom(
+            },
+            style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                 textStyle: const TextStyle(fontSize: 18),
-              ),
-              child: const Text('Get Started'),
             ),
-          ],
+            child: const Text('Get Started'),
+            ),
+
+            ElevatedButton(
+                onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LanguagesPage()),
+                );
+                },
+                style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                textStyle: const TextStyle(fontSize: 18),
+                ),
+                child: const Text('Languages'),
+            )
+        ],
         ),
       ),
     );
