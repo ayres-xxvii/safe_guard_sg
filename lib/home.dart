@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'heatmap.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -169,11 +170,11 @@ class _MainPageState extends State<MainPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "You are safe!",
+                "Home",
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF04971F),
+                  color: Colors.black,
                 ),
               ),
               const SizedBox(height: 20),
@@ -376,6 +377,22 @@ class _MainPageState extends State<MainPage> {
                 elevation: 0,
                 color: Colors.grey[150],
                 child: ListTile(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HeatMapPage(),
+                      ),
+                    );
+                  },
+                  leading: const Icon(
+                    Icons.local_fire_department,
+                    size: 30,
+                    color: Colors.red,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   title: const Text(
                     'Heat Map',
@@ -392,7 +409,6 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                   trailing: const Icon(Icons.chevron_right, size: 30),
-                  onTap: () {},
                 ),
               ),
               
@@ -405,6 +421,22 @@ class _MainPageState extends State<MainPage> {
                 elevation: 0,
                 color: Colors.grey[150],
                 child: ListTile(
+                    leading: const Icon(
+                      Icons.report_problem,
+                      size: 30,
+                      color: Colors.red,
+                    ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  // onTap: () {
+                  //   Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => const ReportIncidentPage(),
+                  //     ),
+                  //   );
+                  // },
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   title: const Text(
                     'Recent Reports',
@@ -421,7 +453,6 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                   trailing: const Icon(Icons.chevron_right, size: 30),
-                  onTap: () {},
                 ),
               ),
             ],
