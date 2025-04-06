@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'main_page.dart';
-
+import 'home.dart'; // Import the second file
 
 void main() {
   runApp(const MyApp());
@@ -15,6 +14,7 @@ class MyApp extends StatelessWidget {
       title: 'SafeGuardSG',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
       ),
       home: const MyHomePage(title: 'SafeGuardSG'),
     );
@@ -30,8 +30,8 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(title),
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: Center(
         child: Column(
@@ -39,40 +39,21 @@ class MyHomePage extends StatelessWidget {
           children: <Widget>[
             const Text('Welcome to SafeGuardSG!'),
             const SizedBox(height: 20),
-  ElevatedButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const MainPage()),
-    );
-  },
-  style: ElevatedButton.styleFrom(
-    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-    textStyle: const TextStyle(fontSize: 18),
-  ),
-  child: const Text('Get Started'),
-),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MainPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                textStyle: const TextStyle(fontSize: 18),
+              ),
+              child: const Text('Get Started'),
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-
-}
-
-// New Page (Main Page)
-class MainPage extends StatelessWidget {
-  const MainPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Main Page'),
-      ),
-      body: const Center(
-        child: Text('Welcome to the Main Page!', style: TextStyle(fontSize: 20)),
       ),
     );
   }
