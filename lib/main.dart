@@ -1,27 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
-import 'languages.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  // Load saved language preference on app start
+  final prefs = await SharedPreferences.getInstance();
+  final String? savedLanguage = prefs.getString('language');
+
+  runApp(MyApp(initLocale: savedLanguage != null ? Locale(savedLanguage) : null));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final Locale? initLocale;
+
+  const MyApp({super.key, this.initLocale});
 
   @override
   State<MyApp> createState() => _MyAppState();
+
+  static _MyAppState of(BuildContext context) => 
+      context.findAncestorStateOfType<_MyAppState>()!;
 }
 
 class _MyAppState extends State<MyApp> {
-  Locale _locale = const Locale('en');
+  Locale? _locale = Locale('en');
 
+  // Method to change the app's locale
   void setLocale(Locale locale) {
     setState(() {
       _locale = locale;
     });
+
+    // Save preference for next app start
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setString('language', locale.languageCode);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _locale = widget.initLocale;
   }
 
   @override

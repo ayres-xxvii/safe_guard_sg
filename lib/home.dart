@@ -6,7 +6,6 @@ import 'heatmap.dart';
 import 'report_incident.dart';
 import 'recent_report.dart';
 import 'language.dart';
-import 'languages.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -181,7 +180,12 @@ class _MainPageState extends State<MainPage> {
           ),
           IconButton(
             icon: const Icon(Icons.language),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LanguagePage()),
+              );
+            },
           ),
         ],
       ),
