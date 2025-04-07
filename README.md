@@ -47,37 +47,7 @@ flutter pub get
 
 ---
 
-## 🌟 Firebase Setup Instructions
-
 ## 🌟 Running the Project
-
-This project uses **Firebase** for database and cloud services. To contribute or run the project locally with full functionality, follow the steps below:
-
-### 1. Install Firebase CLI & FlutterFire CLI
-```bash
-npm install -g firebase-tools
-dart pub global activate flutterfire_cli
-```
-
-Make sure Dart’s global bin is in your system path:
-```bash
-export PATH="$PATH":"$HOME/.pub-cache/bin"
-```
-
-### 2. Login to Firebase
-```bash
-firebase login
-```
-
-### 3. Configure Firebase for this project
-If not already configured, run:
-```bash
-flutterfire configure
-```
-
-Select the Firebase project: **safeguardsg-7556a**, and the platforms you are working on (e.g., Android, iOS, Web).
-
-> ✅ This will generate `lib/firebase_options.dart`. If it's already in the project, you can skip this.
 
 
 ### Run on Connected Device
