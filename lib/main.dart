@@ -91,7 +91,7 @@ class OnboardingPage extends StatelessWidget {
                           ),
                           child: Center(
                             child: Image.asset(
-                              'assets/images/logo.png', 
+                              'assets/images/safeguardlogo.png', 
                               width: 90,
                             ),
                           ),
