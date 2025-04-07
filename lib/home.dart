@@ -4,9 +4,11 @@ import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'heatmap.dart';
 import 'report_incident.dart';
-import 'recent_report.dart';
+import 'recent_incident.dart';
 import 'language.dart';
 import 'languages.dart';
+import 'incident_details.dart';
+
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -181,7 +183,12 @@ class _MainPageState extends State<MainPage> {
           ),
           IconButton(
             icon: const Icon(Icons.language),
-            onPressed: () {},
+            onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LanguagesPage()), // Navigate to LanguagesPage
+    );
+  },
           ),
         ],
       ),
@@ -463,7 +470,7 @@ class _MainPageState extends State<MainPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const RecentReportPage(),
+                        builder: (context) => const RecentIncidentsPage(),
                       ),
                     );
                   },
