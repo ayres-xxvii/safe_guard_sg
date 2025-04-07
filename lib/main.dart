@@ -1,12 +1,28 @@
-import 'home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'home.dart';
+import 'languages.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale _locale = const Locale('en');
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,14 +33,27 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4DD0C7)),
         fontFamily: 'Poppins',
       ),
+      locale: _locale,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('zh'), // Mandarin
+        Locale('ms'), // Malay
+        Locale('ta'), // Tamil
+      ],
       home: const OnboardingPage(),
     );
   }
 }
 
+// Your existing OnboardingPage code stays the same
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,8 +91,9 @@ class OnboardingPage extends StatelessWidget {
                           ),
                           child: Center(
                             child: Image.asset(
-                              'assets/images/safeguardlogo.png', 
-                              width: 900                           ),
+                              'assets/images/logo.png', 
+                              width: 90,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -184,4 +214,3 @@ class OnboardingPage extends StatelessWidget {
     );
   }
 }
-

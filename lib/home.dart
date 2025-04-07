@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'heatmap.dart';
+import 'languages.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -159,7 +160,12 @@ class _MainPageState extends State<MainPage> {
           ),
           IconButton(
             icon: const Icon(Icons.language),
-            onPressed: () {},
+            onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LanguagesPage()), // Navigate to LanguagesPage
+    );
+  },
           ),
         ],
       ),
