@@ -1,13 +1,28 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-// import 'main_page.dart';
+import 'package:safe_guard_sg/pages/camera.dart';
 
+List<CameraDescription> cameras = [];
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  // Ensure that plugin services are initialized so that `availableCameras()`
+  // can be called before `runApp()`
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Obtain a list of the available cameras on the device.
+  cameras = await availableCameras();
+
+  // Get a specific camera from the list of available cameras.
+  final firstCamera = cameras.first;
+
+  print('Available cameras: $cameras');
+  runApp(MyApp(camera: firstCamera));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.camera});
+
+  final CameraDescription camera;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +31,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: const MyHomePage(title: 'SafeGuardSG'),
+      home: CameraPage(camera: camera),
     );
   }
 }
