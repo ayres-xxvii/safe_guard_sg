@@ -44,6 +44,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
+  flutter_gen: ^5.10.0
+  flutter_local_notifications: ^19.0.0
 
 dev_dependencies:
   flutter_test:

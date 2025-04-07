@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:safe_guard_sg/l10n/app_localizations.dart';
+import 'package:safe_guard_sg/noti_service.dart';
 import 'home.dart';
 import 'languages.dart';
 
 void main() {
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // initialize notifications
+  NotiService().initNotification();
   runApp(const MyApp());
 }
 
@@ -91,7 +97,7 @@ class OnboardingPage extends StatelessWidget {
                           ),
                           child: Center(
                             child: Image.asset(
-                              'assets/images/logo.png', 
+                              'assets/images/safeguardlogo.png', 
                               width: 90,
                             ),
                           ),
@@ -153,6 +159,10 @@ class OnboardingPage extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(builder: (context) => const MainPage()),
                                     );
+                                    // NotiService().showNotification(
+                                    //   title: 'Welcome to SafeGuardSG',
+                                    //   body: 'Stay informed. Stay safe.',
+                                    // );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF4DD0C7),
