@@ -70,10 +70,11 @@ void onStart(ServiceInstance service) async {
 
   });
 
-  Timer.periodic(const Duration(seconds: 1), (timer) {
+  Timer.periodic(const Duration(seconds: 10), (timer) {
     socket.emit("event-name", "your-message");
     print("background service is successfully running ${DateTime.now().second}");
 
+    // TODO: Replace these 2 lines with actual user location and actual dangerZones
     LatLng userLoc = LatLng(1.4292652516965352, 103.83485804010147); // Current location, Yishun MRT - Annas / Replace with actual user location
     List<LatLng> dangerZones = [
       LatLng(1.3521, 103.8198), // Central Singapore (default center)
@@ -83,17 +84,17 @@ void onStart(ServiceInstance service) async {
       LatLng(1.4293710684200354, 103.83407928904268), // Yishun S11 - dajie
       LatLng(1.4455, 103.7855), // Woodlands
     ];
-
-    if (userInDanger(userLoc, dangerZones)) {
+    (bool, double?) result = userInDanger(userLoc, dangerZones);
+    if (result.$1) {
       NotiService().showNotification(
         title: 'DANGER!!!',
-        body: 'You are within 1km of a danger zone.',
+        body: 'You are within ${(result.$2!+1).toStringAsFixed(0)}m of a danger zone.',
       );
     }
   });
 }
 
-bool userInDanger(LatLng userLoc, List<LatLng> dangerZones) {
+(bool,double?) userInDanger(LatLng userLoc, List<LatLng> dangerZones) {
   // radius in meter
   double dangerRadius = 1000;
   for (LatLng zone in dangerZones) {
@@ -101,12 +102,11 @@ bool userInDanger(LatLng userLoc, List<LatLng> dangerZones) {
     //     + pow(111320 * cos(((userLoc.latitude + zone.latitude) / 2) * pi / 180) 
     //           * (userLoc.longitude - zone.longitude), 2)); 
     double distance = haversineDistance(zone.latitude, zone.longitude, userLoc.latitude, userLoc.longitude);
-    print(distance);
     if (distance < dangerRadius) {
-      return true;
+      return (true, distance);
     }
   }
-  return false;
+  return (false, null);
 }
 
 double haversineDistance(lat1, lon1, lat2, lon2) {
