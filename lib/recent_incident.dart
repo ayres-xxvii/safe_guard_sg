@@ -1,7 +1,8 @@
+import 'dart:convert'; // For Base64 decoding
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../models/incident_report.dart';
+import '../services/incident_service.dart';
 import 'incident_details.dart';
-
 
 class RecentIncidentsPage extends StatefulWidget {
   const RecentIncidentsPage({super.key});
@@ -11,282 +12,223 @@ class RecentIncidentsPage extends StatefulWidget {
 }
 
 class _RecentIncidentsPageState extends State<RecentIncidentsPage> {
-  final List<IncidentReport> _incidents = [
-    IncidentReport(
-      title: 'Flash Flood in Bukit Timah',
-      location: 'Bukit Timah Road',
-      date: 'Apr 5, 2025',
-      type: IncidentType.flood,
-      description: 'Heavy rainfall caused flash floods, affecting traffic and damaging some parked vehicles.',
-      verified: true,
-    ),
-    IncidentReport(
-      title: 'Flooded Basement Carpark',
-      location: 'Toa Payoh',
-      date: 'Apr 4, 2025',
-      type: IncidentType.flood,
-      description: 'Basement carpark was reported flooded due to blocked drainage system.',
-      verified: true,
-    ),
-    IncidentReport(
-      title: 'Severe Water Accumulation',
-      location: 'Jurong West',
-      date: 'Apr 3, 2025',
-      type: IncidentType.flood,
-      description: 'Water accumulation along main road led to minor accidents and road closures.',
-      verified: false,
-    ),
-  ];
+  final IncidentService _incidentService = IncidentService();
+
+  // Helper method to determine which image widget to display based on available data
+  Widget _getImageWidget(IncidentReport incident) {
+    if (incident.imageBase64 != null && incident.imageBase64!.isNotEmpty) {
+      try {
+        final imageBytes = base64Decode(incident.imageBase64!);
+        return Image.memory(
+          imageBytes,
+          fit: BoxFit.cover,
+          width: 100,
+          height: 100,
+          errorBuilder: (context, error, stackTrace) {
+            print('Error loading Base64 image: $error');
+            return Container(
+              width: 100,
+              height: 100,
+              color: Colors.grey[300],
+              child: const Icon(Icons.error, color: Colors.red),
+            );
+          },
+        );
+      } catch (e) {
+        print('Error decoding Base64 image: $e');
+        return Container(
+          width: 100,
+          height: 100,
+          color: Colors.grey[300],
+          child: const Icon(Icons.broken_image, color: Color.fromARGB(255, 117, 117, 117)),
+        );
+      }
+    } else if (incident.imageUrl != null && incident.imageUrl!.isNotEmpty) {
+      return Image.network(
+        incident.imageUrl!,
+        fit: BoxFit.cover,
+        width: 100,
+        height: 100,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            width: 100,
+            height: 100,
+            color: Colors.grey[300],
+            child: Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                      loadingProgress.expectedTotalBytes!
+                    : null,
+                color: const Color(0xFF73D3D0),
+              ),
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return Container(
+            width: 100,
+            height: 100,
+            color: Colors.grey[300],
+            child: const Icon(Icons.error, color: Colors.red),
+          );
+        },
+      );
+    } else {
+      return Container(
+        width: 100,
+        height: 100,
+        color: Colors.grey[300],
+        child: const Icon(Icons.image_not_supported, color: Color.fromARGB(255, 123, 122, 122)),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
-
     return Scaffold(
-      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: const Color(0xFF4DD0C7),
-        foregroundColor: Colors.white,
         title: const Text('Recent Incidents'),
-        elevation: 0,
-      ),
-      body: Column(
-        children: [
-          // Statistics card
-          Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 1,
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                const Text(
-                  'Flood Statistics',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildStatCard('Floods', '${_incidents.length}', Icons.water_damage, Colors.blue),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-
-          // Incident list
-          Expanded(
-            child: _incidents.isEmpty
-                ? Center(
-                    child: Text(
-                      'No flood incidents reported',
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _incidents.length,
-                    itemBuilder: (context, index) {
-                      final incident = _incidents[index];
-                      return _buildIncidentCard(incident);
-                    },
-                  ),
+        backgroundColor: const Color(0xFF73D3D0),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              setState(() {}); // Trigger UI refresh manually if needed
+            },
           ),
         ],
       ),
+      body: StreamBuilder<List<IncidentReport>>(
+        stream: _incidentService.getIncidents(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator(color: Color(0xFF73D3D0)));
+          }
 
-    );
-  }
+          if (snapshot.hasError) {
+            return Center(child: Text('Failed to load incidents: ${snapshot.error}'));
+          }
 
-  Widget _buildStatCard(String title, String count, IconData icon, Color color) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: color),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          count,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-        Text(
-          title,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 12,
-          ),
-        ),
-      ],
-    );
-  }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No incidents reported yet'));
+          }
 
-  Widget _buildIncidentCard(IncidentReport incident) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.shade200),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                _incidentTypeIcon(incident.type),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    incident.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+          final incidents = snapshot.data!;
+          return RefreshIndicator(
+            onRefresh: () async {
+              setState(() {}); // Trigger refresh to load data again
+            },
+            color: const Color(0xFF73D3D0),
+            child: ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: incidents.length,
+              itemBuilder: (context, index) {
+                final incident = incidents[index];
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                ),
-                if (incident.verified)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.verified,
-                          size: 14,
-                          color: Colors.green,
+                  elevation: 2,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => IncidentDetailsPage(incident: incident),
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Verified',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.green[700],
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: _getImageWidget(incident),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        incident.title,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    if (incident.verified)
+                                      const Icon(
+                                        Icons.verified,
+                                        color: Colors.blue,
+                                        size: 20,
+                                      ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Icon(Icons.location_on, size: 16, color: Colors.grey[600]),
+                                    const SizedBox(width: 4),
+                                    Expanded(
+                                      child: Text(
+                                        incident.location,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[600],
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Icon(Icons.calendar_today, size: 16, color: Colors.grey[600]),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      incident.date,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  incident.description,
+                                  style: const TextStyle(fontSize: 14),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-              ],
+                );
+              },
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(Icons.location_on, size: 14, color: Colors.grey[600]),
-                const SizedBox(width: 4),
-                Text(
-                  incident.location,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Icon(Icons.calendar_today, size: 14, color: Colors.grey[600]),
-                const SizedBox(width: 4),
-                Text(
-                  incident.date,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              incident.description,
-              style: const TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-  
-                TextButton.icon(
-                  icon: const Icon(Icons.arrow_forward, size: 16),
-                  label: const Text('View Details'),
-                  onPressed: ()  {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => IncidentDetailsPage(incident: incident),
-                      ),
-                    );
-                  },
-                  style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF4DD0C7),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
-
-  Widget _incidentTypeIcon(IncidentType type) {
-    IconData icon = Icons.water_damage;
-    Color color = Colors.blue;
-
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        shape: BoxShape.circle,
-      ),
-      child: Icon(icon, color: color, size: 20),
-    );
-  }
-}
-
-// Updated enum for flood only
-enum IncidentType {
-  flood,
-}
-
-class IncidentReport {
-  final String title;
-  final String location;
-  final String date;
-  final IncidentType type;
-  final String description;
-  final bool verified;
-
-  IncidentReport({
-    required this.title,
-    required this.location,
-    required this.date,
-    required this.type,
-    required this.description,
-    this.verified = false,
-  });
 }
