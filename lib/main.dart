@@ -1,9 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:safe_guard_sg/l10n/app_localizations.dart';
-import 'package:safe_guard_sg/noti_service.dart';
+import 'package:safe_guard_sg/services/background_service.dart';
+import 'package:safe_guard_sg/services/noti_service.dart';
 import 'home.dart';
 import 'languages.dart';
+
 
 void main() {
 
@@ -11,6 +16,8 @@ void main() {
 
   // initialize notifications
   NotiService().initNotification();
+  initializeBackgroundService();
+
   runApp(const MyApp());
 }
 

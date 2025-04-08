@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:safe_guard_sg/noti_service.dart';
+import 'package:safe_guard_sg/services/noti_service.dart';
+
 import 'heatmap.dart';
 import 'report_incident.dart';
 import 'recent_report.dart';
