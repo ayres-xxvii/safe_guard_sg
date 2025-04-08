@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotiService {
@@ -43,7 +44,7 @@ class NotiService {
   }
 
   Future<void> showNotification({
-    int id=0,
+    int id = 0,
     String? title,
     String? body,
   }) async {
@@ -51,7 +52,7 @@ class NotiService {
       id,
       title,
       body,
-      NotificationDetails(),
+      notificationDetails(),
     );
   }
 }

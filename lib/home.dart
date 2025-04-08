@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:safe_guard_sg/noti_service.dart';
 import 'heatmap.dart';
 import 'report_incident.dart';
 import 'recent_report.dart';
@@ -177,7 +178,12 @@ class _MainPageState extends State<MainPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {},
+            onPressed: () {
+              NotiService().showNotification(
+                title: 'Test Notification',
+                body: 'This is a test notification.',
+              );
+            },
           ),
           IconButton(
             icon: const Icon(Icons.language),
