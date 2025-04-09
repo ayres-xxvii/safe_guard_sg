@@ -24,8 +24,8 @@ setx PATH "%PATH%;C:\src\flutter\bin"
 
 # Add to PATH (Mac/Linux)
 cd flutter
-export PATH="$PWD/bin:$PATH"
-echo 'export PATH="$HOME/safe_guard_sg/flutter/bin:$PATH"' >> ~/.zshrc
+git clone https://github.com/flutter/flutter.git -b stable ~/safe_guard_sg/flutter
+export PATH="$HOME/safe_guard_sg/flutter/bin:$PATH" 
 source ~/.zshrc
 
 # Verify installation
