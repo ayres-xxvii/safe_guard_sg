@@ -50,23 +50,28 @@ Future<String> addIncident(IncidentReport incident) async {
   }
 
   // Update an incident
-  Future<void> updateIncident(String id, IncidentReport incident) async {
-    try {
-      await _db.collection(_collection).doc(id).update({
-        'title': incident.title,
-        'location': incident.location,
-        'date': incident.date,
-        'type': incident.type.toString().split('.').last,
-        'description': incident.description,
-        'verified': incident.verified,
-        'imageUrl': incident.imageUrl,
-        'imageBase64': incident.imageBase64
-      });
-    } catch (e) {
-      print('Error updating incident: $e');
-      throw e;
-    }
+Future<void> updateIncident(String id, IncidentReport incident) async {
+  try {
+    await _db.collection(_collection).doc(id).update({
+      'title': incident.title,
+      'location': incident.location,
+      'date': incident.date,
+      'type': incident.type.toString().split('.').last,
+      'description': incident.description,
+      'verified': incident.verified,
+      'imageUrl': incident.imageUrl,
+      'imageBase64List': incident.imageBase64List,
+      'timestamp': incident.timestamp,
+      'latitude': incident.latitude,
+      'longitude': incident.longitude,
+      'verificationCount': incident.verificationCount,
+    });
+  } catch (e) {
+    print('Error updating incident: $e');
+    throw e;
   }
+}
+
 
   // Delete an incident
   Future<void> deleteIncident(String id) async {

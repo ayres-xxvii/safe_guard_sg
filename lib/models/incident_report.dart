@@ -18,9 +18,11 @@ class IncidentReport {
   final String description;
   final bool verified;
   final String? imageUrl;
-  final String? imageBase64;
-  final Timestamp timestamp; // Add this field
-
+  final List<String>? imageBase64List; // Changed from String? to List<String>?  
+  final Timestamp timestamp;
+  final double latitude;
+  final double longitude;
+  final int verificationCount;
 
   IncidentReport({
     this.id,
@@ -31,9 +33,11 @@ class IncidentReport {
     required this.description,
     required this.verified,
     this.imageUrl,
-    this.imageBase64,
-    required this.timestamp, // Make it required
-
+    this.imageBase64List, // Changed parameter name
+    required this.timestamp,
+    required this.latitude,
+    required this.longitude,
+    required this.verificationCount,
   });
 
   Map<String, dynamic> toMap() {
@@ -45,32 +49,36 @@ class IncidentReport {
       'description': description,
       'verified': verified,
       'imageUrl': imageUrl,
-      'imageBase64': imageBase64,
-      'timestamp': timestamp, // Include in map
-
+      'imageBase64List': imageBase64List, // Changed field name
+      'timestamp': timestamp,
+      'latitude': latitude,
+      'longitude': longitude,
+      'verificationCount': verificationCount,
     };
   }
 
   // Static method to create an IncidentReport from a Firestore document
-static IncidentReport fromFirestore(DocumentSnapshot doc) {
-  final data = doc.data() as Map<String, dynamic>;
+  static IncidentReport fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
 
-  return IncidentReport(
-    id: doc.id,
-    title: data['title'] ?? '',
-    location: data['location'] ?? '',
-    date: data['date'] ?? '',
-    type: _getTypeFromString(data['type']),
-    description: data['description'] ?? '',
-    verified: data['verified'] ?? false,
-    imageUrl: data['imageUrl'],
-    imageBase64: data['imageBase64'],
-    timestamp: data['timestamp'] ?? Timestamp.now(), // Extract timestamp or use default
-
-  );
-}
-
-
+    return IncidentReport(
+      id: doc.id,
+      title: data['title'] ?? '',
+      location: data['location'] ?? '',
+      date: data['date'] ?? '',
+      type: _getTypeFromString(data['type']),
+      description: data['description'] ?? '',
+      verified: data['verified'] ?? false,
+      imageUrl: data['imageUrl'],
+      imageBase64List: data['imageBase64List'] != null 
+        ? List<String>.from(data['imageBase64List']) 
+        : null,
+              timestamp: data['timestamp'] ?? Timestamp.now(),
+      latitude: data['latitude'] ?? 0.0,
+      longitude: data['longitude'] ?? 0.0,
+      verificationCount: data['verificationCount'] ?? 0,
+    );
+  }
 
   // Helper method to convert string to IncidentType enum
   static IncidentType _getTypeFromString(String typeString) {
