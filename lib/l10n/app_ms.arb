@@ -1,7 +1,10 @@
 {
+    "languagePageBarTitle": "Pilih Bahasa",
     "languagePageHeading": "Sila Pilih Bahasa Pilihan Anda",
     "english": "Inggeris",
     "mandarin": "Mandarin",
     "malay": "Melayu",
-    "tamil": "Tamil"
+    "tamil": "Tamil",
+
+    "homeReportNow": "Lapor Sekarang!"
 }

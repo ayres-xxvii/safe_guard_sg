@@ -1,4 +1,8 @@
 {
+    "languagePageBarTitle": "Select language",
+    "@languagePageBarTitle": {
+        "description": "Language page bar title"
+    },
     "languagePageHeading": "Choose your preferred language",
     "@languagePageHeading": {
         "description": "Language page header"
@@ -18,7 +22,10 @@
     "tamil": "Tamil",
     "@tamil": {
         "description": "Word Tamil"
-    }
+    },
 
-    
+    "homeReportNow": "Report Now!",
+    "@homeReportNow": {
+        "description": "Text for report now button"
+    }
 }

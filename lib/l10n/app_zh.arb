@@ -1,7 +1,10 @@
 {
+    "languagePageBarTitle": "选择语言",
     "languagePageHeading": "请选择您的首选语言",
     "english": "英语",
     "mandarin": "中文",
     "malay": "马来语",
-    "tamil": "泰米尔语"
+    "tamil": "泰米尔语",
+
+    "homeReportNow": "立即举报!"
 }
