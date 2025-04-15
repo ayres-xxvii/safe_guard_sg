@@ -6,6 +6,7 @@ import 'languages.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // if you used flutterfire CLI
+import 'singpass_login.dart';
 
 
 void main() async {
@@ -90,29 +91,33 @@ class OnboardingPage extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.15),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: Image.asset(
-                              'assets/images/safeguardlogo.png', 
-                              width: 90,
-                            ),
-                          ),
-                        ),
+Stack(
+  alignment: Alignment.center,
+  children: [
+    // Circle background stays put
+    Container(
+      width: 300,
+      height: 300,
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.15),
+        shape: BoxShape.circle,
+      ),
+    ),
+
+    // Move logo slightly down (positive Y)
+    Transform.translate(
+      offset: const Offset(0, 30), // try 10-20px downward
+      child: Image.asset(
+        'assets/images/safeguardlogo.png',
+        width: 550,
+        fit: BoxFit.contain,
+      ),
+    ),
+  ],
+),
+
+
                         const SizedBox(height: 20),
-                        const Text(
-                          'SAFE GUARD.SG',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -156,22 +161,25 @@ class OnboardingPage extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const MainPage()),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF4DD0C7),
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(vertical: 15),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                  ),
+                                 onPressed: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const SingpassLoginPage(),
+    ),
+  );
+},
+style: ElevatedButton.styleFrom(
+  backgroundColor: const Color(0xFFEA1221),
+  foregroundColor: Colors.white,
+  padding: const EdgeInsets.symmetric(vertical: 15),
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(30),
+  ),
+),
+
                                   child: const Text(
-                                    'Let\'s Start',
+                                    'Login with Singpass',
                                     style: TextStyle(fontSize: 18),
                                   ),
                                 ),

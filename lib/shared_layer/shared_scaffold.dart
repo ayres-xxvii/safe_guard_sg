@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:safe_guard_sg/home.dart';
 import 'package:safe_guard_sg/heatmap.dart';
 import 'package:safe_guard_sg/report_incident.dart';
+import 'package:safe_guard_sg/profile.dart';
 
 class SharedScaffold extends StatelessWidget {
   final Widget body;
@@ -29,9 +30,9 @@ class SharedScaffold extends StatelessWidget {
       case 2:
         nextPage = const ReportIncidentPage();
         break;
-    //   case 3:
-    //     nextPage = const SettingsPage(); // add this if you have a settings page
-    //     break;
+      case 3:
+        nextPage =  ProfilePage(); // add this if you have a settings page
+        break;
       default:
         return;
     }
@@ -68,8 +69,8 @@ class SharedScaffold extends StatelessWidget {
             label: "Report Incident", // Full text as shown
             ),
             BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: "Settings",
+            icon: Icon(Icons.person),
+            label: "Profile",
             ),
         ],
         ),

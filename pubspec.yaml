@@ -44,6 +44,10 @@ dependencies:
   cached_network_image: ^3.3.0
   camera: ^0.10.5+5
   url_launcher: ^6.2.5  # Use latest version
+  qr_flutter: ^4.1.0
+  firebase_auth: ^4.17.4 # or latest version
+  
+
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -83,6 +87,7 @@ flutter:
   assets:
     - assets/images/logo.jpeg
     - assets/images/safeguardlogo.png
+    - assets/images/test.jpg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

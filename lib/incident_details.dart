@@ -19,14 +19,20 @@ class IncidentDetailsPage extends StatefulWidget {
 class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
   final IncidentService _incidentService = IncidentService();
   late int verificationCount;
-
   bool _isLoading = false;
-
+  int _currentImageIndex = 0; // Track current image index for the carousel
+  final PageController _pageController = PageController();
 
   @override
   void initState() {
     super.initState();
     verificationCount = widget.incident.verificationCount;
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   void _openInExternalMap() async {
@@ -66,133 +72,214 @@ class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
             const SizedBox(height: 8),
 
             // Verification Status
-// Verification Status
-Row(
-  mainAxisAlignment: MainAxisAlignment.start,
-  children: [
-    Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: verificationCount > 0
-            ? Colors.green.withOpacity(0.1)
-            : Colors.orange.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            verificationCount > 0 ? Icons.verified : Icons.pending,
-            size: 16,
-            color: verificationCount > 0 ? Colors.green : Colors.orange,
-          ),
-          const SizedBox(width: 6),
-          Text(
-            verificationCount > 0
-                ? '$verificationCount verification${verificationCount > 1 ? 's' : ''}'
-                : 'Pending verification',
-            style: TextStyle(
-              color: verificationCount > 0
-                  ? Colors.green[700]
-                  : Colors.orange[700],
-              fontWeight: FontWeight.bold,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: verificationCount > 0
+                        ? Colors.green.withOpacity(0.1)
+                        : Colors.orange.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        verificationCount > 0 ? Icons.verified : Icons.pending,
+                        size: 16,
+                        color: verificationCount > 0 ? Colors.green : Colors.orange,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        verificationCount > 0
+                            ? '$verificationCount verification${verificationCount > 1 ? 's' : ''}'
+                            : 'Pending verification',
+                        style: TextStyle(
+                          color: verificationCount > 0
+                              ? Colors.green[700]
+                              : Colors.orange[700],
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-    ),
-  ],
-),
-
-
-
-  
-              
+            
             const SizedBox(height: 24),
       
-            // Location Map
- 
-            // Display the image if available
-  // Display the image if available
-if ((widget.incident.imageUrl != null && widget.incident.imageUrl!.isNotEmpty) || 
-    (widget.incident.imageBase64List != null && widget.incident.imageBase64List!.isNotEmpty))
-  Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'Incident Image',
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      const SizedBox(height: 8),
-      ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: widget.incident.imageBase64List != null && widget.incident.imageBase64List!.isNotEmpty
-          // Display Base64 image(s) from the list
-          ? Image.memory(
-              base64Decode(widget.incident.imageBase64List![0]),  // Display the first image in the list
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(12),
+            // Display the image(s) if available
+            if ((widget.incident.imageUrl != null && widget.incident.imageUrl!.isNotEmpty) || 
+                (widget.incident.imageBase64List != null && widget.incident.imageBase64List!.isNotEmpty))
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Incident Image',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (widget.incident.imageBase64List != null && widget.incident.imageBase64List!.length > 1)
+                        Text(
+                          '${_currentImageIndex + 1}/${widget.incident.imageBase64List!.length}',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 14,
+                          ),
+                        ),
+                    ],
                   ),
-                  child: const Center(
-                    child: Icon(Icons.error, color: Colors.red),
-                  ),
-                );
-              },
-            )
-          // Display URL image (as a fallback for existing records)
-          : Image.network(
-              widget.incident.imageUrl!,
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Container(
-                  height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded / 
-                            loadingProgress.expectedTotalBytes!
-                          : null,
+                  const SizedBox(height: 8),
+                  
+                  // Handle multiple images with PageView or single image based on available data
+                  if (widget.incident.imageBase64List != null && widget.incident.imageBase64List!.length > 1)
+                    // Multiple images - use PageView
+                    Column(
+                      children: [
+                        Container(
+                          height: 200,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: PageView.builder(
+                            controller: _pageController,
+                            itemCount: widget.incident.imageBase64List!.length,
+                            onPageChanged: (index) {
+                              setState(() {
+                                _currentImageIndex = index;
+                              });
+                            },
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 2),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.memory(
+                                    base64Decode(widget.incident.imageBase64List![index]),
+                                    height: 200,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        height: 200,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[200],
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: const Center(
+                                          child: Icon(Icons.error, color: Colors.red),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        // Image indicator dots
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(widget.incident.imageBase64List!.length, (index) {
+                            return GestureDetector(
+                              onTap: () {
+                                _pageController.animateToPage(
+                                  index,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                              },
+                              child: Container(
+                                width: 8,
+                                height: 8,
+                                margin: const EdgeInsets.symmetric(horizontal: 4),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _currentImageIndex == index
+                                      ? const Color(0xFF4DD0C7)
+                                      : Colors.grey[300],
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
+                      ],
+                    )
+                  else
+                    // Single image case - either from base64List[0] or from imageUrl
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: widget.incident.imageBase64List != null && widget.incident.imageBase64List!.isNotEmpty
+                        ? Image.memory(
+                            base64Decode(widget.incident.imageBase64List![0]),
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                height: 200,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Center(
+                                  child: Icon(Icons.error, color: Colors.red),
+                                ),
+                              );
+                            },
+                          )
+                        : Image.network(
+                            widget.incident.imageUrl!,
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                height: 200,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    value: loadingProgress.expectedTotalBytes != null
+                                        ? loadingProgress.cumulativeBytesLoaded / 
+                                          loadingProgress.expectedTotalBytes!
+                                        : null,
+                                  ),
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                height: 200,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Center(
+                                  child: Icon(Icons.error, color: Colors.red),
+                                ),
+                              );
+                            },
+                          ),
                     ),
-                  ),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Center(
-                    child: Icon(Icons.error, color: Colors.red),
-                  ),
-                );
-              },
-            ),
-      ),
-      const SizedBox(height: 24),
-    ],
-  ),
-
+                  const SizedBox(height: 24),
+                ],
+              ),
 
             // Incident Info
             Container(
@@ -265,7 +352,7 @@ if ((widget.incident.imageUrl != null && widget.incident.imageUrl!.isNotEmpty) |
             ),
             const SizedBox(height: 24),
 
-                       if (widget.incident.latitude != null && widget.incident.longitude != null)
+            if (widget.incident.latitude != null && widget.incident.longitude != null)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -315,15 +402,15 @@ if ((widget.incident.imageUrl != null && widget.incident.imageUrl!.isNotEmpty) |
                           MarkerLayer(
                             markers: [
                              Marker(
-                            point: LatLng(widget.incident.latitude!, widget.incident.longitude!),
-                            width: 40,
-                            height: 40,
-                            child: const Icon(  // Use `child` instead of `builder`
-                              Icons.location_on,
-                              color: Colors.red,
-                              size: 40,
-                            ),
-                          ),
+                                point: LatLng(widget.incident.latitude!, widget.incident.longitude!),
+                                width: 40,
+                                height: 40,
+                                child: const Icon(
+                                  Icons.location_on,
+                                  color: Colors.red,
+                                  size: 40,
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -350,139 +437,133 @@ if ((widget.incident.imageUrl != null && widget.incident.imageUrl!.isNotEmpty) |
                 ],
               ),
 
-
             // Add delete button for admin or the user who created the incident
-Center(
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      // Mark as Verified/Unverified Button
-      _isLoading
-          ? const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(strokeWidth: 2),
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Mark as Verified/Unverified Button
+                  _isLoading
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : TextButton.icon(
+                          icon: Icon(
+                            verificationCount > 0 ? Icons.cancel : Icons.check_circle,
+                            color: Colors.white,
+                          ),
+                          label: Text(
+                            verificationCount > 0 ? 'Mark as Unverified' : 'Mark as Verified',
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          style: TextButton.styleFrom(
+                            backgroundColor: verificationCount > 0 ? Colors.deepOrange : Colors.green[700],
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () async {
+                            setState(() {
+                              _isLoading = true;
+                            });
+
+                            try {
+                              if (widget.incident.id != null) {
+                                final newCount = verificationCount > 0
+                                    ? verificationCount - 1
+                                    : verificationCount + 1;
+
+                                await _incidentService.updateIncident(
+                                  widget.incident.id!,
+                                  IncidentReport(
+                                    id: widget.incident.id,
+                                    title: widget.incident.title,
+                                    location: widget.incident.location,
+                                    date: widget.incident.date,
+                                    type: widget.incident.type,
+                                    description: widget.incident.description,
+                                    verified: newCount > 0, // Update verified status
+                                    imageUrl: widget.incident.imageUrl,
+                                    imageBase64List: widget.incident.imageBase64List,
+                                    timestamp: Timestamp.now(),
+                                    latitude: widget.incident.latitude,
+                                    longitude: widget.incident.longitude,
+                                    verificationCount: newCount < 0 ? 0 : newCount,
+                                  ),
+                                );
+
+                                setState(() {
+                                  verificationCount = newCount < 0 ? 0 : newCount;
+                                });
+                              }
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Error updating status: $e')),
+                              );
+                            } finally {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            }
+                          }
+                        ),
+
+                  const SizedBox(width: 16), // Add some space between buttons
+
+                  // Delete Incident Button
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.delete),
+                    label: const Text('Delete Incident'),
+                    onPressed: () {
+                      // Show confirmation dialog
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Delete Incident'),
+                          content: const Text('Are you sure you want to delete this incident report?'),
+                          actions: [
+                            TextButton(
+                              child: const Text('Cancel'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            TextButton(
+                              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                              onPressed: () async {
+                                // Only delete if we have a document ID
+                                if (widget.incident.id != null) {
+                                  try {
+                                    await _incidentService.deleteIncident(widget.incident.id!);
+                                    Navigator.of(context).pop(); // Close dialog
+                                    Navigator.of(context).pop(); // Return to list page
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Incident deleted successfully')),
+                                    );
+                                  } catch (e) {
+                                    Navigator.of(context).pop(); // Close dialog
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Error deleting incident: $e')),
+                                    );
+                                  }
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
             )
-          : TextButton.icon(
-              icon: Icon(
-                verificationCount > 0 ? Icons.cancel : Icons.check_circle,
-                  color: Colors.white, // make icon white
-
-              ),
-
-
-              label: Text(
-                verificationCount > 0 ? 'Mark as Unverified' : 'Mark as Verified',
-                    style: const TextStyle(color: Colors.white),
-              ),
-
-style: TextButton.styleFrom(
-    backgroundColor: verificationCount > 0 ? Colors.deepOrange : Colors.green[700],
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
-  ),
-              onPressed: () async {
-                setState(() {
-                  _isLoading = true;
-                });
-
-                try {
-                  if (widget.incident.id != null) {
-                    final newCount = verificationCount > 0
-                        ? verificationCount - 1
-                        : verificationCount + 1;
-
-                    await _incidentService.updateIncident(
-                      widget.incident.id!,
-                      IncidentReport(
-                        id: widget.incident.id,
-                        title: widget.incident.title,
-                        location: widget.incident.location,
-                        date: widget.incident.date,
-                        type: widget.incident.type,
-                        description: widget.incident.description,
-                        verified: newCount > 0, // Update verified status
-                        imageUrl: widget.incident.imageUrl,
-                        imageBase64List: widget.incident.imageBase64List,
-                        timestamp: Timestamp.now(),
-                        latitude: widget.incident.latitude,
-                        longitude: widget.incident.longitude,
-                        verificationCount: newCount < 0 ? 0 : newCount,
-                      ),
-                    );
-
-                    setState(() {
-                      verificationCount = newCount < 0 ? 0 : newCount;
-                    });
-                  }
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error updating status: $e')),
-                  );
-                } finally {
-                  setState(() {
-                    _isLoading = false;
-                  });
-                }
-              }
-            ),
-
-      const SizedBox(width: 16), // Add some space between buttons
-
-      // Delete Incident Button
-      ElevatedButton.icon(
-        icon: const Icon(Icons.delete),
-        label: const Text('Delete Incident'),
-        onPressed: () {
-          // Show confirmation dialog
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: const Text('Delete Incident'),
-              content: const Text('Are you sure you want to delete this incident report?'),
-              actions: [
-                TextButton(
-                  child: const Text('Cancel'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: const Text('Delete', style: TextStyle(color: Colors.red)),
-                  onPressed: () async {
-                    // Only delete if we have a document ID
-                    if (widget.incident.id != null) {
-                      try {
-                        await _incidentService.deleteIncident(widget.incident.id!);
-                        Navigator.of(context).pop(); // Close dialog
-                        Navigator.of(context).pop(); // Return to list page
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Incident deleted successfully')),
-                        );
-                      } catch (e) {
-                        Navigator.of(context).pop(); // Close dialog
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error deleting incident: $e')),
-                        );
-                      }
-                    }
-                  },
-                ),
-              ],
-            ),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.red,
-          foregroundColor: Colors.white,
-        ),
-      ),
-    ],
-  ),
-)
-
           ],
         ),
       ),
