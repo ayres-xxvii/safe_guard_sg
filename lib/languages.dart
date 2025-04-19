@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:safe_guard_sg/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'singpass_login.dart';
 
 class LanguagesPage extends StatefulWidget {
   const LanguagesPage({super.key});
@@ -34,7 +35,10 @@ class _LanguagesPageState extends State<LanguagesPage> {
     // if (_selectedLanguage != null) {
       // Save the selected language to shared preferences
       _saveLanguagePreference(_selectedLanguage!);
-      MyApp.of(context).setLocale(Locale(_selectedLanguage!));
+
+      final newLocale = Locale(_selectedLanguage!);
+      MyApp.of(context).setLocale(newLocale);
+      
       Navigator.pop(context); // Go back to the previous page
     // } else {
     //   // Optionally show an error message if no language is selected
@@ -95,7 +99,6 @@ class _LanguagesPageState extends State<LanguagesPage> {
                 onTap: () {
                   setState(() {
                     _selectedLanguage = code;
-                    print(_selectedLanguage);
                   });
                 }
               ),
