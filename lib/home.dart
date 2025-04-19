@@ -100,7 +100,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations? localizations = AppLocalizations.of(context);
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
 
     return SharedScaffold(
       currentIndex: 0,
@@ -291,7 +291,7 @@ class _MainPageState extends State<MainPage> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                  child: Text(localizations!.homeReportNow),
+                  child: Text(localizations.homeReportNow),
                 ),
               ),
               const SizedBox(height: 20),

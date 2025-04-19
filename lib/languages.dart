@@ -46,9 +46,9 @@ class _LanguagesPageState extends State<LanguagesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations? localizations = AppLocalizations.of(context);
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
     Map languages = <String, String>{
-      'en': localizations!.english,
+      'en': localizations.english,
       'zh': localizations.mandarin,
       'ms': localizations.malay,
       'ta': localizations.tamil,
