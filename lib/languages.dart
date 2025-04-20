@@ -52,10 +52,10 @@ class _LanguagesPageState extends State<LanguagesPage> {
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
     Map languages = <String, String>{
-      'en': localizations.english,
-      'zh': localizations.mandarin,
-      'ms': localizations.malay,
-      'ta': localizations.tamil,
+      'en': "English",
+      'zh': "中文",
+      'ms': "Melayu",
+      'ta': "தமிழ்",
     };
 
     return Scaffold(

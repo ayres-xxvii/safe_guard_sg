@@ -1,10 +1,22 @@
 {
+    "heatMap": "热力图",
+
+    "navHome": "首页",
+    "navReportIncident": "举报事件",
+    "navProfile": "个人资料",
+
+    "homeReportNow": "立即举报!",
+    "homeObservationCheckpoints": "观察检查点",
+    "homeObservationNotLogged": "尚未记录",
+    "homeObservationCaptured": "已捕捉",
+    "homePredictiveAnalysis": "预测分析",
+    "homeRecentReports": "最近的报告",
+    "homeIncidentDetails": "事件详情",
+
     "languagePageBarTitle": "选择语言",
     "languagePageHeading": "请选择您的首选语言",
     "english": "英语",
     "mandarin": "中文",
     "malay": "马来语",
-    "tamil": "泰米尔语",
-
-    "homeReportNow": "立即举报!"
+    "tamil": "泰米尔语"
 }

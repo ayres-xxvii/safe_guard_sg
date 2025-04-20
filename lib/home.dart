@@ -578,20 +578,20 @@ class _MainPageState extends State<MainPage> {
                 padding: EdgeInsets.only(left: 8, top: 8, bottom: 4)
               ),
               
-              _buildLegend(),
+              _buildLegend(localizations),
               const SizedBox(height: 20),
               _buildCard(
                 context,
-                title: "Heat Map",
-                subtitle: "Predictive Analytics",
+                title: localizations.heatMap,
+                subtitle: localizations.homePredictiveAnalysis,
                 icon: Icons.local_fire_department,
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HeatMapPage())),
               ),
               const SizedBox(height: 10),
               _buildCard(
                 context,
-                title: "Recent Reports",
-                subtitle: "Incident Details",
+                title: localizations.homeRecentReports,
+                subtitle: localizations.homeIncidentDetails,
                 icon: Icons.report_problem,
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const RecentIncidentsPage())),
               ),
@@ -602,7 +602,8 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget _buildLegend() {
+  Widget _buildLegend(AppLocalizations localizations) {
+
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -615,8 +616,8 @@ class _MainPageState extends State<MainPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Observation Checkpoints • (1/4)",
+            Text(
+              "${localizations.homeObservationCheckpoints} • (1/4)",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -630,28 +631,28 @@ class _MainPageState extends State<MainPage> {
               children: [
                 _legendItem(Colors.blue, "Stamford Detection Tank •"),
                 Text(
-                  "Not yet logged",
+                  localizations.homeObservationNotLogged,
                   style: TextStyle(
                     fontStyle: FontStyle.italic,
                     color: Colors.blue[700],
                   ),), 
                    _legendItem(Colors.blue, "Stamford Outflow Patrol •"),
                 Text(
-                  "Not yet logged",
+                  localizations.homeObservationNotLogged,
                   style: TextStyle(
                     fontStyle: FontStyle.italic,
                     color: Colors.blue[700],
                   ),), 
                 _legendItem(Colors.blue[700]!, "Cuscaden Storm Drain •"),
                 Text(
-                  "Not yet logged",
+                  localizations.homeObservationNotLogged,
                   style: TextStyle(
                     fontStyle: FontStyle.italic,
                     color: Colors.blue[700],
                   ),),
                 _legendItem(Colors.grey[700]!, "Stamford Canal Patrol Check •"),
                 Text(
-                  "Captured",
+                  localizations.homeObservationCaptured,
                   style: TextStyle(
                     fontStyle: FontStyle.italic,
                     color: Colors.green[700],

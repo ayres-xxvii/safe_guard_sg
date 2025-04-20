@@ -1,10 +1,18 @@
 {
-    "languagePageBarTitle": "மொழியைத் தேர்ந்தெடுக்கவும்",
-    "languagePageHeading": "தயவுசெய்து உங்கள் விருப்பமான மொழியைத் தேர்ந்தெடுக்கவும்",
-    "english": "ஆங்கிலம்",
-    "mandarin": "மண்டரின்",
-    "malay": "மலாய்",
-    "tamil": "தமிழ்",
+    "heatMap": " வெப்பப் படம்",
 
-    "homeReportNow": "இப்போது புகாரளிக்கவும்"
+    "navHome": "முகப்பு",
+    "navReportIncident": "புகார் அளி",
+    "navProfile": "சுயவிவரம்",
+
+    "homeReportNow": "இப்போது புகாரளிக்கவும்",
+    "homeObservationCheckpoints": "கண்காணிப்பு செக்‌பாயிண்ட்",
+    "homeObservationNotLogged": "பதிவு இல்லை",
+    "homeObservationCaptured": "பிடிப்பு",
+    "homePredictiveAnalysis": "முன்னறிவிப்பு பகுப்பாய்வு",
+    "homeRecentReports": "சமீபத்திய அறிக்கைகள்",
+    "homeIncidentDetails": "சம்பவத்தின் விவரங்கள்",
+
+    "languagePageBarTitle": "மொழியைத் தேர்ந்தெடுக்கவும்",
+    "languagePageHeading": "தயவுசெய்து உங்கள் விருப்பமான மொழியைத் தேர்ந்தெடுக்கவும்"
 }

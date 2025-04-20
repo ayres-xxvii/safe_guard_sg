@@ -1,10 +1,18 @@
 {
-    "languagePageBarTitle": "Pilih Bahasa",
-    "languagePageHeading": "Sila Pilih Bahasa Pilihan Anda",
-    "english": "Inggeris",
-    "mandarin": "Mandarin",
-    "malay": "Melayu",
-    "tamil": "Tamil",
+    "heatMap": "Peta Haba",
 
-    "homeReportNow": "Lapor Sekarang!"
+    "navHome": "Laman Utama",
+    "navReportIncident": "Lapor Insiden",
+    "navProfile": "Profil",
+
+    "homeReportNow": "Lapor Sekarang!",
+    "homeObservationCheckpoints": "Checkpoint Pemerhatian",
+    "homeObservationNotLogged": "Belum Direkod",
+    "homeObservationCaptured": "Ditangkap",
+    "homePredictiveAnalysis": "Analisis Ramalan",
+    "homeRecentReports": "Laporan Terkini",
+    "homeIncidentDetails": "Butiran Insiden",
+
+    "languagePageBarTitle": "Pilih Bahasa",
+    "languagePageHeading": "Sila Pilih Bahasa Pilihan Anda"
 }

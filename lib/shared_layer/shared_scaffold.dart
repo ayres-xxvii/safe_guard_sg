@@ -3,6 +3,7 @@ import 'package:safe_guard_sg/home.dart';
 import 'package:safe_guard_sg/heatmap.dart';
 import 'package:safe_guard_sg/report_incident.dart';
 import 'package:safe_guard_sg/profile.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SharedScaffold extends StatelessWidget {
   final Widget body;
@@ -44,6 +45,8 @@ class SharedScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: appBar,
@@ -55,22 +58,22 @@ class SharedScaffold extends StatelessWidget {
         backgroundColor: const Color(0xFF73D3D0), // Your blue color
         type: BottomNavigationBarType.fixed, // Required for text labels to show
         onTap: (index) => _onItemTapped(context, index),
-        items: const [
+        items: [
             BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: "Home",
+            label: localizations.navHome,
             ),
             BottomNavigationBarItem(
             icon: Icon(Icons.local_fire_department), // Or Icons.map
-            label: "Heat Map", // Note the space between words
+            label: localizations.heatMap, // Note the space between words
             ),
             BottomNavigationBarItem(
             icon: Icon(Icons.report_problem),
-            label: "Report Incident", // Full text as shown
+            label: localizations.navReportIncident, // Full text as shown
             ),
             BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: "Profile",
+            label: localizations.navProfile,
             ),
         ],
         ),

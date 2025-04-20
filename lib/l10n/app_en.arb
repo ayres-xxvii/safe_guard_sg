@@ -1,4 +1,51 @@
 {
+    "heatMap": "Heat Map",
+    "@heatMap": {
+        "description": "Heat Map"
+    },
+    
+    "navHome": "Home",
+    "@navHome": {
+        "description": "Home button"
+    },
+    "navReportIncident": "Report Incident",
+    "@navReportIncident": {
+        "description": "Report Incident button"
+    },
+    "navProfile": "Profile",
+    "@navProfile": {
+        "description": "Profile button"
+    },
+
+    "homeReportNow": "Report Now!",
+    "@homeReportNow": {
+        "description": "Text for report now button"
+    },
+    "homeObservationCheckpoints": "Observation Checkpoints",
+    "@homeObservationCheckpoints": {
+        "description": "Observation Checkpoints"
+    },
+    "homeObservationNotLogged": "Not yet logged",
+    "@homeObservationNotLogged": {
+        "description": "Not yet logged status for Observation Checkpoints"
+    },
+    "homeObservationCaptured": "Captured",
+    "@homeObservationCaptured": {
+        "description": "Captured status for Observation Checkpoints"
+    },
+    "homePredictiveAnalysis": "Predictive Analysis",
+    "@homePredictiveAnalysis": {
+        "description": "Predictive Analysis"
+    },
+    "homeRecentReports": "Recent Reports",
+    "@homeRecentReports": {
+        "description": "Recent Reports"
+    },
+    "homeIncidentDetails": "Incident Details",
+    "@homeIncidentDetails": {
+        "description": "Incident Details"
+    },
+
     "languagePageBarTitle": "Select language",
     "@languagePageBarTitle": {
         "description": "Language page bar title"
@@ -6,26 +53,5 @@
     "languagePageHeading": "Choose your preferred language",
     "@languagePageHeading": {
         "description": "Language page header"
-    },
-    "english": "English",
-    "@english": {
-        "description": "Word English"
-    },
-    "mandarin": "Mandarin",
-    "@mandarin": {
-        "description": "Word Mandarin"
-    },
-    "malay": "Malay",
-    "@malay": {
-        "description": "Word Malay"
-    },
-    "tamil": "Tamil",
-    "@tamil": {
-        "description": "Word Tamil"
-    },
-
-    "homeReportNow": "Report Now!",
-    "@homeReportNow": {
-        "description": "Text for report now button"
     }
 }
