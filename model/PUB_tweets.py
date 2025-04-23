@@ -175,7 +175,7 @@ def save_to_csv(flood_data, filename="pub_flood_locations.csv"):
     # Check if we have the columns
     available_columns = [col for col in essential_columns if col in df.columns]
     
-    df[available_columns].to_csv(filename, index=False)
+    df[available_columns].to_csv("data/"+filename, index=False)
     print(f"Saved {len(flood_data)} flood records to {filename}")
     
     return filename
@@ -183,6 +183,7 @@ def save_to_csv(flood_data, filename="pub_flood_locations.csv"):
 def main():
     # Configuration
     search_url = r"https://x.com/search?q=%22flood%20at%22%20-subsided%20(from%3APUBsingapore)&src=typed_query&f=top"
+    # search_url = r"https://x.com/search?q=%22flood%20at%22%20-subsided%20(from%3APUBsingapore)%20since%3A2025-04-16&f=top&src=typed_query"
     
     # Initialize driver
     driver = setup_driver()
