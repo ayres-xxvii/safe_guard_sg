@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // if you used flutterfire CLI
 import 'singpass_login.dart';
+import 'package:safe_guard_sg/providers/app_language.dart';
+import 'package:provider/provider.dart';
+
 
 
 void main() async {
@@ -14,27 +17,33 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform, // if using generated options
   );
-  runApp(MyApp());
+
+    // Create and initialize the AppLanguage instance
+  AppLanguage appLanguage = AppLanguage();
+  await appLanguage.fetchLocale();
+  
+
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => appLanguage,
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  Locale _locale = const Locale('en');
-
-  void setLocale(Locale locale) {
-    setState(() {
-      _locale = locale;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final appLanguage = Provider.of<AppLanguage>(context);
+    
     return MaterialApp(
       title: 'SafeGuardSG',
       debugShowCheckedModeBanner: false,
@@ -42,7 +51,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4DD0C7)),
         fontFamily: 'Poppins',
       ),
-      locale: _locale,
+      locale: appLanguage.appLocale, // Use the provider's locale
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -60,8 +69,11 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+
 // Your existing OnboardingPage code stays the same
 class OnboardingPage extends StatelessWidget {
+
+  
   const OnboardingPage({super.key});
   @override
   Widget build(BuildContext context) {

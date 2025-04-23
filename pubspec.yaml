@@ -46,8 +46,8 @@ dependencies:
   url_launcher: ^6.2.5  # Use latest version
   qr_flutter: ^4.1.0
   firebase_auth: ^4.17.4 # or latest version
-  
-
+  provider: ^6.0.5
+  http: ^1.1.0  # Add this for API calls
 
 
   # The following adds the Cupertino Icons font to your application.

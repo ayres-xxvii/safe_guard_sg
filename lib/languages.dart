@@ -1,107 +1,112 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'shared_layer/shared_scaffold.dart';
+import 'providers/app_language.dart';
 
-class LanguageSelectButtonActive extends StatelessWidget {
-  const LanguageSelectButtonActive({
-    super.key,
-    required this.text,
-  });
-
-  final String text;
+class LanguagesPage extends StatelessWidget {
+  const LanguagesPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {},
-      style: TextButton.styleFrom(
-        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-        backgroundColor: Color.fromARGB(255, 115, 211, 209),
+    final appLanguage = Provider.of<AppLanguage>(context);
+    final l10n = AppLocalizations.of(context);
+    
+    // Fallback strings in case l10n is null
+    final heading = l10n?.languagePageHeading ?? "Choose your preferred language";
+    final englishText = l10n?.english ?? "English";
+    final mandarinText = l10n?.mandarin ?? "Mandarin";
+    final malayText = l10n?.malay ?? "Malay";
+    final tamilText = l10n?.tamil ?? "Tamil";
+    
+    return SharedScaffold(
+      currentIndex: -1, // Not part of the main navigation
+      appBar: AppBar(
+        title: Text(heading),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      child: Text(text, style: TextStyle(fontSize: 30, color: Colors.white)),
-    );
-  }
-}
-
-class LanguageSelectButton extends StatelessWidget {
-  const LanguageSelectButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-  });
-
-  final String text;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onPressed,
-      style: TextButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-      ),
-      child: Text(text, style: const TextStyle(fontSize: 30, color: Colors.black87)),
-    );
-  }
-}
-
-class LanguagesPage extends StatefulWidget {
-  @override
-  _LanguagesPageState createState() => _LanguagesPageState();
-}
-
-class _LanguagesPageState extends State<LanguagesPage> {
-  int active = 1;
-@override
-Widget build(BuildContext context) {
-  final localizations = AppLocalizations.of(context);
-  if (localizations == null) {
-    return Scaffold(
-      body: Center(child: CircularProgressIndicator()), // Handle loading state
-    );
-  }
-
-  var languages = <String>[
-    localizations.english,
-    localizations.mandarin,
-    localizations.malay,
-    localizations.tamil,
-  ];
-
-  return Scaffold(
-    appBar: AppBar(title: const Text('Languages')),
-    body: Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 30, bottom: 60),
-            child: Text(
-              localizations.languagePageHeading,
-              textAlign: TextAlign.center,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              heading,
               style: const TextStyle(
                 fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              for (int i = 0; i < languages.length; i++)
-                i == active
-                    ? LanguageSelectButtonActive(text: languages[i])
-                    : LanguageSelectButton(
-                        text: languages[i],
-                        onPressed: () {
-                          setState(() {
-                            active = i;
-                          });
-                        },
-                      ),
-            ],
-          ),
-        ],
+            const SizedBox(height: 20),
+            _buildLanguageOption(
+              context,
+              title: englishText,
+              locale: const Locale('en'),
+              appLanguage: appLanguage,
+            ),
+            _buildLanguageOption(
+              context,
+              title: mandarinText,
+              locale: const Locale('zh'),
+              appLanguage: appLanguage,
+            ),
+            _buildLanguageOption(
+              context,
+              title: malayText,
+              locale: const Locale('ms'),
+              appLanguage: appLanguage,
+            ),
+            _buildLanguageOption(
+              context,
+              title: tamilText,
+              locale: const Locale('ta'),
+              appLanguage: appLanguage,
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
+
+  Widget _buildLanguageOption(
+    BuildContext context, {
+    required String title,
+    required Locale locale,
+    required AppLanguage appLanguage,
+  }) {
+    final isSelected = appLanguage.appLocale.languageCode == locale.languageCode;
+    
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: isSelected ? 4 : 1,
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+        trailing: isSelected 
+          ? const Icon(Icons.check_circle, color: Colors.blue)
+          : const Icon(Icons.circle_outlined),
+        onTap: () async {
+          await appLanguage.changeLanguage(locale);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Language changed to $title'),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
 }
