@@ -12,6 +12,8 @@ After collating the flood data, make sure it has columns as follow:
 
 Steps to run:
 1. Change filepath variable to the path of the flood data csv file
+2. Create a "data" folder
+3. RUN
 '''
 
 import pandas as pd
@@ -92,9 +94,9 @@ def get_rainfall_data(date, time, lat_lon):
     
     # only taking 1hr, 2hr, 3hr prior instead of rainfall at time of flood 
     # because we're trying to predict the rainfall and not just detect. (i think lol)
-    for hrs in range(1, 4):
+    for i in range(1, 10):
 
-        request_datetime = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H%M") - timedelta(hours=hrs)
+        request_datetime = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H%M") - timedelta(minutes=i*5)
         request_date = request_datetime.strftime("%Y-%m-%d")
         request_time = request_datetime.strftime("%H:%M:%S")
         
@@ -134,15 +136,25 @@ def get_rainfall_data(date, time, lat_lon):
             #exit so i dont make anymore changes to the dataset
             exit(1)
 
-    return rainfalls[0], rainfalls[1], rainfalls[2], distance
+    return rainfalls[0], rainfalls[1], rainfalls[2], rainfalls[3], rainfalls[4], rainfalls[5], rainfalls[6], rainfalls[7], rainfalls[8], distance
 
 def main():
     # Load the flood data / Adjust file path as necessary
-    filepath = "data/full_2013-2025.csv"
+    filepath = "data/final_full_2013-2025.csv"
     flood_data = pd.read_csv(filepath, dtype=str) 
-    rainfall_1hr_prior = []
-    rainfall_2hr_prior = []
-    rainfall_3hr_prior = []
+    # rainfall_1hr_prior = []
+    # rainfall_2hr_prior = []
+    # rainfall_3hr_prior = []
+    rainfall_5min_prior = []
+    rainfall_10min_prior = []
+    rainfall_15min_prior = []
+    rainfall_15min_prior = []
+    rainfall_20min_prior = []
+    rainfall_25min_prior = []
+    rainfall_30min_prior = []
+    rainfall_35min_prior = []
+    rainfall_40min_prior = []
+    rainfall_45min_prior = []
     nearest_station_distance = []
     
     print(flood_data.head())
@@ -158,30 +170,60 @@ def main():
         #     flood_data.drop(occurence[0], inplace=True)
         #     continue
 
-        hr_1, hr_2, hr_3, station_distance = get_rainfall_data(date, time, lat_lon)   
-        if hr_1 is None and hr_2 is None and hr_3 is None:
+        # hr_1, hr_2, hr_3, station_distance = get_rainfall_data(date, time, lat_lon)   
+        m5, m10, m15, m20, m25, m30, m35, m40, m45, station_distance = get_rainfall_data(date, time, lat_lon)
+        # if hr_1 is None and hr_2 is None and hr_3 is None:
+        #     print(f"Error: Unable to retrieve rainfall data for date {date} and time {time}. Dropping this entry...")
+        #     flood_data.drop(occurence[0], inplace=True)
+        #     continue
+        # else:
+        #     rainfall_1hr_prior.append(hr_1); rainfall_2hr_prior.append(hr_2); rainfall_3hr_prior.append(hr_3); nearest_station_distance.append(station_distance)
+
+        if m5 is None and m10 is None and m15 is None and m20 is None and m25 is None and m30 is None and m35 is None and m40 is None and m45 is None:
             print(f"Error: Unable to retrieve rainfall data for date {date} and time {time}. Dropping this entry...")
             flood_data.drop(occurence[0], inplace=True)
             continue
         else:
-            rainfall_1hr_prior.append(hr_1); rainfall_2hr_prior.append(hr_2); rainfall_3hr_prior.append(hr_3); nearest_station_distance.append(station_distance)
-
+            rainfall_5min_prior.append(m5); rainfall_10min_prior.append(m10); rainfall_15min_prior.append(m15); rainfall_20min_prior.append(m20); rainfall_25min_prior.append(m25); rainfall_30min_prior.append(m30); rainfall_35min_prior.append(m35); rainfall_40min_prior.append(m40); rainfall_45min_prior.append(m45); nearest_station_distance.append(station_distance)
     # Add the new columns to the DataFrame
     # Ensure the lists have the same length as the DataFrame
-    if len(rainfall_1hr_prior) == len(flood_data) and \
-       len(rainfall_2hr_prior) == len(flood_data) and \
-       len(rainfall_3hr_prior) == len(flood_data) and \
-       len(nearest_station_distance) == len(flood_data):
-        flood_data['rainfall_1hr_prior'] = rainfall_1hr_prior
-        flood_data['rainfall_2hr_prior'] = rainfall_2hr_prior
-        flood_data['rainfall_3hr_prior'] = rainfall_3hr_prior
-        flood_data['nearest_station_distance'] = nearest_station_distance
-    else:
-        print("Error: Mismatch in lengths of rainfall data and flood data.")
-        exit(1)
+    # if len(rainfall_1hr_prior) == len(flood_data) and \
+    #    len(rainfall_2hr_prior) == len(flood_data) and \
+    #    len(rainfall_3hr_prior) == len(flood_data) and \
+    #    len(nearest_station_distance) == len(flood_data):
+    #     flood_data['rainfall_1hr_prior'] = rainfall_1hr_prior
+    #     flood_data['rainfall_2hr_prior'] = rainfall_2hr_prior
+    #     flood_data['rainfall_3hr_prior'] = rainfall_3hr_prior
+    #     flood_data['nearest_station_distance'] = nearest_station_distance
+    # else:
+    #     print("Error: Mismatch in lengths of rainfall data and flood data.")
+    #     exit(1)
+
+    if len(rainfall_5min_prior) == len(flood_data) and \
+       len(rainfall_10min_prior) == len(flood_data) and \
+       len(rainfall_15min_prior) == len(flood_data) and \
+       len(rainfall_20min_prior) == len(flood_data) and \
+       len(rainfall_25min_prior) == len(flood_data) and \
+       len(rainfall_30min_prior) == len(flood_data) and \
+       len(rainfall_35min_prior) == len(flood_data) and \
+       len(rainfall_40min_prior) == len(flood_data) and \
+       len(rainfall_45min_prior) == len(flood_data):
+    #    len(nearest_station_distance) == len(flood_data):
+        flood_data['rainfall_5min_prior'] = rainfall_5min_prior
+        flood_data['rainfall_10min_prior'] = rainfall_10min_prior
+        flood_data['rainfall_15min_prior'] = rainfall_15min_prior
+        flood_data['rainfall_20min_prior'] = rainfall_20min_prior
+        flood_data['rainfall_25min_prior'] = rainfall_25min_prior
+        flood_data['rainfall_30min_prior'] = rainfall_30min_prior
+        flood_data['rainfall_35min_prior'] = rainfall_35min_prior
+        flood_data['rainfall_40min_prior'] = rainfall_40min_prior
+        flood_data['rainfall_45min_prior'] = rainfall_45min_prior
+        # flood_data['nearest_station_distance'] = nearest_station_distance
 
     # Save the updated DataFrame to a new CSV file
-    flood_data.to_csv(f"data/final_{filepath}.csv", index=False)
+    flood_data.to_csv("data/final_5mins_full_2013-2025.csv", index=False)
+    
+    print("File saved to data/final_5mins_full_2013-2025.csv")
 
    
 main()
