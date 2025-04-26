@@ -23,6 +23,10 @@
     "@note": {
         "description": "Note"
     },
+    "remove": "Remove",
+    "@remove": {
+        "description": "Remove"
+    },
     
 
     "navHome": "Home",
@@ -198,6 +202,74 @@
     "riFromGallery": "From Gallery",
     "@riFromGallery": {
         "description": "From Gallery"
+    },
+    "riImageAddedTotal": "Image added. Total images",
+    "@riImageAddedTotal": {
+        "description": "Image added and count message"
+    },
+    "riImagePickFailed": "Failed to pick image",
+    "@riImagePickFailed": {
+        "description": "Failed to pick image"
+    },
+    "riCameraError": "Camera error",
+    "@riCameraError": {
+        "description": "Camera error"
+    },
+    "riLocationDenied": "Location permissions are denied",
+    "@riLocationDenied": {
+        "description": "Location permissions denied"
+    },
+    "riLocationPermDenied": "Location permissions are permanently denied",
+    "@riLocationPermDenied": {
+        "description": "Location permissions permanently denied"
+    },
+    "riGetLocationFailed": "Failed to get location",
+    "@riGetLocationFailed": {
+        "description": "Failed to get location"
+    },
+    "riFillAllFieldsMsg": "Please fill out all required fields",
+    "@riFillAllFieldsMsg": {
+        "description": "Fill all required fields failure message"
+    },
+    "riGetCurrentLocationMsg": "Please get your current location",
+    "@riGetCurrentLocationMsg": {
+        "description": "Get your current location failure message"
+    },
+    "riSelectIncidentTypeMsg": "Please select an incident type",
+    "@riSelectIncidentTypeMsg": {
+        "description": "Select an incident type failure message"
+    },
+    "riSpecifyIncidentTypeMsg": "Please specify the incident type",
+    "@riSpecifyIncidentTypeMsg": {
+        "description": "Specify the incident type failure message"
+    },
+    "riUploadMin1ImageMsg": "Please upload at least one image",
+    "@riUploadMin1ImageMsg": {
+        "description": "Upload at least one image failure message"
+    },
+    "riReportSubmittedSuccess": "Incident reported successfully",
+    "@riReportSubmittedSuccess": {
+        "description": "Incident reported successfully"
+    },
+    "riSubmitFailed": "Failed to submit report",
+    "@riSubmitFailed": {
+        "description": "Failed to submit report"
+    },
+    "riGetLocationLoading": "Getting location",
+    "@riGetLocationLoading": {
+        "description": "Getting location loading text"
+    },
+    "riSubmitReportBtnText": "SUBMIT REPORT",
+    "@riSubmitReportBtnText": {
+        "description": "Submit Report button text"
+    },
+    "riFalseReportWarning": "False reports may result in penalties",
+    "@riFalseReportWarning": {
+        "description": "False Report Warning"
+    },
+    "riPhotoTakingErr": "Error taking photo",
+    "@riPhotoTakingErr": {
+        "description": "Error taking photo"
     },
 
     "profileBarTitle": "My Profile",

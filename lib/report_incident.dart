@@ -66,7 +66,7 @@ class _ReportIncidentPageState extends State<ReportIncidentPage> {
     _descriptionController.dispose();
     super.dispose();
   }
-Future<void> _pickImage(ImageSource source) async {
+Future<void> _pickImage(ImageSource source, AppLocalizations localizations) async {
   try {
     final pickedFile = await _picker.pickImage(
       source: source,
@@ -85,11 +85,11 @@ Future<void> _pickImage(ImageSource source) async {
         _base64Images.add(base64String); // Add to the list
       });
       
-      print("Image added. Total images: ${_images.length}");
+      print("${localizations.riImageAddedTotal}: ${_images.length}");
     }
   } catch (e) {
     print('Error picking and encoding image: $e');
-    _showError('Failed to pick image: ${e.toString()}');
+    _showError('${localizations.riImagePickFailed}: ${e.toString()}');
   }
 }
 
@@ -111,7 +111,7 @@ Future<void> _pickImage(ImageSource source) async {
     }
   }
 
-  Future<void> _takePhoto() async {
+  Future<void> _takePhoto(AppLocalizations localizations) async {
     try {
       final cameras = await availableCameras();
       final firstCamera = cameras.first;
@@ -134,11 +134,11 @@ Future<void> _pickImage(ImageSource source) async {
         });
       }
     } catch (e) {
-      _showError('Camera error: ${e.toString()}');
+      _showError('${localizations.riCameraError}: ${e.toString()}');
     }
   }
 
-  Future<void> _getCurrentLocation() async {
+  Future<void> _getCurrentLocation(AppLocalizations localizations) async {
     try {
       setState(() => _isGettingLocation = true);
       
@@ -146,13 +146,13 @@ Future<void> _pickImage(ImageSource source) async {
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          _showError('Location permissions are denied');
+          _showError(localizations.riLocationDenied);
           return;
         }
       }
       
       if (permission == LocationPermission.deniedForever) {
-        _showError('Location permissions are permanently denied');
+        _showError(localizations.riLocationPermDenied);
         return;
       }
       
@@ -172,42 +172,42 @@ Future<void> _pickImage(ImageSource source) async {
       });
     } catch (e) {
       setState(() => _isGettingLocation = false);
-      _showError('Failed to get location: ${e.toString()}');
+      _showError('${localizations.riGetLocationFailed}: ${e.toString()}');
     }
   }
 
-  Future<void> _submitReport() async {
+  Future<void> _submitReport(AppLocalizations localizations) async {
 
       print("Submit function called"); // Add this line
 
 
   if (_titleController.text.isEmpty || _descriptionController.text.isEmpty) {
     print("Validation failed: empty title or description");
-    _showError('Please fill out all required fields');
+    _showError(localizations.riFillAllFieldsMsg);
     return;
   }
 
   if (_location.isEmpty) {
     print("Validation failed: empty location");
-    _showError('Please get your current location');
+    _showError(localizations.riGetCurrentLocation);
     return;
   }
 
   if (_selectedIncidentType == null) {
     print("Validation failed: no incident type selected");
-    _showError('Please select an incident type');
+    _showError(localizations.riSelectIncidentTypeMsg);
     return;
   }
 
   if (_selectedIncidentType == 'Other' && (_otherIncidentType == null || _otherIncidentType!.isEmpty)) {
     print("Validation failed: 'Other' selected but not specified");
-    _showError('Please specify the incident type');
+    _showError(localizations.riSpecifyIncidentTypeMsg);
     return;
   }
 
   if (_images.isEmpty) {
     print("Validation failed: no images uploaded");
-    _showError('Please upload at least one image');
+    _showError(localizations.riUploadMin1ImageMsg);
     return;
   }
 
@@ -268,7 +268,7 @@ try {
     _base64Images = [];
   });
 
-  _showSuccess('Incident reported successfully!');
+  _showSuccess(localizations.riReportSubmittedSuccess);
 } catch (e) {
   print("ERROR in submission process: ${e.toString()}");
   print("Stack trace: ${StackTrace.current}");
@@ -295,7 +295,7 @@ try {
     );
   }
 
-  void _showImagePreview(int index) {
+  void _showImagePreview(int index, AppLocalizations localizations) {
     showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -310,7 +310,7 @@ try {
               _images.removeAt(index);
             });
               },
-              child: const Text('Remove', style: TextStyle(color: Colors.red)),
+              child: Text(localizations.remove, style: TextStyle(color: Colors.red)),
             ),
           ],
         ),
@@ -358,11 +358,11 @@ try {
             ),
             if (_selectedIncidentType == 'Other')
               Padding(
-                padding: const EdgeInsets.only(top: 8),
+                padding: EdgeInsets.only(top: 8),
                 child: TextField(
                   onChanged: (value) => _otherIncidentType = value,
-                  decoration: const InputDecoration(
-                    hintText: 'Please specify the incident type',
+                  decoration: InputDecoration(
+                    hintText: localizations.riSpecifyIncidentTypeMsg,
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -378,7 +378,7 @@ try {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: _isGettingLocation ? null : _getCurrentLocation,
+                  onPressed: _isGettingLocation ? null : () => _getCurrentLocation,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.grey[300],
                     foregroundColor: Colors.black,
@@ -398,7 +398,7 @@ try {
                   Expanded(
                     child: Text(
                     _isGettingLocation
-                      ? 'Getting location...'
+                      ? '${localizations.riGetLocationLoading}...'
                       : (_location.isEmpty ? '${localizations.riNoLocation}...' : _location),
                     style: const TextStyle(fontSize: 16),
                     ),
@@ -454,7 +454,7 @@ try {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: GestureDetector(
-                        onTap: () => _showImagePreview(index),
+                        onTap: () => _showImagePreview(index, localizations),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child: Image.file(
@@ -473,7 +473,7 @@ try {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: () => _takePhoto(),
+                  onPressed: () => _takePhoto(localizations),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.grey[200],
                     foregroundColor: Colors.black,
@@ -492,7 +492,7 @@ try {
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
-                  onPressed: () => _pickImage(ImageSource.gallery),
+                  onPressed: () => _pickImage(ImageSource.gallery, localizations),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.grey[200],
                     foregroundColor: Colors.black,
@@ -517,7 +517,7 @@ try {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _isSubmitting ? null : _submitReport,
+                onPressed: _isSubmitting ? null : () => _submitReport,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFF5252),
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -534,8 +534,8 @@ try {
                           strokeWidth: 2,
                         ),
                       )
-                    : const Text(
-                        'SUBMIT REPORT',
+                    : Text(
+                        localizations.riSubmitReportBtnText,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -545,9 +545,9 @@ try {
               ),
             ),
             const SizedBox(height: 10),
-            const Center(
+            Center(
               child: Text(
-                '*False reports may result in penalties',
+                '*${localizations.riFalseReportWarning}',
                 style: TextStyle(
                   color: Colors.red,
                   fontStyle: FontStyle.italic,
@@ -594,6 +594,8 @@ class _CameraPageState extends State<CameraPage> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
@@ -614,7 +616,7 @@ class _CameraPageState extends State<CameraPage> {
             Navigator.pop(context, File(image.path));
           } catch (e) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Error taking photo: ${e.toString()}')),
+              SnackBar(content: Text('${localizations.riPhotoTakingErr}: ${e.toString()}')),
             );
           }
         },
