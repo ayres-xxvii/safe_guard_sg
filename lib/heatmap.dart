@@ -1,3 +1,4 @@
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -13,8 +14,8 @@ class HeatMapPage extends StatefulWidget {
 
 class _HeatMapPageState extends State<HeatMapPage> {
   final MapController _mapController = MapController();
-  final List<HeatZone> _heatZones = _createHeatZones();
-  final List<Incident> _recentIncidents = _createRecentIncidents();
+  List<HeatZone> _heatZones = [];
+  List<Incident> _recentIncidents = [];
   
   LatLng? _currentPosition;
   bool _isLoading = true;
@@ -99,15 +100,22 @@ class _HeatMapPageState extends State<HeatMapPage> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredHeatZones = _selectedIncidentType == 'All'
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+    _selectedIncidentType = localizations.hmTypeAll;
+    _selectedTimeFrame = localizations.hmDurationDay;
+
+    _heatZones = _createHeatZones(localizations);
+    _recentIncidents = _createRecentIncidents(localizations);
+
+    final filteredHeatZones = _selectedIncidentType == localizations.hmTypeAll
         ? _heatZones
         : _heatZones.where((zone) => zone.incidentType == _selectedIncidentType).toList();
 
     return SharedScaffold(
       currentIndex: 1,
       appBar: AppBar(
-        title: const Text(
-          "Heat Map Analysis",
+        title: Text(
+          localizations.hmBarTitle,
           style: TextStyle(
                 fontWeight: FontWeight.bold,
           ),
@@ -130,29 +138,34 @@ class _HeatMapPageState extends State<HeatMapPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildFilterControls(),
+            _buildFilterControls(localizations),
             const SizedBox(height: 15),
-            _buildLegend(),
+            _buildLegend(localizations),
             const SizedBox(height: 15),
             _buildMap(filteredHeatZones),
             const SizedBox(height: 20),
-            _buildStatsCard(),
+            _buildStatsCard(localizations),
             const SizedBox(height: 20),
-            _buildRecentIncidents(),
+            _buildRecentIncidents(localizations),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildFilterControls() {
+  Widget _buildFilterControls(AppLocalizations localizations) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
           DropdownButton<String>(
             value: _selectedIncidentType,
-            items: ['All', 'Fire', 'Crime', 'Accident'].map((value) {
+            items: [
+              localizations.hmTypeAll,
+              localizations.hmTypeFire,
+              localizations.hmTypeCrime,
+              localizations.hmTypeAccident
+            ].map((value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(value),
@@ -163,7 +176,11 @@ class _HeatMapPageState extends State<HeatMapPage> {
           const SizedBox(width: 20),
           DropdownButton<String>(
             value: _selectedTimeFrame,
-            items: ['Day', 'Week', 'Month'].map((value) {
+            items: [
+              localizations.hmDurationDay,
+              localizations.hmDurationWeek,
+              localizations.hmDurationMonth
+            ].map((value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(value),
@@ -199,15 +216,15 @@ class _HeatMapPageState extends State<HeatMapPage> {
     }
   }
 
-  Widget _buildLegend() {
+  Widget _buildLegend(AppLocalizations localizations) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _LegendItem(color: Colors.red.withOpacity(0.6), label: 'High Risk'),
+        _LegendItem(color: Colors.red.withOpacity(0.6), label: localizations.hmHighRisk),
         const SizedBox(width: 15),
-        _LegendItem(color: Colors.orange.withOpacity(0.6), label: 'Medium Risk'),
+        _LegendItem(color: Colors.orange.withOpacity(0.6), label: localizations.hmMediumRisk),
         const SizedBox(width: 15),
-        _LegendItem(color: Colors.yellow.withOpacity(0.5), label: 'Low Risk'),
+        _LegendItem(color: Colors.yellow.withOpacity(0.5), label: localizations.hmLowRisk),
       ],
     );
   }
@@ -353,7 +370,7 @@ class _HeatMapPageState extends State<HeatMapPage> {
     );
   }
 
-  Widget _buildStatsCard() {
+  Widget _buildStatsCard(AppLocalizations localizations) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 2,
@@ -362,17 +379,17 @@ class _HeatMapPageState extends State<HeatMapPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Safety Statistics',
+            Text(
+              localizations.hmSafetyStatistics,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _StatItem(title: 'High Risk', value: '2', color: Colors.red),
-                _StatItem(title: 'Medium Risk', value: '2', color: Colors.orange),
-                _StatItem(title: 'Low Risk', value: '2', color: Colors.yellow),
+                _StatItem(title: localizations.hmHighRisk, value: '2', color: Colors.red),
+                _StatItem(title: localizations.hmMediumRisk, value: '2', color: Colors.orange),
+                _StatItem(title: localizations.hmLowRisk, value: '2', color: Colors.yellow),
               ],
             ),
             const SizedBox(height: 5),
@@ -381,8 +398,8 @@ class _HeatMapPageState extends State<HeatMapPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'AI Safety Score',
+                Text(
+                  localizations.hmAISafetyScore,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 Row(
@@ -407,27 +424,27 @@ class _HeatMapPageState extends State<HeatMapPage> {
     );
   }
 
-  Widget _buildRecentIncidents() {
+  Widget _buildRecentIncidents(AppLocalizations localizations) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "Recent Incidents",
+        Text(
+          localizations.hmRecentIncidents,
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
-        ...filteredIncidents().map((incident) => _IncidentCard(incident: incident)).toList(),
+        ...filteredIncidents(localizations).map((incident) => _IncidentCard(incident: incident)).toList(),
       ],
     );
   }
 
-  List<Incident> filteredIncidents() {
-    return _selectedIncidentType == 'All'
+  List<Incident> filteredIncidents(AppLocalizations localizations) {
+    return _selectedIncidentType == localizations.hmTypeAll
         ? _recentIncidents
         : _recentIncidents.where((incident) => incident.type == _selectedIncidentType).toList();
   }
 
-  static List<HeatZone> _createHeatZones() {
+  static List<HeatZone> _createHeatZones(AppLocalizations localizations) {
     return [
       // High risk zones (red) - North
       HeatZone(
@@ -435,18 +452,18 @@ class _HeatMapPageState extends State<HeatMapPage> {
         radius: 250,
         severity: SeverityLevel.high,
         incidentCount: 10,
-        incidentType: 'Fire',
+        incidentType: localizations.hmTypeFire,
       ),
       // ... other zones
     ];
   }
 
-  static List<Incident> _createRecentIncidents() {
+  static List<Incident> _createRecentIncidents(AppLocalizations localizations) {
     return [
       Incident(
         id: 1,
         position: const LatLng(1.432700, 103.839400),
-        type: 'Fire',
+        type: localizations.hmTypeFire,
         severity: SeverityLevel.high,
         timestamp: DateTime.now().subtract(const Duration(hours: 2)),
         description: 'Kitchen fire in HDB block',
@@ -533,6 +550,8 @@ class _IncidentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+    
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -542,7 +561,7 @@ class _IncidentCard extends StatelessWidget {
         title: Text(incident.type),
         subtitle: Text(_formatDateTime(incident.timestamp)),
         trailing: const Icon(Icons.chevron_right),
-        onTap: () => _showIncidentInfo(context, incident),
+        onTap: () => _showIncidentInfo(context, incident, localizations),
       ),
     );
   }
@@ -562,7 +581,7 @@ class _IncidentCard extends StatelessWidget {
     }
   }
 
-  void _showIncidentInfo(BuildContext context, Incident incident) {
+  void _showIncidentInfo(BuildContext context, Incident incident, AppLocalizations localizations) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -577,9 +596,9 @@ class _IncidentCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Severity: ${incident.severity.name.toUpperCase()}'),
+            Text('${localizations.hmSeverity}: ${incident.severity.name.toUpperCase()}'),
             const SizedBox(height: 5),
-            Text('Time: ${_formatDateTime(incident.timestamp)}'),
+            Text('${localizations.time}: ${_formatDateTime(incident.timestamp)}'),
             const SizedBox(height: 10),
             Text(incident.description),
           ],

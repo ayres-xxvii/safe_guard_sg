@@ -20,6 +20,7 @@ import '../services/incident_service.dart';
 import 'package:firebase_storage/firebase_storage.dart'; // For image storage
 import 'package:cloud_firestore/cloud_firestore.dart';
  import 'package:image_picker/image_picker.dart';
+ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 // Import the IncidentReport model (assuming it's in a separate file)
@@ -319,11 +320,13 @@ try {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+
     return SharedScaffold(
       currentIndex: 2,
       appBar: AppBar(
-        title: const Text(
-          "Report Incidents",
+        title: Text(
+          localizations.riBarTitle,
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -333,8 +336,8 @@ try {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Incident Type Selection
-            const Text(
-              'Incident Type*',
+            Text(
+              '${localizations.riIncidentType}*',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -367,8 +370,8 @@ try {
             const SizedBox(height: 20),
 
             // Location Section
-            const Text(
-              'Current Location*',
+            Text(
+              '${localizations.riCurrentLocation}*',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -389,14 +392,14 @@ try {
                         height: 20,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                      : const Text('Get Current Location'),
+                      : Text(localizations.riGetCurrentLocation),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Text(
                     _isGettingLocation
                       ? 'Getting location...'
-                      : (_location.isEmpty ? 'No location found...' : _location),
+                      : (_location.isEmpty ? '${localizations.riNoLocation}...' : _location),
                     style: const TextStyle(fontSize: 16),
                     ),
                   ),
@@ -405,39 +408,39 @@ try {
                 const SizedBox(height: 20),
 
             // Title Section
-            const Text(
-              'Incident Title*',
+            Text(
+              '${localizations.riIncidentTitle}*',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             TextField(
               controller: _titleController,
-              decoration: const InputDecoration(
-                hintText: 'Brief title of the incident',
+              decoration: InputDecoration(
+                hintText: localizations.riIncidentTitlePrompt,
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 20),
 
             // Description Section
-            const Text(
-              'Incident Description*',
+            Text(
+              '${localizations.riIncidentDescription}*',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             TextField(
               controller: _descriptionController,
               maxLines: 5,
-              decoration: const InputDecoration(
-                hintText: 'Detailed description of what happened',
+              decoration: InputDecoration(
+                hintText: localizations.riIncidentDescriptionPrompt,
                 border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 20),
 
             // Image Upload Section
-            const Text(
-              'Upload Evidence (Images)*',
+            Text(
+              '${localizations.riUploadEvidence}*',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -478,12 +481,12 @@ try {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.camera_alt, size: 20),
-                      SizedBox(width: 8),
-                      Text('Take Photo'),
+                      const Icon(Icons.camera_alt, size: 20),
+                      const SizedBox(width: 8),
+                      Text(localizations.riTakePhoto),
                     ],
                   ),
                 ),
@@ -497,12 +500,12 @@ try {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.photo_library, size: 20),
-                      SizedBox(width: 8),
-                      Text('From Gallery'),
+                      const Icon(Icons.photo_library, size: 20),
+                      const SizedBox(width: 8),
+                      Text(localizations.riFromGallery),
                     ],
                   ),
                 ),

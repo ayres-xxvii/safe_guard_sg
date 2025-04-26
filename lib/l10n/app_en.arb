@@ -3,7 +3,24 @@
     "@heatMap": {
         "description": "Heat Map"
     },
+    "time": "Time",
+    "@time": {
+        "description": "Time"
+    },
+    "low": "Low",
+    "@low": {
+        "description": "Low"
+    },
+    "medium": "Medium",
+    "@medium": {
+        "description": "Medium"
+    },
+    "high": "High",
+    "@high": {
+        "description": "High"
+    },
     
+
     "navHome": "Home",
     "@navHome": {
         "description": "Home button"
@@ -16,6 +33,7 @@
     "@navProfile": {
         "description": "Profile button"
     },
+
 
     "homeReportNow": "Report Now!",
     "@homeReportNow": {
@@ -45,6 +63,139 @@
     "@homeIncidentDetails": {
         "description": "Incident Details"
     },
+
+
+    "hmBarTitle": "Heat Map Analysis",
+    "@hmBarTitle": {
+        "description": "Heat Map page bar title"
+    },
+    "hmTypeAll": "All",
+    "@hmTypeAll": {
+        "description": "Type option All"
+    },
+    "hmTypeFire": "Fire",
+    "@hmTypeFire": {
+        "description": "Type option Fire"
+    },
+    "hmTypeCrime": "Crime",
+    "@hmTypeCrime": {
+        "description": "Type option Crime"
+    },
+    "hmTypeAccident": "Accident",
+    "@hmTypeAccident": {
+        "description": "Type option Accident"
+    },
+    "hmDurationDay": "Day",
+    "@hmDurationDay": {
+        "description": "Duration option Day"
+    },
+    "hmDurationWeek": "Week",
+    "@hmDurationWeek": {
+        "description": "Duration option Week"
+    },
+    "hmDurationMonth": "Month",
+    "@hmDurationMonth": {
+        "description": "Duration option Month"
+    },
+    "hmHighRisk": "High Risk",
+    "@hmHighRisk": {
+        "description": "Duration option Day"
+    },
+    "hmMediumRisk": "Medium Risk",
+    "@hmMediumRisk": {
+        "description": "Duration option Week"
+    },
+    "hmLowRisk": "Low Risk",
+    "@hmLowRisk": {
+        "description": "Duration option Month"
+    },
+    "hmSafetyStatistics": "Safety Statistics",
+    "@hmSafetyStatistics": {
+        "description": "Safety Statistics"
+    },
+    "hmAISafetyScore": "AI Safety Score",
+    "@hmAISafetyScore": {
+        "description": "AI Safety Score"
+    },
+    "hmRecentIncidents": "Recent Incidents",
+    "@hmRecentIncidents": {
+        "description": "Recent Incidents"
+    },
+    "hmSeverity": "Severity",
+    "@hmSeverity": {
+        "description": "Severity"
+    },
+
+
+    "riBarTitle": "Report Incidents",
+    "@riBarTitle": {
+        "description": "Report Incidents page bar title"
+    },
+    "riIncidentType": "Incident Type",
+    "@riIncidentType": {
+        "description": "Incident Type"
+    },
+    "riFlood": "Flood",
+    "@riFlood": {
+        "description": "Flood"
+    },
+    "riEarthquake": "Earthquake",
+    "@riEarthquake": {
+        "description": "Earthquake"
+    },
+    "riLandslide": "Landslide",
+    "@riLandslide": {
+        "description": "Landslide"
+    },
+    "riStorm": "Storm",
+    "@riStorm": {
+        "description": "Storm"
+    },
+    "riOther": "Other",
+    "@riOther": {
+        "description": "Other"
+    },
+    "riCurrentLocation": "Current Location",
+    "@riCurrentLocation": {
+        "description": "Current Location"
+    },
+    "riGetCurrentLocation": "Get Current Location",
+    "@riGetCurrentLocation": {
+        "description": "Get Current Location"
+    },
+    "riNoLocation": "No Location Found",
+    "@riNoLocation": {
+        "description": "No Location Found"
+    },
+    "riIncidentTitle": "Incident Title",
+    "@riIncidentTitle": {
+        "description": "Incident Title"
+    },
+    "riIncidentTitlePrompt": "Brief title of the incident",
+    "@riIncidentTitlePrompt": {
+        "description": "Prompt of incident title"
+    },
+    "riIncidentDescription": "Incident Description",
+    "@riIncidentDescription": {
+        "description": "Incident Description"
+    },
+    "riIncidentDescriptionPrompt": "Detailed description of what happened",
+    "@riIncidentDescriptionPrompt": {
+        "description": "Prompt of incident description"
+    },
+    "riUploadEvidence": "Upload Evidence (Images)",
+    "@riUploadEvidence": {
+        "description": "Upload Evidence"
+    },
+    "riTakePhoto": "Take Photo",
+    "@riTakePhoto": {
+        "description": "Take Photo"
+    },
+    "riFromGallery": "From Gallery",
+    "@riFromGallery": {
+        "description": "From Gallery"
+    },
+
 
     "languagePageBarTitle": "Select language",
     "@languagePageBarTitle": {
