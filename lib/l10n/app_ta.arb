@@ -4,6 +4,7 @@
     "low": "குறைந்த நிலை",
     "medium": "நடுத்தர நிலை",
     "high": "அதிக நிலை",
+    "note": "குறிப்பு",
 
     "navHome": "முகப்பு",
     "navReportIncident": "புகார் அளி",
@@ -50,6 +51,12 @@
     "riUploadEvidence": "ஆதாரங்கள் (படங்கள்) பதிவேற்றவும்",
     "riTakePhoto": "புகைப்படம் எடுக்கவும்",
     "riFromGallery": "கேலரியிலிருந்து",
+
+    "profileBarTitle": "என் சுயவிவரம்",
+    "profileEmail": "மின்னஞ்சல்",
+    "profilePhone": "தொலைபேசி",
+    "profileMyReports": "என் புகார்கள்",
+    "profileUploadImageNote": "சிறந்த முடிவுகளுக்காக, JPG அல்லது PNG வடிவிலுள்ள தெளிவான படத்தை பதிவேற்றவும்; அளவு 5MB-ஐ மீறக்கூடாது.",
 
     "languagePageBarTitle": "மொழியைத் தேர்ந்தெடுக்கவும்",
     "languagePageHeading": "தயவுசெய்து உங்கள் விருப்பமான மொழியைத் தேர்ந்தெடுக்கவும்"

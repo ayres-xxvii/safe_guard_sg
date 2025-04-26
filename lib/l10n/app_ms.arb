@@ -4,6 +4,7 @@
     "low": "Tahap Rendah",
     "medium": "Tahap Sederhana",
     "high": "Tahap Tinggi",
+    "note": "Nota",
 
     "navHome": "Laman Utama",
     "navReportIncident": "Lapor Insiden",
@@ -50,6 +51,12 @@
     "riUploadEvidence": "Muat Naik Bukti (Gambar)",
     "riTakePhoto": "Ambil Foto",
     "riFromGallery": "Dari Galeri",
+
+    "profileBarTitle": "Profil Saya",
+    "profileEmail": "E-mel",
+    "profilePhone": "Telefon",
+    "profileMyReports": "Laporan Saya",
+    "profileUploadImageNote": "Untuk hasil terbaik, muat naik imej yang jelas dalam format JPG atau PNG, tidak melebihi 5MB.",
 
     "languagePageBarTitle": "Pilih Bahasa",
     "languagePageHeading": "Sila Pilih Bahasa Pilihan Anda"

@@ -3,6 +3,7 @@ import 'shared_layer/shared_scaffold.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'recent_incident.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -37,12 +38,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+
     return SharedScaffold(
       currentIndex: 3,
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        title: const Text(
-          "My Profile",
+        title: Text(
+          localizations.profileBarTitle,
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
@@ -104,8 +107,8 @@ class _ProfilePageState extends State<ProfilePage> {
             const SizedBox(height: 30),
             
             // Information Cards
-            _buildInfoCard(Icons.email, 'Email', email),
-            _buildInfoCard(Icons.phone, 'Phone', phone),
+            _buildInfoCard(Icons.email, localizations.profileEmail, email),
+            _buildInfoCard(Icons.phone, localizations.profilePhone, phone),
             
             const SizedBox(height: 40),
             
@@ -123,13 +126,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.description),
                   SizedBox(width: 10),
                   Text(
-                    'My Reports',
+                    localizations.profileMyReports,
                     style: TextStyle(
                       fontSize: 16,
                     ),
@@ -148,11 +151,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.grey[300]!),
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Note:',
+                    '${localizations.note}:',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -160,7 +163,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   SizedBox(height: 8),
                   Text(
-  'For best results, upload a clear image in JPG or PNG format, not exceeding 5MB in size.',
+                    localizations.profileUploadImageNote,
                     style: TextStyle(
                       fontSize: 14,
                     ),

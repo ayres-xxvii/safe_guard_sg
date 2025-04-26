@@ -4,7 +4,7 @@
     "low": "低级",
     "medium": "中等",
     "high": "严重",
-
+    "note": "注意",
     "navHome": "首页",
     "navReportIncident": "举报事件",
     "navProfile": "个人资料",
@@ -50,6 +50,12 @@
     "riUploadEvidence": "上传证据（图片",
     "riTakePhoto": "拍照",
     "riFromGallery": "从相册",
+
+    "profileBarTitle": "我的资料",
+    "profileEmail": "电子邮件",
+    "profilePhone": "电话",
+    "profileMyReports": "我的报告",
+    "profileUploadImageNote": "上传清晰的 JPG 或 PNG 格式图片，且大小不超过 5MB，以获得最佳效果。",
 
     "languagePageBarTitle": "选择语言",
     "languagePageHeading": "请选择您的首选语言"

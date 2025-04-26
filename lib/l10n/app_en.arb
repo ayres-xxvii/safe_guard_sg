@@ -19,6 +19,10 @@
     "@high": {
         "description": "High"
     },
+    "note": "Note",
+    "@note": {
+        "description": "Note"
+    },
     
 
     "navHome": "Home",
@@ -196,6 +200,26 @@
         "description": "From Gallery"
     },
 
+    "profileBarTitle": "My Profile",
+    "@profileBarTitle": {
+        "description": "Profile page bar title"
+    },
+    "profileEmail": "Email",
+    "@profileEmail": {
+        "description": "Email label"
+    },
+    "profilePhone": "Phone",
+    "@profilePhone": {
+        "description": "Phone label"
+    },
+    "profileMyReports": "My Reports",
+    "@profileMyReports": {
+        "description": "My Reports"
+    },
+    "profileUploadImageNote": "For best results, upload a clear image in JPG or PNG format, not exceeding 5MB in size.",
+    "@profileUploadImageNote": {
+        "description": "Profile page upload image note"
+    },
 
     "languagePageBarTitle": "Select language",
     "@languagePageBarTitle": {
