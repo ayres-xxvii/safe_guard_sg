@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/incident_report.dart';
 import '../services/incident_service.dart';
 import 'incident_details.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecentIncidentsPage extends StatefulWidget {
   const RecentIncidentsPage({super.key});
@@ -94,9 +95,11 @@ Widget _getImageWidget(IncidentReport incident) {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Recent Incidents'),
+        title: Text(localizations.reiBarTitle),
         backgroundColor: const Color(0xFF73D3D0),
         actions: [
           IconButton(
@@ -115,11 +118,11 @@ Widget _getImageWidget(IncidentReport incident) {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('Failed to load incidents: ${snapshot.error}'));
+            return Center(child: Text('${localizations.reiLoadIncidentsFailed}: ${snapshot.error}'));
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No incidents reported yet'));
+            return Center(child: Text(localizations.reiPageEmpty));
           }
 
           final incidents = snapshot.data!;
@@ -237,7 +240,7 @@ Widget _getImageWidget(IncidentReport incident) {
 // ✅ Add this:
 const SizedBox(height: 4),
 Text(
-  '${incident.verificationCount} user(s) verified this report',
+  '${incident.verificationCount} ${localizations.reiUsersVerifiedIncident}',
   style: TextStyle(fontSize: 12, color: Colors.grey[600]),
 ),
 

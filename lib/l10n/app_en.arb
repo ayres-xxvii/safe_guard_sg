@@ -27,6 +27,14 @@
     "@remove": {
         "description": "Remove"
     },
+    "delete": "Delete",
+    "@delete": {
+        "description": "Delete"
+    },
+    "cancel": "Cancel",
+    "@cancel": {
+        "description": "Cancel"
+    },
     
 
     "navHome": "Home",
@@ -40,6 +48,32 @@
     "navProfile": "Profile",
     "@navProfile": {
         "description": "Profile button"
+    },
+
+
+    "spUpcomingMaintenance": "Upcoming Scheduled Maintenance",
+    "@spUpcomingMaintenance": {
+        "description": "Upcoming Scheduled Maintenance"
+    },
+    "spWelcome": "Welcome to Singpass",
+    "@spWelcome": {
+        "description": "Singpass page welcome"
+    },
+    "spYourTrustedDigitalIdentity": "Your trusted digital identity",
+    "@spYourTrustedDigitalIdentity": {
+        "description": "Your trusted digital identity"
+    },
+    "spTapQrToLogin": "Tap QR code\nto log in with Singpass app",
+    "@spTapQrToLogin": {
+        "description": "Tap QR code to log in Singpass"
+    },
+    "spNoSingpass": "Don't have Singpass app",
+    "@spNoSingpass": {
+        "description": "Don't have Singpass app"
+    },
+    "spDownloadNow": "Download now",
+    "@spDownloadNow": {
+        "description": "Download now"
     },
 
 
@@ -272,6 +306,105 @@
         "description": "Error taking photo"
     },
 
+
+    "reiBarTitle": "Recent Incidents",
+    "@reiBarTitle": {
+        "description": "Recent Incidents page bar title"
+    },
+    "reiLoadIncidentsFailed": "Failed to load incidents",
+    "@reiLoadIncidentsFailed": {
+        "description": "Failed to load incidents"
+    },
+    "reiPageEmpty":"No incidents reported yet",
+    "@reiPageEmpty": {
+        "description": "No incidents reported text"
+    },
+    "reiUsersVerifiedIncident":" user(s) verified this report",
+    "@reiUsersVerifiedIncident": {
+        "description": "<number> user(s) verified this report"
+    },
+
+
+    "idBarTitle": "Incident Details",
+    "@idBarTitle": {
+        "description": "Incident Details page bar title"
+    },
+    "idOpenMapFailed": "Could not open map",
+    "@idOpenMapFailed": {
+        "description": "Open map failed message"
+    },
+    "idVerification": "verification",
+    "@idVerification": {
+        "description": "verification"
+    },
+    "idPendingVerification": "Pending verification",
+    "@idPendingVerification": {
+        "description": "Pending verification"
+    },
+    "idIncidentImage": "Incident Image",
+    "@idIncidentImage": {
+        "description": "Incident Image"
+    },
+    "idLocation": "Location",
+    "@idLocation": {
+        "description": "Location"
+    },
+    "idDateReported": "Date Reported",
+    "@idDateReported": {
+        "description": "Date Reported"
+    },
+    "idType": "Type",
+    "@idType": {
+        "description": "Type"
+    },
+    "idDescription": "Description",
+    "@idDescription": {
+        "description": "Description"
+    },
+    "idLocationMap": "Location Map",
+    "@idLocationMap": {
+        "description": "Location Map"
+    },
+    "idOpenInMaps": "Open in Maps",
+    "@idOpenInMaps": {
+        "description": "Open in Maps"
+    },
+    "idMarkUnverified": "Mark as Unverified",
+    "@idMarkUnverified": {
+        "description": "Mark as Unverified"
+    },
+    "idMarkVerified": "Mark as Verified",
+    "@idMarkVerified": {
+        "description": "Mark as Verified"
+    },
+    "idUpdatingStatusError": "Error updating status",
+    "@idUpdatingStatusError": {
+        "description": "Error updating status"
+    },
+    "idDeleteIncident": "Delete Incident",
+    "@idDeleteIncident": {
+        "description": "Delete Incident"
+    },
+    "idDeleteIncidentConfirmation": "Are you sure you want to delete this incident report",
+    "@idDeleteIncidentConfirmation": {
+        "description": "Confirmation message when deleting a incident report"
+    },
+    "idDeleteIncidentSuccess": "Incident deleted successfully",
+    "@idDeleteIncidentSuccess": {
+        "description": "Incident deleted successfully"
+    },
+    "idDeleteIncidentError": "Error deleting incident",
+    "@idDeleteIncidentError": {
+        "description": "Error deleting incident"
+    },
+
+
+    "rrBarTitle": "Recent Reports",
+    "@rrBarTitle": {
+        "description": "Recent Reports page bar title"
+    },
+
+
     "profileBarTitle": "My Profile",
     "@profileBarTitle": {
         "description": "Profile page bar title"
@@ -292,6 +425,7 @@
     "@profileUploadImageNote": {
         "description": "Profile page upload image note"
     },
+
 
     "languagePageBarTitle": "Select language",
     "@languagePageBarTitle": {

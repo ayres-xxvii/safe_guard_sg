@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'home.dart';
 
 class SingpassLoginPage extends StatelessWidget {
@@ -7,6 +8,8 @@ class SingpassLoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -33,8 +36,8 @@ class SingpassLoginPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             color: const Color(0xFFF5F5F5),
             width: double.infinity,
-            child: const Text(
-              'Upcoming Scheduled Maintenance',
+            child: Text(
+              localizations.spUpcomingMaintenance,
               style: TextStyle(fontSize: 14, color: Colors.black87),
             ),
           ),
@@ -45,8 +48,8 @@ class SingpassLoginPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   const SizedBox(height: 20),
-                  const Text(
-                    'Welcome to Singpass',
+                  Text(
+                    localizations.spWelcome,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -54,13 +57,13 @@ class SingpassLoginPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
-                    'Your trusted digital identity',
+                  Text(
+                    localizations.spYourTrustedDigitalIdentity,
                     style: TextStyle(fontSize: 16, color: Colors.black54),
                   ),
                   const SizedBox(height: 40),
-                  const Text(
-                    'Tap QR code\nto log in with Singpass app',
+                  Text(
+                    localizations.spTapQrToLogin,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 16, color: Colors.black87),
                   ),
@@ -124,16 +127,16 @@ class SingpassLoginPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        'Don\'t have Singpass app? ',
+                      Text(
+                        "${localizations.spNoSingpass}?",
                         style: TextStyle(fontSize: 14, color: Colors.black87),
                       ),
                       GestureDetector(
                         onTap: () {
                           // Open app store
                         },
-                        child: const Text(
-                          'Download now',
+                        child: Text(
+                          localizations.spDownloadNow,
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.blue,

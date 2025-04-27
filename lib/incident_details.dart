@@ -6,6 +6,7 @@ import '../services/incident_service.dart';
 import 'dart:convert'; // For base64Decode
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class IncidentDetailsPage extends StatefulWidget {
   final IncidentReport incident;
@@ -35,25 +36,39 @@ class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
     super.dispose();
   }
 
-  void _openInExternalMap() async {
+  void _openInExternalMap(AppLocalizations localizations) async {
     // Open in external map app
     final url = 'https://www.openstreetmap.org/?mlat=${widget.incident.latitude}&mlon=${widget.incident.longitude}&zoom=16';
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open map')),
+        SnackBar(content: Text(localizations.idOpenMapFailed)),
       );
     }
   }
 
+  String _verificationsLocalization(BuildContext context, int count) {
+    final String languageCode = Localizations.localeOf(context).languageCode;
+    String verification = AppLocalizations.of(context)!.idVerification;
+
+    if (languageCode == 'en' && count > 1) {
+      verification += 's';
+    } else if (languageCode == 'ta' && count > 1) {
+      verification += 'கள்';
+    }
+    return verification;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF4DD0C7),
         foregroundColor: Colors.white,
-        title: const Text('Incident Details'),
+        title: Text(localizations.riBarTitle),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -93,8 +108,8 @@ class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
                       const SizedBox(width: 6),
                       Text(
                         verificationCount > 0
-                            ? '$verificationCount verification${verificationCount > 1 ? 's' : ''}'
-                            : 'Pending verification',
+                            ? '$verificationCount ${_verificationsLocalization(context, verificationCount)}'
+                            : localizations.idPendingVerification,
                         style: TextStyle(
                           color: verificationCount > 0
                               ? Colors.green[700]
@@ -119,8 +134,8 @@ class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Incident Image',
+                      Text(
+                        localizations.idIncidentImage,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -301,19 +316,19 @@ class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
                 children: [
                   _buildInfoRow(
                     Icons.location_on,
-                    'Location',
+                    localizations.idLocation,
                     widget.incident.location,
                   ),
                   const Divider(),
                   _buildInfoRow(
                     Icons.calendar_today,
-                    'Date Reported',
+                    localizations.idDateReported,
                     widget.incident.date,
                   ),
                   const Divider(),
                   _buildInfoRow(
                     Icons.category,
-                    'Type',
+                    localizations.idType,
                     widget.incident.type.toString(),
                   ),
                 ],
@@ -322,8 +337,8 @@ class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
             const SizedBox(height: 24),
 
             // Description
-            const Text(
-              'Description',
+            Text(
+              localizations.idDescription,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -359,8 +374,8 @@ class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Location Map',
+                      Text(
+                        localizations.idLocationMap,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -368,8 +383,8 @@ class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
                       ),
                       TextButton.icon(
                         icon: const Icon(Icons.open_in_new),
-                        label: const Text('Open in Maps'),
-                        onPressed: _openInExternalMap,
+                        label: Text(localizations.idOpenInMaps),
+                        onPressed: () => _openInExternalMap,
                       ),
                     ],
                   ),
@@ -455,7 +470,7 @@ class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
                             color: Colors.white,
                           ),
                           label: Text(
-                            verificationCount > 0 ? 'Mark as Unverified' : 'Mark as Verified',
+                            verificationCount > 0 ? localizations.idMarkUnverified : localizations.idMarkVerified,
                             style: const TextStyle(color: Colors.white),
                           ),
                           style: TextButton.styleFrom(
@@ -501,7 +516,7 @@ class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
                               }
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Error updating status: $e')),
+                                SnackBar(content: Text('${localizations.idUpdatingStatusError}: $e')),
                               );
                             } finally {
                               setState(() {
@@ -516,23 +531,23 @@ class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
                   // Delete Incident Button
                   ElevatedButton.icon(
                     icon: const Icon(Icons.delete),
-                    label: const Text('Delete Incident'),
+                    label: Text(localizations.idDeleteIncident),
                     onPressed: () {
                       // Show confirmation dialog
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: const Text('Delete Incident'),
-                          content: const Text('Are you sure you want to delete this incident report?'),
+                          title: Text(localizations.idDeleteIncident),
+                          content: Text('${localizations.idDeleteIncidentConfirmation}?'),
                           actions: [
                             TextButton(
-                              child: const Text('Cancel'),
+                              child: Text(localizations.cancel),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
                             ),
                             TextButton(
-                              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                              child: Text(localizations.delete, style: TextStyle(color: Colors.red)),
                               onPressed: () async {
                                 // Only delete if we have a document ID
                                 if (widget.incident.id != null) {
@@ -541,12 +556,12 @@ class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
                                     Navigator.of(context).pop(); // Close dialog
                                     Navigator.of(context).pop(); // Return to list page
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Incident deleted successfully')),
+                                      SnackBar(content: Text(localizations.idDeleteIncidentSuccess)),
                                     );
                                   } catch (e) {
                                     Navigator.of(context).pop(); // Close dialog
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Error deleting incident: $e')),
+                                      SnackBar(content: Text('${localizations.idDeleteIncidentError}: $e')),
                                     );
                                   }
                                 }
