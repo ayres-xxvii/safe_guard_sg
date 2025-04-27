@@ -452,7 +452,7 @@ class _HeatMapPageState extends State<HeatMapPage> {
         radius: 250,
         severity: SeverityLevel.high,
         incidentCount: 10,
-        incidentType: localizations.hmTypeFire,
+        incidentType: 'Fire',
       ),
       // ... other zones
     ];
@@ -463,7 +463,7 @@ class _HeatMapPageState extends State<HeatMapPage> {
       Incident(
         id: 1,
         position: const LatLng(1.432700, 103.839400),
-        type: localizations.hmTypeFire,
+        type: 'Fire',
         severity: SeverityLevel.high,
         timestamp: DateTime.now().subtract(const Duration(hours: 2)),
         description: 'Kitchen fire in HDB block',
@@ -558,7 +558,7 @@ class _IncidentCard extends StatelessWidget {
       elevation: 1,
       child: ListTile(
         leading: _getSeverityIcon(incident.severity),
-        title: Text(incident.type),
+        title: Text(_getLocalizedIncidentType(context, incident.type)),
         subtitle: Text(_formatDateTime(incident.timestamp)),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => _showIncidentInfo(context, incident, localizations),
@@ -589,14 +589,14 @@ class _IncidentCard extends StatelessWidget {
           children: [
             _getSeverityIcon(incident.severity),
             const SizedBox(width: 10),
-            Text(incident.type),
+            Text(_getLocalizedIncidentType(context, incident.type)),
           ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${localizations.hmSeverity}: ${incident.severity.name.toUpperCase()}'),
+            Text('${localizations.hmSeverity}: ${_getLocalizedSeverityLevel(context, incident.severity, true)}'),
             const SizedBox(height: 5),
             Text('${localizations.time}: ${_formatDateTime(incident.timestamp)}'),
             const SizedBox(height: 10),
@@ -672,4 +672,48 @@ Color _getSeverityBorderColor(SeverityLevel level) {
     case SeverityLevel.low:
       return Colors.yellow.withOpacity(0.7);
   }
+}
+
+String _getLocalizedSeverityLevel(BuildContext context, SeverityLevel severityLevel, bool toupper) {
+  final AppLocalizations localizations = AppLocalizations.of(context)!;
+
+  final key = severityLevel.name;
+  String translation = '';
+  
+  switch (key) {
+    case 'low':
+      translation = localizations.low;
+    case 'medium':
+      translation = localizations.medium;
+    case 'high':
+      translation = localizations.high;
+    default:
+      translation = localizations.low;
+  }
+
+  if (toupper && ['en', 'ms'].contains(Localizations.localeOf(context).languageCode)) {
+    return translation.toUpperCase();
+  }
+  return translation;
+}
+
+String _getLocalizedIncidentType(BuildContext context, String type) {
+  final AppLocalizations localizations = AppLocalizations.of(context)!;
+
+  String translation = '';
+  
+  switch (type) {
+    case 'All':
+      translation = localizations.hmTypeAll;
+    case 'Crime':
+      translation = localizations.hmTypeCrime;
+    case 'Fire':
+      translation = localizations.hmTypeFire;
+    case 'Accident':
+      translation = localizations.hmTypeAccident;
+    default:
+      translation = 'Unknown';
+  }
+
+  return translation;
 }

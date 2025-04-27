@@ -322,6 +322,15 @@ try {
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
 
+    final Map<String, String> _incidentTypeLocalizations = {
+      'Flood': localizations.riFlood,
+      'Fire': localizations.hmTypeFire,
+      'Earthquake': localizations.riEarthquake,
+      'Landslide': localizations.riLandslide,
+      'Storm': localizations.riStorm,
+      'Other': localizations.riOther,
+    };
+
     return SharedScaffold(
       currentIndex: 2,
       appBar: AppBar(
@@ -345,7 +354,7 @@ try {
               spacing: 8,
               children: _incidentTypes.map((type) {
                 return ChoiceChip(
-                  label: Text(type),
+                  label: Text(_incidentTypeLocalizations[type]!),
                   selected: _selectedIncidentType == type,
                   onSelected: (selected) {
                     setState(() {
