@@ -387,7 +387,7 @@ try {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: _isGettingLocation ? null : () => _getCurrentLocation,
+              onPressed: _isGettingLocation ? null : () => _getCurrentLocation(localizations),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.grey[300],
                     foregroundColor: Colors.black,
@@ -526,7 +526,7 @@ try {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _isSubmitting ? null : () => _submitReport,
+            onPressed: _isSubmitting ? null : () => _submitReport(localizations),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFF5252),
                   padding: const EdgeInsets.symmetric(vertical: 16),
