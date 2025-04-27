@@ -1,0 +1,1130 @@
+Output generated on: 2025-04-27 14:43:25
+Fold 0:
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=19,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[269   2]
+ [  1  28]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.625
+Test Confusion Matrix:
+[[65  2]
+ [ 3  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=18,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[269   2]
+ [  1  28]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.625
+Test Confusion Matrix:
+[[65  2]
+ [ 3  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=17,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[269   2]
+ [  1  28]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.625
+Test Confusion Matrix:
+[[65  2]
+ [ 3  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=16,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[269   2]
+ [  1  28]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.625
+Test Confusion Matrix:
+[[65  2]
+ [ 3  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=15,
+                       random_state=88)
+Train Accuracy Score: 0.9833333333333333
+Train Recall Score: 1.0
+Train Confusion Matrix:
+[[266   5]
+ [  0  29]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.625
+Test Confusion Matrix:
+[[65  2]
+ [ 3  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=14,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[269   2]
+ [  1  28]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.625
+Test Confusion Matrix:
+[[65  2]
+ [ 3  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=13,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[269   2]
+ [  1  28]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.625
+Test Confusion Matrix:
+[[65  2]
+ [ 3  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=12,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[269   2]
+ [  1  28]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.625
+Test Confusion Matrix:
+[[65  2]
+ [ 3  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=11,
+                       random_state=88)
+Train Accuracy Score: 0.9866666666666667
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[268   3]
+ [  1  28]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.625
+Test Confusion Matrix:
+[[65  2]
+ [ 3  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=10,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[269   2]
+ [  1  28]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.625
+Test Confusion Matrix:
+[[65  2]
+ [ 3  5]]
+------------------------------
+NEXT FOLD 
+
+
+Summary of Models Test results (Average Metrics):
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=19,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.625
+Average Confusion Matrix:
+[[65.  2.]
+ [ 3.  5.]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=18,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.625
+Average Confusion Matrix:
+[[65.  2.]
+ [ 3.  5.]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=17,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.625
+Average Confusion Matrix:
+[[65.  2.]
+ [ 3.  5.]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=16,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.625
+Average Confusion Matrix:
+[[65.  2.]
+ [ 3.  5.]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=15,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.625
+Average Confusion Matrix:
+[[65.  2.]
+ [ 3.  5.]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=14,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.625
+Average Confusion Matrix:
+[[65.  2.]
+ [ 3.  5.]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=13,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.625
+Average Confusion Matrix:
+[[65.  2.]
+ [ 3.  5.]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=12,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.625
+Average Confusion Matrix:
+[[65.  2.]
+ [ 3.  5.]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=11,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.625
+Average Confusion Matrix:
+[[65.  2.]
+ [ 3.  5.]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=10,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.625
+Average Confusion Matrix:
+[[65.  2.]
+ [ 3.  5.]]
+------------------------------
+Output generated on: 2025-04-27 14:43:25
+Fold 1:
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=19,
+                       random_state=88)
+Train Accuracy Score: 0.9866666666666667
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[268   3]
+ [  1  28]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.875
+Test Confusion Matrix:
+[[66  1]
+ [ 1  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=18,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[269   2]
+ [  1  28]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.875
+Test Confusion Matrix:
+[[66  1]
+ [ 1  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=17,
+                       random_state=88)
+Train Accuracy Score: 0.9866666666666667
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[268   3]
+ [  1  28]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.875
+Test Confusion Matrix:
+[[66  1]
+ [ 1  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=16,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[269   2]
+ [  1  28]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.875
+Test Confusion Matrix:
+[[66  1]
+ [ 1  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=15,
+                       random_state=88)
+Train Accuracy Score: 0.9866666666666667
+Train Recall Score: 1.0
+Train Confusion Matrix:
+[[267   4]
+ [  0  29]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.875
+Test Confusion Matrix:
+[[63  4]
+ [ 1  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=14,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[269   2]
+ [  1  28]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.875
+Test Confusion Matrix:
+[[66  1]
+ [ 1  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=13,
+                       random_state=88)
+Train Accuracy Score: 0.9866666666666667
+Train Recall Score: 1.0
+Train Confusion Matrix:
+[[267   4]
+ [  0  29]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.875
+Test Confusion Matrix:
+[[63  4]
+ [ 1  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=12,
+                       random_state=88)
+Train Accuracy Score: 0.9866666666666667
+Train Recall Score: 1.0
+Train Confusion Matrix:
+[[267   4]
+ [  0  29]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.875
+Test Confusion Matrix:
+[[63  4]
+ [ 1  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=11,
+                       random_state=88)
+Train Accuracy Score: 0.9866666666666667
+Train Recall Score: 1.0
+Train Confusion Matrix:
+[[267   4]
+ [  0  29]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.875
+Test Confusion Matrix:
+[[63  4]
+ [ 1  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=10,
+                       random_state=88)
+Train Accuracy Score: 0.9833333333333333
+Train Recall Score: 0.9655172413793104
+Train Confusion Matrix:
+[[267   4]
+ [  1  28]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.875
+Test Confusion Matrix:
+[[63  4]
+ [ 1  7]]
+------------------------------
+NEXT FOLD 
+
+
+Summary of Models Test results (Average Metrics):
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=19,
+                       random_state=88)
+Average Accuracy: 0.9533333333333334
+Average Recall: 0.75
+Average Confusion Matrix:
+[[65.5  1.5]
+ [ 2.   6. ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=18,
+                       random_state=88)
+Average Accuracy: 0.9533333333333334
+Average Recall: 0.75
+Average Confusion Matrix:
+[[65.5  1.5]
+ [ 2.   6. ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=17,
+                       random_state=88)
+Average Accuracy: 0.9533333333333334
+Average Recall: 0.75
+Average Confusion Matrix:
+[[65.5  1.5]
+ [ 2.   6. ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=16,
+                       random_state=88)
+Average Accuracy: 0.9533333333333334
+Average Recall: 0.75
+Average Confusion Matrix:
+[[65.5  1.5]
+ [ 2.   6. ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=15,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.75
+Average Confusion Matrix:
+[[64.  3.]
+ [ 2.  6.]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=14,
+                       random_state=88)
+Average Accuracy: 0.9533333333333334
+Average Recall: 0.75
+Average Confusion Matrix:
+[[65.5  1.5]
+ [ 2.   6. ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=13,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.75
+Average Confusion Matrix:
+[[64.  3.]
+ [ 2.  6.]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=12,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.75
+Average Confusion Matrix:
+[[64.  3.]
+ [ 2.  6.]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=11,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.75
+Average Confusion Matrix:
+[[64.  3.]
+ [ 2.  6.]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=10,
+                       random_state=88)
+Average Accuracy: 0.9333333333333333
+Average Recall: 0.75
+Average Confusion Matrix:
+[[64.  3.]
+ [ 2.  6.]]
+------------------------------
+Output generated on: 2025-04-27 14:43:25
+Fold 2:
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=19,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[268   2]
+ [  1  29]]
+
+Test Accuracy Score: 0.9466666666666667
+Test Recall Score: 0.8571428571428571
+Test Confusion Matrix:
+[[65  3]
+ [ 1  6]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=18,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[268   2]
+ [  1  29]]
+
+Test Accuracy Score: 0.9466666666666667
+Test Recall Score: 0.8571428571428571
+Test Confusion Matrix:
+[[65  3]
+ [ 1  6]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=17,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[268   2]
+ [  1  29]]
+
+Test Accuracy Score: 0.96
+Test Recall Score: 0.8571428571428571
+Test Confusion Matrix:
+[[66  2]
+ [ 1  6]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=16,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[268   2]
+ [  1  29]]
+
+Test Accuracy Score: 0.9466666666666667
+Test Recall Score: 0.8571428571428571
+Test Confusion Matrix:
+[[65  3]
+ [ 1  6]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=15,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[268   2]
+ [  1  29]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.8571428571428571
+Test Confusion Matrix:
+[[64  4]
+ [ 1  6]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=14,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[268   2]
+ [  1  29]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.8571428571428571
+Test Confusion Matrix:
+[[64  4]
+ [ 1  6]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=13,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[268   2]
+ [  1  29]]
+
+Test Accuracy Score: 0.9333333333333333
+Test Recall Score: 0.8571428571428571
+Test Confusion Matrix:
+[[64  4]
+ [ 1  6]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=12,
+                       random_state=88)
+Train Accuracy Score: 0.9833333333333333
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[266   4]
+ [  1  29]]
+
+Test Accuracy Score: 0.92
+Test Recall Score: 0.8571428571428571
+Test Confusion Matrix:
+[[63  5]
+ [ 1  6]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=11,
+                       random_state=88)
+Train Accuracy Score: 0.9833333333333333
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[266   4]
+ [  1  29]]
+
+Test Accuracy Score: 0.92
+Test Recall Score: 0.8571428571428571
+Test Confusion Matrix:
+[[63  5]
+ [ 1  6]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=10,
+                       random_state=88)
+Train Accuracy Score: 0.9833333333333333
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[266   4]
+ [  1  29]]
+
+Test Accuracy Score: 0.92
+Test Recall Score: 0.8571428571428571
+Test Confusion Matrix:
+[[63  5]
+ [ 1  6]]
+------------------------------
+NEXT FOLD 
+
+
+Summary of Models Test results (Average Metrics):
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=19,
+                       random_state=88)
+Average Accuracy: 0.9511111111111111
+Average Recall: 0.7857142857142857
+Average Confusion Matrix:
+[[65.33333333  2.        ]
+ [ 1.66666667  6.        ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=18,
+                       random_state=88)
+Average Accuracy: 0.9511111111111111
+Average Recall: 0.7857142857142857
+Average Confusion Matrix:
+[[65.33333333  2.        ]
+ [ 1.66666667  6.        ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=17,
+                       random_state=88)
+Average Accuracy: 0.9555555555555556
+Average Recall: 0.7857142857142857
+Average Confusion Matrix:
+[[65.66666667  1.66666667]
+ [ 1.66666667  6.        ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=16,
+                       random_state=88)
+Average Accuracy: 0.9511111111111111
+Average Recall: 0.7857142857142857
+Average Confusion Matrix:
+[[65.33333333  2.        ]
+ [ 1.66666667  6.        ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=15,
+                       random_state=88)
+Average Accuracy: 0.9333333333333332
+Average Recall: 0.7857142857142857
+Average Confusion Matrix:
+[[64.          3.33333333]
+ [ 1.66666667  6.        ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=14,
+                       random_state=88)
+Average Accuracy: 0.9466666666666667
+Average Recall: 0.7857142857142857
+Average Confusion Matrix:
+[[65.          2.33333333]
+ [ 1.66666667  6.        ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=13,
+                       random_state=88)
+Average Accuracy: 0.9333333333333332
+Average Recall: 0.7857142857142857
+Average Confusion Matrix:
+[[64.          3.33333333]
+ [ 1.66666667  6.        ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=12,
+                       random_state=88)
+Average Accuracy: 0.9288888888888889
+Average Recall: 0.7857142857142857
+Average Confusion Matrix:
+[[63.66666667  3.66666667]
+ [ 1.66666667  6.        ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=11,
+                       random_state=88)
+Average Accuracy: 0.9288888888888889
+Average Recall: 0.7857142857142857
+Average Confusion Matrix:
+[[63.66666667  3.66666667]
+ [ 1.66666667  6.        ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=10,
+                       random_state=88)
+Average Accuracy: 0.9288888888888889
+Average Recall: 0.7857142857142857
+Average Confusion Matrix:
+[[63.66666667  3.66666667]
+ [ 1.66666667  6.        ]]
+------------------------------
+Output generated on: 2025-04-27 14:43:25
+Fold 3:
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=19,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[268   2]
+ [  1  29]]
+
+Test Accuracy Score: 0.96
+Test Recall Score: 1.0
+Test Confusion Matrix:
+[[65  3]
+ [ 0  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=18,
+                       random_state=88)
+Train Accuracy Score: 0.9866666666666667
+Train Recall Score: 0.9333333333333333
+Train Confusion Matrix:
+[[268   2]
+ [  2  28]]
+
+Test Accuracy Score: 0.96
+Test Recall Score: 1.0
+Test Confusion Matrix:
+[[65  3]
+ [ 0  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=17,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[268   2]
+ [  1  29]]
+
+Test Accuracy Score: 0.96
+Test Recall Score: 1.0
+Test Confusion Matrix:
+[[65  3]
+ [ 0  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=16,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[268   2]
+ [  1  29]]
+
+Test Accuracy Score: 0.9466666666666667
+Test Recall Score: 0.8571428571428571
+Test Confusion Matrix:
+[[65  3]
+ [ 1  6]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=15,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[268   2]
+ [  1  29]]
+
+Test Accuracy Score: 0.96
+Test Recall Score: 1.0
+Test Confusion Matrix:
+[[65  3]
+ [ 0  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=14,
+                       random_state=88)
+Train Accuracy Score: 0.99
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[268   2]
+ [  1  29]]
+
+Test Accuracy Score: 0.96
+Test Recall Score: 1.0
+Test Confusion Matrix:
+[[65  3]
+ [ 0  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=13,
+                       random_state=88)
+Train Accuracy Score: 0.9866666666666667
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[267   3]
+ [  1  29]]
+
+Test Accuracy Score: 0.96
+Test Recall Score: 1.0
+Test Confusion Matrix:
+[[65  3]
+ [ 0  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=12,
+                       random_state=88)
+Train Accuracy Score: 0.9866666666666667
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[267   3]
+ [  1  29]]
+
+Test Accuracy Score: 0.96
+Test Recall Score: 1.0
+Test Confusion Matrix:
+[[65  3]
+ [ 0  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=11,
+                       random_state=88)
+Train Accuracy Score: 0.9866666666666667
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[267   3]
+ [  1  29]]
+
+Test Accuracy Score: 0.96
+Test Recall Score: 1.0
+Test Confusion Matrix:
+[[65  3]
+ [ 0  7]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=10,
+                       random_state=88)
+Train Accuracy Score: 0.98
+Train Recall Score: 0.9666666666666667
+Train Confusion Matrix:
+[[265   5]
+ [  1  29]]
+
+Test Accuracy Score: 0.96
+Test Recall Score: 1.0
+Test Confusion Matrix:
+[[65  3]
+ [ 0  7]]
+------------------------------
+NEXT FOLD 
+
+
+Summary of Models Test results (Average Metrics):
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=19,
+                       random_state=88)
+Average Accuracy: 0.9533333333333334
+Average Recall: 0.8392857142857143
+Average Confusion Matrix:
+[[65.25  2.25]
+ [ 1.25  6.25]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=18,
+                       random_state=88)
+Average Accuracy: 0.9533333333333334
+Average Recall: 0.8392857142857143
+Average Confusion Matrix:
+[[65.25  2.25]
+ [ 1.25  6.25]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=17,
+                       random_state=88)
+Average Accuracy: 0.9566666666666667
+Average Recall: 0.8392857142857143
+Average Confusion Matrix:
+[[65.5   2.  ]
+ [ 1.25  6.25]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=16,
+                       random_state=88)
+Average Accuracy: 0.95
+Average Recall: 0.8035714285714286
+Average Confusion Matrix:
+[[65.25  2.25]
+ [ 1.5   6.  ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=15,
+                       random_state=88)
+Average Accuracy: 0.94
+Average Recall: 0.8392857142857143
+Average Confusion Matrix:
+[[64.25  3.25]
+ [ 1.25  6.25]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=14,
+                       random_state=88)
+Average Accuracy: 0.95
+Average Recall: 0.8392857142857143
+Average Confusion Matrix:
+[[65.    2.5 ]
+ [ 1.25  6.25]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=13,
+                       random_state=88)
+Average Accuracy: 0.94
+Average Recall: 0.8392857142857143
+Average Confusion Matrix:
+[[64.25  3.25]
+ [ 1.25  6.25]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=12,
+                       random_state=88)
+Average Accuracy: 0.9366666666666666
+Average Recall: 0.8392857142857143
+Average Confusion Matrix:
+[[64.    3.5 ]
+ [ 1.25  6.25]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=11,
+                       random_state=88)
+Average Accuracy: 0.9366666666666666
+Average Recall: 0.8392857142857143
+Average Confusion Matrix:
+[[64.    3.5 ]
+ [ 1.25  6.25]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=10,
+                       random_state=88)
+Average Accuracy: 0.9366666666666666
+Average Recall: 0.8392857142857143
+Average Confusion Matrix:
+[[64.    3.5 ]
+ [ 1.25  6.25]]
+------------------------------
+Output generated on: 2025-04-27 14:43:25
+Fold 4:
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=19,
+                       random_state=88)
+Train Accuracy Score: 0.9933333333333333
+Train Recall Score: 1.0
+Train Confusion Matrix:
+[[268   2]
+ [  0  30]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.7142857142857143
+Test Confusion Matrix:
+[[68  0]
+ [ 2  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=18,
+                       random_state=88)
+Train Accuracy Score: 0.9933333333333333
+Train Recall Score: 1.0
+Train Confusion Matrix:
+[[268   2]
+ [  0  30]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.7142857142857143
+Test Confusion Matrix:
+[[68  0]
+ [ 2  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=17,
+                       random_state=88)
+Train Accuracy Score: 0.9933333333333333
+Train Recall Score: 1.0
+Train Confusion Matrix:
+[[268   2]
+ [  0  30]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.7142857142857143
+Test Confusion Matrix:
+[[68  0]
+ [ 2  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=16,
+                       random_state=88)
+Train Accuracy Score: 0.9933333333333333
+Train Recall Score: 1.0
+Train Confusion Matrix:
+[[268   2]
+ [  0  30]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.7142857142857143
+Test Confusion Matrix:
+[[68  0]
+ [ 2  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=15,
+                       random_state=88)
+Train Accuracy Score: 0.9933333333333333
+Train Recall Score: 1.0
+Train Confusion Matrix:
+[[268   2]
+ [  0  30]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.7142857142857143
+Test Confusion Matrix:
+[[68  0]
+ [ 2  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=14,
+                       random_state=88)
+Train Accuracy Score: 0.9933333333333333
+Train Recall Score: 1.0
+Train Confusion Matrix:
+[[268   2]
+ [  0  30]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.7142857142857143
+Test Confusion Matrix:
+[[68  0]
+ [ 2  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=13,
+                       random_state=88)
+Train Accuracy Score: 0.9933333333333333
+Train Recall Score: 1.0
+Train Confusion Matrix:
+[[268   2]
+ [  0  30]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.7142857142857143
+Test Confusion Matrix:
+[[68  0]
+ [ 2  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=12,
+                       random_state=88)
+Train Accuracy Score: 0.9966666666666667
+Train Recall Score: 1.0
+Train Confusion Matrix:
+[[269   1]
+ [  0  30]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.7142857142857143
+Test Confusion Matrix:
+[[68  0]
+ [ 2  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=11,
+                       random_state=88)
+Train Accuracy Score: 0.9966666666666667
+Train Recall Score: 1.0
+Train Confusion Matrix:
+[[269   1]
+ [  0  30]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.7142857142857143
+Test Confusion Matrix:
+[[68  0]
+ [ 2  5]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=10,
+                       random_state=88)
+Train Accuracy Score: 0.9933333333333333
+Train Recall Score: 0.9333333333333333
+Train Confusion Matrix:
+[[270   0]
+ [  2  28]]
+
+Test Accuracy Score: 0.9733333333333334
+Test Recall Score: 0.7142857142857143
+Test Confusion Matrix:
+[[68  0]
+ [ 2  5]]
+------------------------------
+NEXT FOLD 
+
+
+Summary of Models Test results (Average Metrics):
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=19,
+                       random_state=88)
+Average Accuracy: 0.9573333333333334
+Average Recall: 0.8142857142857143
+Average Confusion Matrix:
+[[65.8  1.8]
+ [ 1.4  6. ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=18,
+                       random_state=88)
+Average Accuracy: 0.9573333333333334
+Average Recall: 0.8142857142857143
+Average Confusion Matrix:
+[[65.8  1.8]
+ [ 1.4  6. ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=17,
+                       random_state=88)
+Average Accuracy: 0.96
+Average Recall: 0.8142857142857143
+Average Confusion Matrix:
+[[66.   1.6]
+ [ 1.4  6. ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=16,
+                       random_state=88)
+Average Accuracy: 0.9546666666666667
+Average Recall: 0.7857142857142857
+Average Confusion Matrix:
+[[65.8  1.8]
+ [ 1.6  5.8]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=15,
+                       random_state=88)
+Average Accuracy: 0.9466666666666667
+Average Recall: 0.8142857142857143
+Average Confusion Matrix:
+[[65.   2.6]
+ [ 1.4  6. ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=14,
+                       random_state=88)
+Average Accuracy: 0.9546666666666667
+Average Recall: 0.8142857142857143
+Average Confusion Matrix:
+[[65.6  2. ]
+ [ 1.4  6. ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=13,
+                       random_state=88)
+Average Accuracy: 0.9466666666666667
+Average Recall: 0.8142857142857143
+Average Confusion Matrix:
+[[65.   2.6]
+ [ 1.4  6. ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=12,
+                       random_state=88)
+Average Accuracy: 0.944
+Average Recall: 0.8142857142857143
+Average Confusion Matrix:
+[[64.8  2.8]
+ [ 1.4  6. ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=11,
+                       random_state=88)
+Average Accuracy: 0.944
+Average Recall: 0.8142857142857143
+Average Confusion Matrix:
+[[64.8  2.8]
+ [ 1.4  6. ]]
+------------------------------
+Model: RandomForestClassifier(class_weight='balanced', n_estimators=10,
+                       random_state=88)
+Average Accuracy: 0.944
+Average Recall: 0.8142857142857143
+Average Confusion Matrix:
+[[64.8  2.8]
+ [ 1.4  6. ]]
+------------------------------
