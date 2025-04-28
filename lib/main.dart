@@ -1,27 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
-import 'languages.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // if you used flutterfire CLI
+import 'singpass_login.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform, // if using generated options
+  );
+  // Load saved language preference on app start
+  final prefs = await SharedPreferences.getInstance();
+  final String? savedLanguage = prefs.getString('language');
+
+  runApp(MyApp(initLocale: savedLanguage != null ? Locale(savedLanguage) : null));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final Locale? initLocale;
+
+  const MyApp({super.key, this.initLocale});
 
   @override
   State<MyApp> createState() => _MyAppState();
+
+  static _MyAppState of(BuildContext context) => 
+      context.findAncestorStateOfType<_MyAppState>()!;
 }
 
 class _MyAppState extends State<MyApp> {
-  Locale _locale = const Locale('en');
+  Locale? _locale = Locale('en');
 
+  // Method to change the app's locale
   void setLocale(Locale locale) {
     setState(() {
       _locale = locale;
     });
+
+    // Save preference for next app start
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setString('language', locale.languageCode);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _locale = widget.initLocale;
   }
 
   @override
@@ -46,7 +75,7 @@ class _MyAppState extends State<MyApp> {
         Locale('ms'), // Malay
         Locale('ta'), // Tamil
       ],
-      home: const OnboardingPage(),
+      home: OnboardingPage(),
     );
   }
 }
@@ -54,6 +83,7 @@ class _MyAppState extends State<MyApp> {
 // Your existing OnboardingPage code stays the same
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,29 +112,33 @@ class OnboardingPage extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.15),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(
-                            child: Image.asset(
-                              'assets/images/logo.png', 
-                              width: 90,
-                            ),
-                          ),
-                        ),
+Stack(
+  alignment: Alignment.center,
+  children: [
+    // Circle background stays put
+    Container(
+      width: 300,
+      height: 300,
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.15),
+        shape: BoxShape.circle,
+      ),
+    ),
+
+    // Move logo slightly down (positive Y)
+    Transform.translate(
+      offset: const Offset(0, 30), // try 10-20px downward
+      child: Image.asset(
+        'assets/images/safeguardlogo.png',
+        width: 550,
+        fit: BoxFit.contain,
+      ),
+    ),
+  ],
+),
+
+
                         const SizedBox(height: 20),
-                        const Text(
-                          'SAFE GUARD.SG',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -148,22 +182,26 @@ class OnboardingPage extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const MainPage()),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF4DD0C7),
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(vertical: 15),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                  ),
+                                 onPressed: () {
+  
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => SingpassLoginPage(),
+    ),
+  );
+},
+style: ElevatedButton.styleFrom(
+  backgroundColor: const Color(0xFFEA1221),
+  foregroundColor: Colors.white,
+  padding: const EdgeInsets.symmetric(vertical: 15),
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(30),
+  ),
+),
+
                                   child: const Text(
-                                    'Let\'s Start',
+                                    'Login with Singpass',
                                     style: TextStyle(fontSize: 18),
                                   ),
                                 ),

@@ -1,107 +1,122 @@
 import 'package:flutter/material.dart';
+import 'package:safe_guard_sg/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-class LanguageSelectButtonActive extends StatelessWidget {
-  const LanguageSelectButtonActive({
-    super.key,
-    required this.text,
-  });
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {},
-      style: TextButton.styleFrom(
-        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-        backgroundColor: Color.fromARGB(255, 115, 211, 209),
-      ),
-      child: Text(text, style: TextStyle(fontSize: 30, color: Colors.white)),
-    );
-  }
-}
-
-class LanguageSelectButton extends StatelessWidget {
-  const LanguageSelectButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-  });
-
-  final String text;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: onPressed,
-      style: TextButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
-      ),
-      child: Text(text, style: const TextStyle(fontSize: 30, color: Colors.black87)),
-    );
-  }
-}
+import 'singpass_login.dart';
 
 class LanguagesPage extends StatefulWidget {
+  const LanguagesPage({super.key});
+
   @override
   _LanguagesPageState createState() => _LanguagesPageState();
 }
 
 class _LanguagesPageState extends State<LanguagesPage> {
-  int active = 1;
-@override
-Widget build(BuildContext context) {
-  final localizations = AppLocalizations.of(context);
-  if (localizations == null) {
-    return Scaffold(
-      body: Center(child: CircularProgressIndicator()), // Handle loading state
-    );
+  String? _selectedLanguage = 'en';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        _selectedLanguage = Localizations.localeOf(context).languageCode;
+      });
+    });
   }
 
-  var languages = <String>[
-    localizations.english,
-    localizations.mandarin,
-    localizations.malay,
-    localizations.tamil,
-  ];
+  // This function will save the selected language in shared preferences
+  Future<void> _saveLanguagePreference(String language) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('language', language);
+  }
 
-  return Scaffold(
-    appBar: AppBar(title: const Text('Languages')),
-    body: Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(top: 30, bottom: 60),
-            child: Text(
-              localizations.languagePageHeading,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 24,
+  // This function will handle when the OK button is pressed
+  void _onOkPressed() {
+    // if (_selectedLanguage != null) {
+      // Save the selected language to shared preferences
+      _saveLanguagePreference(_selectedLanguage!);
+
+      final newLocale = Locale(_selectedLanguage!);
+      MyApp.of(context).setLocale(newLocale);
+      
+      Navigator.pop(context); // Go back to the previous page
+    // } else {
+    //   // Optionally show an error message if no language is selected
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text('Please select a language')),
+    //   );
+    // }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+    Map languages = <String, String>{
+      'en': "English",
+      'zh': "中文",
+      'ms': "Melayu",
+      'ta': "தமிழ்",
+    };
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(localizations.languagePageBarTitle),
+        // backgroundColor: const Color(0xFF73D3D0),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 30, bottom: 30),
+              child: Text(
+                localizations.languagePageHeading,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
               ),
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              for (int i = 0; i < languages.length; i++)
-                i == active
-                    ? LanguageSelectButtonActive(text: languages[i])
-                    : LanguageSelectButton(
-                        text: languages[i],
-                        onPressed: () {
-                          setState(() {
-                            active = i;
-                          });
-                        },
-                      ),
-            ],
-          ),
-        ],
+            for (var code in languages.keys)
+              code == _selectedLanguage ?
+              ListTile(
+                title: Center(
+                  child: Text(languages[code], style: TextStyle(color: Colors.white),)
+                ),
+                tileColor: const Color(0xFF73D3D0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(25)),
+                ),
+                onTap: () {}
+              ) :
+              ListTile(
+                title: Center(
+                  child: Text(languages[code])
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(25)),
+                ),
+                onTap: () {
+                  setState(() {
+                    _selectedLanguage = code;
+                  });
+                }
+              ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+                onPressed: _onOkPressed,
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF73D3D0), 
+                    shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    ),
+                ),
+                child: const Text("OK"),
+                ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

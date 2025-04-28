@@ -1,24 +1,438 @@
 {
+    "heatMap": "Heat Map",
+    "@heatMap": {
+        "description": "Heat Map"
+    },
+    "time": "Time",
+    "@time": {
+        "description": "Time"
+    },
+    "low": "Low",
+    "@low": {
+        "description": "Low"
+    },
+    "medium": "Medium",
+    "@medium": {
+        "description": "Medium"
+    },
+    "high": "High",
+    "@high": {
+        "description": "High"
+    },
+    "note": "Note",
+    "@note": {
+        "description": "Note"
+    },
+    "remove": "Remove",
+    "@remove": {
+        "description": "Remove"
+    },
+    "delete": "Delete",
+    "@delete": {
+        "description": "Delete"
+    },
+    "cancel": "Cancel",
+    "@cancel": {
+        "description": "Cancel"
+    },
+    
+
+    "navHome": "Home",
+    "@navHome": {
+        "description": "Home button"
+    },
+    "navReportIncident": "Report Incident",
+    "@navReportIncident": {
+        "description": "Report Incident button"
+    },
+    "navProfile": "Profile",
+    "@navProfile": {
+        "description": "Profile button"
+    },
+
+
+    "spUpcomingMaintenance": "Upcoming Scheduled Maintenance",
+    "@spUpcomingMaintenance": {
+        "description": "Upcoming Scheduled Maintenance"
+    },
+    "spWelcome": "Welcome to Singpass",
+    "@spWelcome": {
+        "description": "Singpass page welcome"
+    },
+    "spYourTrustedDigitalIdentity": "Your trusted digital identity",
+    "@spYourTrustedDigitalIdentity": {
+        "description": "Your trusted digital identity"
+    },
+    "spTapQrToLogin": "Tap QR code\nto log in with Singpass app",
+    "@spTapQrToLogin": {
+        "description": "Tap QR code to log in Singpass"
+    },
+    "spNoSingpass": "Don't have Singpass app",
+    "@spNoSingpass": {
+        "description": "Don't have Singpass app"
+    },
+    "spDownloadNow": "Download now",
+    "@spDownloadNow": {
+        "description": "Download now"
+    },
+
+
+    "homeReportNow": "Report Now!",
+    "@homeReportNow": {
+        "description": "Text for report now button"
+    },
+    "homeObservationCheckpoints": "Observation Checkpoints",
+    "@homeObservationCheckpoints": {
+        "description": "Observation Checkpoints"
+    },
+    "homeObservationNotLogged": "Not yet logged",
+    "@homeObservationNotLogged": {
+        "description": "Not yet logged status for Observation Checkpoints"
+    },
+    "homeObservationCaptured": "Captured",
+    "@homeObservationCaptured": {
+        "description": "Captured status for Observation Checkpoints"
+    },
+    "homePredictiveAnalysis": "Predictive Analysis",
+    "@homePredictiveAnalysis": {
+        "description": "Predictive Analysis"
+    },
+    "homeRecentReports": "Recent Reports",
+    "@homeRecentReports": {
+        "description": "Recent Reports"
+    },
+    "homeIncidentDetails": "Incident Details",
+    "@homeIncidentDetails": {
+        "description": "Incident Details"
+    },
+
+
+    "hmBarTitle": "Heat Map Analysis",
+    "@hmBarTitle": {
+        "description": "Heat Map page bar title"
+    },
+    "hmTypeAll": "All",
+    "@hmTypeAll": {
+        "description": "Type option All"
+    },
+    "hmTypeFire": "Fire",
+    "@hmTypeFire": {
+        "description": "Type option Fire"
+    },
+    "hmTypeCrime": "Crime",
+    "@hmTypeCrime": {
+        "description": "Type option Crime"
+    },
+    "hmTypeAccident": "Accident",
+    "@hmTypeAccident": {
+        "description": "Type option Accident"
+    },
+    "hmDurationDay": "Day",
+    "@hmDurationDay": {
+        "description": "Duration option Day"
+    },
+    "hmDurationWeek": "Week",
+    "@hmDurationWeek": {
+        "description": "Duration option Week"
+    },
+    "hmDurationMonth": "Month",
+    "@hmDurationMonth": {
+        "description": "Duration option Month"
+    },
+    "hmHighRisk": "High Risk",
+    "@hmHighRisk": {
+        "description": "Duration option Day"
+    },
+    "hmMediumRisk": "Medium Risk",
+    "@hmMediumRisk": {
+        "description": "Duration option Week"
+    },
+    "hmLowRisk": "Low Risk",
+    "@hmLowRisk": {
+        "description": "Duration option Month"
+    },
+    "hmSafetyStatistics": "Safety Statistics",
+    "@hmSafetyStatistics": {
+        "description": "Safety Statistics"
+    },
+    "hmAISafetyScore": "AI Safety Score",
+    "@hmAISafetyScore": {
+        "description": "AI Safety Score"
+    },
+    "hmRecentIncidents": "Recent Incidents",
+    "@hmRecentIncidents": {
+        "description": "Recent Incidents"
+    },
+    "hmSeverity": "Severity",
+    "@hmSeverity": {
+        "description": "Severity"
+    },
+
+
+    "riBarTitle": "Report Incidents",
+    "@riBarTitle": {
+        "description": "Report Incidents page bar title"
+    },
+    "riIncidentType": "Incident Type",
+    "@riIncidentType": {
+        "description": "Incident Type"
+    },
+    "riFlood": "Flood",
+    "@riFlood": {
+        "description": "Flood"
+    },
+    "riEarthquake": "Earthquake",
+    "@riEarthquake": {
+        "description": "Earthquake"
+    },
+    "riLandslide": "Landslide",
+    "@riLandslide": {
+        "description": "Landslide"
+    },
+    "riStorm": "Storm",
+    "@riStorm": {
+        "description": "Storm"
+    },
+    "riOther": "Other",
+    "@riOther": {
+        "description": "Other"
+    },
+    "riCurrentLocation": "Current Location",
+    "@riCurrentLocation": {
+        "description": "Current Location"
+    },
+    "riGetCurrentLocation": "Get Current Location",
+    "@riGetCurrentLocation": {
+        "description": "Get Current Location"
+    },
+    "riNoLocation": "No Location Found",
+    "@riNoLocation": {
+        "description": "No Location Found"
+    },
+    "riIncidentTitle": "Incident Title",
+    "@riIncidentTitle": {
+        "description": "Incident Title"
+    },
+    "riIncidentTitlePrompt": "Brief title of the incident",
+    "@riIncidentTitlePrompt": {
+        "description": "Prompt of incident title"
+    },
+    "riIncidentDescription": "Incident Description",
+    "@riIncidentDescription": {
+        "description": "Incident Description"
+    },
+    "riIncidentDescriptionPrompt": "Detailed description of what happened",
+    "@riIncidentDescriptionPrompt": {
+        "description": "Prompt of incident description"
+    },
+    "riUploadEvidence": "Upload Evidence (Images)",
+    "@riUploadEvidence": {
+        "description": "Upload Evidence"
+    },
+    "riTakePhoto": "Take Photo",
+    "@riTakePhoto": {
+        "description": "Take Photo"
+    },
+    "riFromGallery": "From Gallery",
+    "@riFromGallery": {
+        "description": "From Gallery"
+    },
+    "riImageAddedTotal": "Image added. Total images",
+    "@riImageAddedTotal": {
+        "description": "Image added and count message"
+    },
+    "riImagePickFailed": "Failed to pick image",
+    "@riImagePickFailed": {
+        "description": "Failed to pick image"
+    },
+    "riCameraError": "Camera error",
+    "@riCameraError": {
+        "description": "Camera error"
+    },
+    "riLocationDenied": "Location permissions are denied",
+    "@riLocationDenied": {
+        "description": "Location permissions denied"
+    },
+    "riLocationPermDenied": "Location permissions are permanently denied",
+    "@riLocationPermDenied": {
+        "description": "Location permissions permanently denied"
+    },
+    "riGetLocationFailed": "Failed to get location",
+    "@riGetLocationFailed": {
+        "description": "Failed to get location"
+    },
+    "riFillAllFieldsMsg": "Please fill out all required fields",
+    "@riFillAllFieldsMsg": {
+        "description": "Fill all required fields failure message"
+    },
+    "riGetCurrentLocationMsg": "Please get your current location",
+    "@riGetCurrentLocationMsg": {
+        "description": "Get your current location failure message"
+    },
+    "riSelectIncidentTypeMsg": "Please select an incident type",
+    "@riSelectIncidentTypeMsg": {
+        "description": "Select an incident type failure message"
+    },
+    "riSpecifyIncidentTypeMsg": "Please specify the incident type",
+    "@riSpecifyIncidentTypeMsg": {
+        "description": "Specify the incident type failure message"
+    },
+    "riUploadMin1ImageMsg": "Please upload at least one image",
+    "@riUploadMin1ImageMsg": {
+        "description": "Upload at least one image failure message"
+    },
+    "riReportSubmittedSuccess": "Incident reported successfully",
+    "@riReportSubmittedSuccess": {
+        "description": "Incident reported successfully"
+    },
+    "riSubmitFailed": "Failed to submit report",
+    "@riSubmitFailed": {
+        "description": "Failed to submit report"
+    },
+    "riGetLocationLoading": "Getting location",
+    "@riGetLocationLoading": {
+        "description": "Getting location loading text"
+    },
+    "riSubmitReportBtnText": "SUBMIT REPORT",
+    "@riSubmitReportBtnText": {
+        "description": "Submit Report button text"
+    },
+    "riFalseReportWarning": "False reports may result in penalties",
+    "@riFalseReportWarning": {
+        "description": "False Report Warning"
+    },
+    "riPhotoTakingErr": "Error taking photo",
+    "@riPhotoTakingErr": {
+        "description": "Error taking photo"
+    },
+
+
+    "reiBarTitle": "Recent Incidents",
+    "@reiBarTitle": {
+        "description": "Recent Incidents page bar title"
+    },
+    "reiLoadIncidentsFailed": "Failed to load incidents",
+    "@reiLoadIncidentsFailed": {
+        "description": "Failed to load incidents"
+    },
+    "reiPageEmpty":"No incidents reported yet",
+    "@reiPageEmpty": {
+        "description": "No incidents reported text"
+    },
+    "reiUsersVerifiedIncident":" user(s) verified this report",
+    "@reiUsersVerifiedIncident": {
+        "description": "<number> user(s) verified this report"
+    },
+
+
+    "idBarTitle": "Incident Details",
+    "@idBarTitle": {
+        "description": "Incident Details page bar title"
+    },
+    "idOpenMapFailed": "Could not open map",
+    "@idOpenMapFailed": {
+        "description": "Open map failed message"
+    },
+    "idVerification": "verification",
+    "@idVerification": {
+        "description": "verification"
+    },
+    "idPendingVerification": "Pending verification",
+    "@idPendingVerification": {
+        "description": "Pending verification"
+    },
+    "idIncidentImage": "Incident Image",
+    "@idIncidentImage": {
+        "description": "Incident Image"
+    },
+    "idLocation": "Location",
+    "@idLocation": {
+        "description": "Location"
+    },
+    "idDateReported": "Date Reported",
+    "@idDateReported": {
+        "description": "Date Reported"
+    },
+    "idType": "Type",
+    "@idType": {
+        "description": "Type"
+    },
+    "idDescription": "Description",
+    "@idDescription": {
+        "description": "Description"
+    },
+    "idLocationMap": "Location Map",
+    "@idLocationMap": {
+        "description": "Location Map"
+    },
+    "idOpenInMaps": "Open in Maps",
+    "@idOpenInMaps": {
+        "description": "Open in Maps"
+    },
+    "idMarkUnverified": "Mark as Unverified",
+    "@idMarkUnverified": {
+        "description": "Mark as Unverified"
+    },
+    "idMarkVerified": "Mark as Verified",
+    "@idMarkVerified": {
+        "description": "Mark as Verified"
+    },
+    "idUpdatingStatusError": "Error updating status",
+    "@idUpdatingStatusError": {
+        "description": "Error updating status"
+    },
+    "idDeleteIncident": "Delete Incident",
+    "@idDeleteIncident": {
+        "description": "Delete Incident"
+    },
+    "idDeleteIncidentConfirmation": "Are you sure you want to delete this incident report",
+    "@idDeleteIncidentConfirmation": {
+        "description": "Confirmation message when deleting a incident report"
+    },
+    "idDeleteIncidentSuccess": "Incident deleted successfully",
+    "@idDeleteIncidentSuccess": {
+        "description": "Incident deleted successfully"
+    },
+    "idDeleteIncidentError": "Error deleting incident",
+    "@idDeleteIncidentError": {
+        "description": "Error deleting incident"
+    },
+
+
+    "rrBarTitle": "Recent Reports",
+    "@rrBarTitle": {
+        "description": "Recent Reports page bar title"
+    },
+
+
+    "profileBarTitle": "My Profile",
+    "@profileBarTitle": {
+        "description": "Profile page bar title"
+    },
+    "profileEmail": "Email",
+    "@profileEmail": {
+        "description": "Email label"
+    },
+    "profilePhone": "Phone",
+    "@profilePhone": {
+        "description": "Phone label"
+    },
+    "profileMyReports": "My Reports",
+    "@profileMyReports": {
+        "description": "My Reports"
+    },
+    "profileUploadImageNote": "For best results, upload a clear image in JPG or PNG format, not exceeding 5MB in size.",
+    "@profileUploadImageNote": {
+        "description": "Profile page upload image note"
+    },
+
+
+    "languagePageBarTitle": "Select language",
+    "@languagePageBarTitle": {
+        "description": "Language page bar title"
+    },
     "languagePageHeading": "Choose your preferred language",
     "@languagePageHeading": {
         "description": "Language page header"
-    },
-    "english": "English",
-    "@english": {
-        "description": "Word English"
-    },
-    "mandarin": "Mandarin",
-    "@mandarin": {
-        "description": "Word Mandarin"
-    },
-    "malay": "Malay",
-    "@malay": {
-        "description": "Word Malay"
-    },
-    "tamil": "Tamil",
-    "@tamil": {
-        "description": "Word Tamil"
     }
-
-    
 }

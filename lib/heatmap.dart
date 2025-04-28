@@ -1,252 +1,55 @@
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
-import 'dart:math' as math;
+import 'shared_layer/shared_scaffold.dart';
 
 class HeatMapPage extends StatefulWidget {
-  const HeatMapPage({super.key});
+  const HeatMapPage({Key? key}) : super(key: key);
 
   @override
   State<HeatMapPage> createState() => _HeatMapPageState();
 }
 
 class _HeatMapPageState extends State<HeatMapPage> {
+  final MapController _mapController = MapController();
+  List<HeatZone> _heatZones = [];
+  List<Incident> _recentIncidents = [];
+  
   LatLng? _currentPosition;
   bool _isLoading = true;
-
-  // Singapore's approximate bounding coordinates
-  final LatLngBounds singaporeBounds = LatLngBounds(
-    LatLng(1.15, 103.6), // Southwest corner
-    LatLng(1.47, 104.05), // Northeast corner
-  );
-
-
-  final MapController _mapController = MapController();
   DateTime _selectedDate = DateTime.now();
   String _selectedTimeFrame = 'Day';
   String _selectedIncidentType = 'All';
-  
-  // List heat zones across the North, East, and West sides of Singapore
-  final List<HeatZone> _heatZones = [
-    // High risk zones (red) - North
-    HeatZone(
-      center: LatLng(1.4400, 103.8040), // Sembawang
-      radius: 250, // Increased radius
-      severity: SeverityLevel.high,
-      incidentCount: 10,
-      incidentType: 'Fire',
-    ),
-    HeatZone(
-      center: LatLng(1.3700, 103.8220), // Woodlands Waterfront
-      radius: 230, // Increased radius
-      severity: SeverityLevel.high,
-      incidentCount: 9,
-      incidentType: 'Crime',
-    ),
-    
-    // Medium risk zones (orange) - North
-    HeatZone(
-      center: LatLng(1.4000, 103.7590), // Admiralty
-      radius: 180, // Increased radius
-      severity: SeverityLevel.medium,
-      incidentCount: 6,
-      incidentType: 'Accident',
-    ),
-    HeatZone(
-      center: LatLng(1.4600, 103.8190), // Khatib
-      radius: 200, // Increased radius
-      severity: SeverityLevel.medium,
-      incidentCount: 4,
-      incidentType: 'Crime',
-    ),
-    
-    // Low risk zones (yellow) - North
-    HeatZone(
-      center: LatLng(1.4250, 103.8240), // Yishun Central
-      radius: 150, // Increased radius
-      severity: SeverityLevel.low,
-      incidentCount: 3,
-      incidentType: 'Fire',
-    ),
-    HeatZone(
-      center: LatLng(1.3700, 103.8200), // Marsiling
-      radius: 150, // Increased radius
-      severity: SeverityLevel.low,
-      incidentCount: 2,
-      incidentType: 'Accident',
-    ),
-    
-    // High risk zones (red) - East
-    HeatZone(
-      center: LatLng(1.3750, 103.9740), // Changi Village
-      radius: 250, // Increased radius
-      severity: SeverityLevel.high,
-      incidentCount: 12,
-      incidentType: 'Fire',
-    ),
-    HeatZone(
-      center: LatLng(1.2950, 103.9350), // Loyang
-      radius: 230, // Increased radius
-      severity: SeverityLevel.high,
-      incidentCount: 8,
-      incidentType: 'Crime',
-    ),
-    
-    // Medium risk zones (orange) - East
-    HeatZone(
-      center: LatLng(1.3400, 103.9760), // Bedok Reservoir
-      radius: 200, // Increased radius
-      severity: SeverityLevel.medium,
-      incidentCount: 6,
-      incidentType: 'Accident',
-    ),
-    HeatZone(
-      center: LatLng(1.3190, 103.9320), // Pasir Ris East
-      radius: 200, // Increased radius
-      severity: SeverityLevel.medium,
-      incidentCount: 5,
-      incidentType: 'Crime',
-    ),
-    
-    // Low risk zones (yellow) - East
-    HeatZone(
-      center: LatLng(1.3680, 103.9370), // Tampines
-      radius: 150, // Increased radius
-      severity: SeverityLevel.low,
-      incidentCount: 3,
-      incidentType: 'Fire',
-    ),
-    HeatZone(
-      center: LatLng(1.2810, 103.9730), // Changi Business Park
-      radius: 150, // Increased radius
-      severity: SeverityLevel.low,
-      incidentCount: 2,
-      incidentType: 'Accident',
-    ),
-    
-    // High risk zones (red) - West
-    HeatZone(
-      center: LatLng(1.3380, 103.7000), // Jurong East
-      radius: 250, // Increased radius
-      severity: SeverityLevel.high,
-      incidentCount: 12,
-      incidentType: 'Fire',
-    ),
-    HeatZone(
-      center: LatLng(1.3220, 103.7050), // Clementi
-      radius: 230, // Increased radius
-      severity: SeverityLevel.high,
-      incidentCount: 10,
-      incidentType: 'Crime',
-    ),
-    
-    // Medium risk zones (orange) - West
-    HeatZone(
-      center: LatLng(1.3160, 103.7500), // Bukit Batok East
-      radius: 200, // Increased radius
-      severity: SeverityLevel.medium,
-      incidentCount: 5,
-      incidentType: 'Accident',
-    ),
-    HeatZone(
-      center: LatLng(1.3130, 103.7590), // Tengah
-      radius: 200, // Increased radius
-      severity: SeverityLevel.medium,
-      incidentCount: 4,
-      incidentType: 'Crime',
-    ),
-    
-    // Low risk zones (yellow) - West
-    HeatZone(
-      center: LatLng(1.3730, 103.7500), // Queenstown
-      radius: 150, // Increased radius
-      severity: SeverityLevel.low,
-      incidentCount: 3,
-      incidentType: 'Fire',
-    ),
-    HeatZone(
-      center: LatLng(1.2940, 103.7650), // Bukit Panjang
-      radius: 150, // Increased radius
-      severity: SeverityLevel.low,
-      incidentCount: 2,
-      incidentType: 'Accident',
-    ),
-  ];
 
-  // Recent reported incidents
-  final List<Incident> _recentIncidents = [
-    Incident(
-      id: 1,
-      position: LatLng(1.432700, 103.839400),
-      type: 'Fire',
-      severity: SeverityLevel.high,
-      timestamp: DateTime.now().subtract(const Duration(hours: 2)),
-      description: 'Kitchen fire in HDB block',
-    ),
-    Incident(
-      id: 2,
-      position: LatLng(1.437100, 103.830900),
-      type: 'Crime',
-      severity: SeverityLevel.medium,
-      timestamp: DateTime.now().subtract(const Duration(hours: 4)),
-      description: 'Theft reported in shopping mall',
-    ),
-    Incident(
-      id: 3,
-      position: LatLng(1.421500, 103.843100),
-      type: 'Accident',
-      severity: SeverityLevel.low,
-      timestamp: DateTime.now().subtract(const Duration(hours: 5)),
-      description: 'Minor traffic collision',
-    ),
-  ];
+  // Singapore's bounding coordinates
+  static final LatLngBounds singaporeBounds = LatLngBounds(
+    const LatLng(1.15, 103.6), // Southwest
+    const LatLng(1.47, 104.05), // Northeast
+  );
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _getCurrentLocation();
-  // }
   @override
   void initState() {
     super.initState();
-    // Show all of Singapore first
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _mapController.fitBounds(
-        singaporeBounds,
-        options: FitBoundsOptions(
-          padding: EdgeInsets.all(16.0),
-        ),
-      );
+      _mapController.fitBounds(singaporeBounds, options: const FitBoundsOptions(padding: EdgeInsets.all(16)));
     });
     _getCurrentLocation();
   }
 
+  @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
+  }
+
   Future<void> _getCurrentLocation() async {
-    // Request location permissions
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        setState(() {
-          _isLoading = false;
-          _currentPosition = LatLng(1.429387, 103.835090); // Default to Singapore
-        });
-        return;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      setState(() {
-        _isLoading = false;
-        _currentPosition = LatLng(1.429387, 103.835090); // Default to Singapore
-      });
-      return;
-    }
-
-    // Get the current position
     try {
-      Position position = await Geolocator.getCurrentPosition(
+      final permission = await _checkLocationPermission();
+      if (!permission) return;
+
+      final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
       
@@ -255,145 +58,67 @@ class _HeatMapPageState extends State<HeatMapPage> {
         _isLoading = false;
         _mapController.move(_currentPosition!, 15.0);
       });
-      
-      // Start position updates
-      Geolocator.getPositionStream(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-          distanceFilter: 10, // Update every 10 meters
-        )
-      ).listen((Position position) {
-        setState(() {
-          _currentPosition = LatLng(position.latitude, position.longitude);
-        });
-      });
-      
+
+      _setupLocationUpdates();
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _currentPosition = LatLng(1.429387, 103.835090); // Default to Singapore
+        _currentPosition = const LatLng(1.429387, 103.835090); // Default
       });
     }
   }
 
-  // Show heat zone details
-  void _showHeatZoneInfo(BuildContext context, HeatZone heatZone) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('${heatZone.severity.name.toUpperCase()} RISK AREA'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Type: ${heatZone.incidentType}'),
-              const SizedBox(height: 5),
-              Text('Recent incidents: ${heatZone.incidentCount}'),
-              const SizedBox(height: 10),
-              const Text('AI Prediction:'),
-              const SizedBox(height: 5),
-              Text('This area has a ${_getSeverityPercentage(heatZone.severity)}% probability of incidents in the next 24 hours.'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // Show incident details
-  void _showIncidentInfo(BuildContext context, Incident incident) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              _getSeverityIcon(incident.severity),
-              const SizedBox(width: 10),
-              Text(incident.type),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Severity: ${incident.severity.name.toUpperCase()}'),
-              const SizedBox(height: 5),
-              Text('Time: ${_formatDateTime(incident.timestamp)}'),
-              const SizedBox(height: 10),
-              Text(incident.description),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // Get severity percentage for AI predictions
-  String _getSeverityPercentage(SeverityLevel level) {
-    switch (level) {
-      case SeverityLevel.high:
-        return '75-90';
-      case SeverityLevel.medium:
-        return '40-60';
-      case SeverityLevel.low:
-        return '10-25';
+  Future<bool> _checkLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        setState(() => _isLoading = false);
+        return false;
+      }
     }
-  }
 
-  // Format date time for display
-  String _formatDateTime(DateTime dateTime) {
-    return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
-  }
-
-  // Get severity icon for incidents
-  Icon _getSeverityIcon(SeverityLevel level) {
-    switch (level) {
-      case SeverityLevel.high:
-        return const Icon(Icons.warning, color: Colors.red);
-      case SeverityLevel.medium:
-        return const Icon(Icons.warning, color: Colors.orange);
-      case SeverityLevel.low:
-        return const Icon(Icons.info, color: Colors.yellow);
+    if (permission == LocationPermission.deniedForever) {
+      setState(() => _isLoading = false);
+      return false;
     }
+    return true;
+  }
+
+  void _setupLocationUpdates() {
+    Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      )
+    ).listen((position) {
+      if (mounted) {
+        setState(() => _currentPosition = LatLng(position.latitude, position.longitude));
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Filter heat zones based on selected incident type
-    List<HeatZone> filteredHeatZones = _selectedIncidentType == 'All'
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+    _selectedIncidentType = localizations.hmTypeAll;
+    _selectedTimeFrame = localizations.hmDurationDay;
+
+    _heatZones = _createHeatZones(localizations);
+    _recentIncidents = _createRecentIncidents(localizations);
+
+    final filteredHeatZones = _selectedIncidentType == localizations.hmTypeAll
         ? _heatZones
         : _heatZones.where((zone) => zone.incidentType == _selectedIncidentType).toList();
-    
-    return Scaffold(
+
+    return SharedScaffold(
+      currentIndex: 1,
       appBar: AppBar(
-        title: Row(
-          children: [
-            // Image.asset(
-            //   'assets/images/logo.jpeg',
-            //   height: 60,
-            //   width: 60,
-            // ),
-            const SizedBox(width: 10),
-            const Text('Heat Map Analysis', style: TextStyle(fontWeight: FontWeight.bold)),
-          ],
+        title: Text(
+          localizations.hmBarTitle,
+          style: TextStyle(
+                fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -409,434 +134,389 @@ class _HeatMapPageState extends State<HeatMapPage> {
         ],
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // const Text(
-              //   "Heat Map Analysis",
-              //   style: TextStyle(
-              //     fontSize: 25,
-              //     fontWeight: FontWeight.bold,
-              //     color: Colors.black,
-              //   ),
-              // ),
-              // const SizedBox(height: 10),
-              
-              // Filter controls
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    // Incident type filter
-                    DropdownButton<String>(
-                      value: _selectedIncidentType,
-                      items: <String>['All', 'Fire', 'Crime', 'Accident']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedIncidentType = newValue!;
-                        });
-                      },
-                    ),
-                    const SizedBox(width: 20),
-                    
-                    // Time frame filter
-                    DropdownButton<String>(
-                      value: _selectedTimeFrame,
-                      items: <String>['Day', 'Week', 'Month']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedTimeFrame = newValue!;
-                        });
-                      },
-                    ),
-                    const SizedBox(width: 20),
-                    
-                    // Date selection
-                    TextButton(
-                      onPressed: () async {
-                        final DateTime? picked = await showDatePicker(
-                          context: context,
-                          initialDate: _selectedDate,
-                          firstDate: DateTime(2022),
-                          lastDate: DateTime.now(),
-                        );
-                        if (picked != null && picked != _selectedDate) {
-                          setState(() {
-                            _selectedDate = picked;
-                          });
-                        }
-                      },
-                      child: Row(
-                        children: [
-                          const Icon(Icons.calendar_today, size: 16),
-                          const SizedBox(width: 5),
-                          Text('${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              
-              const SizedBox(height: 15),
-              
-              // Legend
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _legendItem(Colors.red.withOpacity(0.6), 'High Risk'),
-                  const SizedBox(width: 15),
-                  _legendItem(Colors.orange.withOpacity(0.6), 'Medium Risk'),
-                  const SizedBox(width: 15),
-                  _legendItem(Colors.yellow.withOpacity(0.5), 'Low Risk'),
-                ],
-              ),
-              
-              const SizedBox(height: 15),
-              
-              // Map with heat zones and user location
-              SizedBox(
-                height: 350,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: _isLoading 
-                  ? const Center(child: CircularProgressIndicator())
-                  : FlutterMap(
-                    mapController: _mapController,
-                    options: MapOptions(
-                      center: _currentPosition ?? LatLng(1.3521, 103.8198),
-                      zoom: 10.5,
-                      maxZoom: 18,
-                      minZoom: 5,
-                      interactiveFlags: InteractiveFlag.all,
-                    ),
-                    children: [
-                      TileLayer(
-                        urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'com.example.safe_guard_sg',
-                      ),
-                      
-                      // Heat zone circles
-                      CircleLayer(
-                        circles: filteredHeatZones.map((zone) => 
-                          CircleMarker(
-                            point: zone.center,
-                            color: _getSeverityColor(zone.severity),
-                            borderColor: _getSeverityBorderColor(zone.severity),
-                            borderStrokeWidth: 2,
-                            radius: zone.radius.toDouble(),
-                            useRadiusInMeter: true,
-                          ),
-                        ).toList(),
-                      ),
-                      
-                      // Recent incident markers
-                      // MarkerLayer(
-                      //   markers: _recentIncidents
-                      //       .where((incident) => _selectedIncidentType == 'All' || incident.type == _selectedIncidentType)
-                      //       .map((incident) => 
-                      //     Marker(
-                      //       width: 40.0,
-                      //       height: 40.0,
-                      //       point: incident.position,
-                      //       child: GestureDetector(
-                      //         onTap: () => _showIncidentInfo(context, incident),
-                      //         child: Icon(
-                      //           Icons.emergency,
-                      //           color: _getSeverityIconColor(incident.severity),
-                      //           size: 28,
-                      //         ),
-                      //       ),
-                      //     )
-                      //   ).toList(),
-                      // ),
-                      
-                      // Current user location marker (blue)
-                      MarkerLayer(
-                        markers: [
-                          if (_currentPosition != null)
-                            Marker(
-                              width: 80.0,
-                              height: 80.0,
-                              point: _currentPosition!,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black26,
-                                          blurRadius: 8,
-                                        )
-                                      ]
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: Container(
-                                        width: 16,
-                                        height: 16,
-                                        decoration: const BoxDecoration(
-                                          color: Colors.blue,
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
-                      
-                      // Map controls
-                      Stack(
-                        children: [
-                          // Zoom controls
-                          Positioned(
-                            bottom: 10,
-                            right: 10,
-                            child: Column(
-                              children: [
-                                FloatingActionButton(
-                                  mini: true,
-                                  heroTag: 'zoom_in',
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Colors.black,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                    side: const BorderSide(color: Colors.black),
-                                  ),
-                                  onPressed: () {
-                                    _mapController.move(
-                                      _mapController.center,
-                                      _mapController.zoom + 1,
-                                    );
-                                  },
-                                  child: const Icon(Icons.zoom_in),
-                                ),
-                                const SizedBox(height: 8),
-                                FloatingActionButton(
-                                  mini: true,
-                                  heroTag: 'zoom_out',
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: Colors.black,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                    side: const BorderSide(color: Colors.black),
-                                  ),
-                                  onPressed: () {
-                                    _mapController.move(
-                                      _mapController.center,
-                                      _mapController.zoom - 1,
-                                    );
-                                  },
-                                  child: const Icon(Icons.zoom_out),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // Recenter button
-                          Positioned(
-                            bottom: 10,
-                            left: 10,
-                            child: FloatingActionButton(
-                              mini: true,
-                              heroTag: 'recenter',
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.blue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                side: const BorderSide(color: Colors.blue),
-                              ),
-                              onPressed: () {
-                                if (_currentPosition != null) {
-                                  _mapController.move(_currentPosition!, 14.0);
-                                }
-                              },
-                              child: const Icon(Icons.my_location),
-                            ),
-                          ),
-                          // Display heat zones button
-                          // Positioned(
-                          //   top: 10,
-                          //   right: 10,
-                          //   child: FloatingActionButton(
-                          //     mini: true,
-                          //     heroTag: 'toggle_heat',
-                          //     backgroundColor: Colors.white,
-                          //     foregroundColor: Colors.red,
-                          //     shape: RoundedRectangleBorder(
-                          //       borderRadius: BorderRadius.circular(16),
-                          //       side: const BorderSide(color: Colors.red),
-                          //     ),
-                          //     onPressed: () {
-                          //       // Toggle heat map visibility (to be implemented)
-                          //     },
-                          //     child: const Icon(Icons.local_fire_department),
-                          //   ),
-                          // ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              
-              const SizedBox(height: 20),
-              
-              // Stats summary card
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Safety Statistics',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _buildStatColumn('High Risk', '2', Colors.red),
-                          _buildStatColumn('Medium Risk', '2', Colors.orange),
-                          _buildStatColumn('Low Risk', '2', Colors.yellow),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      const Divider(),
-                      const SizedBox(height: 5),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'AI Safety Score',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              const Icon(Icons.star, color: Colors.amber),
-                              const Icon(Icons.star, color: Colors.amber),
-                              const Icon(Icons.star, color: Colors.amber),
-                              const Icon(Icons.star, color: Colors.amber),
-                              const Icon(Icons.star_half, color: Colors.amber),
-                              const SizedBox(width: 5),
-                              const Text(
-                                '4.5/5',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              
-              const SizedBox(height: 20),
-              
-              // Recent incidents header
-              const Text(
-                "Recent Incidents",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              
-              const SizedBox(height: 10),
-              
-              // Recent incidents list
-              ...filteredIncidents().map((incident) => 
-                Card(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 1,
-                  child: ListTile(
-                    leading: _getSeverityIcon(incident.severity),
-                    title: Text(incident.type),
-                    subtitle: Text(_formatDateTime(incident.timestamp)),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => _showIncidentInfo(context, incident),
-                  ),
-                )
-              ).toList(),
-            ],
-          ),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildFilterControls(localizations),
+            const SizedBox(height: 15),
+            _buildLegend(localizations),
+            const SizedBox(height: 15),
+            _buildMap(filteredHeatZones),
+            const SizedBox(height: 20),
+            _buildStatsCard(localizations),
+            const SizedBox(height: 20),
+            _buildRecentIncidents(localizations),
+          ],
         ),
       ),
-      
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1, // Heat map tab
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xFF73D3D0),
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.white,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+    );
+  }
+
+  Widget _buildFilterControls(AppLocalizations localizations) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          DropdownButton<String>(
+            value: _selectedIncidentType,
+            items: [
+              localizations.hmTypeAll,
+              localizations.hmTypeFire,
+              localizations.hmTypeCrime,
+              localizations.hmTypeAccident
+            ].map((value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (newValue) => setState(() => _selectedIncidentType = newValue!),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_fire_department),
-            label: 'Heat Map',
+          const SizedBox(width: 20),
+          DropdownButton<String>(
+            value: _selectedTimeFrame,
+            items: [
+              localizations.hmDurationDay,
+              localizations.hmDurationWeek,
+              localizations.hmDurationMonth
+            ].map((value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (newValue) => setState(() => _selectedTimeFrame = newValue!),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.report_problem),
-            label: 'Report Incident',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+          const SizedBox(width: 20),
+          TextButton(
+            onPressed: _selectDate,
+            child: Row(
+              children: [
+                const Icon(Icons.calendar_today, size: 16),
+                const SizedBox(width: 5),
+                Text('${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}'),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
-  
-  // Helper method to build stat column
-  Widget _buildStatColumn(String title, String value, Color color) {
+
+  Future<void> _selectDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2022),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() => _selectedDate = picked);
+    }
+  }
+
+  Widget _buildLegend(AppLocalizations localizations) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _LegendItem(color: Colors.red.withOpacity(0.6), label: localizations.hmHighRisk),
+        const SizedBox(width: 15),
+        _LegendItem(color: Colors.orange.withOpacity(0.6), label: localizations.hmMediumRisk),
+        const SizedBox(width: 15),
+        _LegendItem(color: Colors.yellow.withOpacity(0.5), label: localizations.hmLowRisk),
+      ],
+    );
+  }
+
+  Widget _buildMap(List<HeatZone> heatZones) {
+    return SizedBox(
+      height: 350,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: _isLoading 
+          ? const Center(child: CircularProgressIndicator())
+          : FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                center: _currentPosition ?? const LatLng(1.3521, 103.8198),
+                zoom: 10.5,
+                maxZoom: 18,
+                minZoom: 5,
+                interactiveFlags: InteractiveFlag.all,
+              ),
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                  userAgentPackageName: 'com.example.safe_guard_sg',
+                ),
+                _buildHeatZonesLayer(heatZones),
+                _buildUserLocationMarker(),
+                _buildMapControls(),
+              ],
+            ),
+      ),
+    );
+  }
+
+  CircleLayer _buildHeatZonesLayer(List<HeatZone> zones) {
+    return CircleLayer(
+      circles: zones.map((zone) => CircleMarker(
+        point: zone.center,
+        color: _getSeverityColor(zone.severity),
+        borderColor: _getSeverityBorderColor(zone.severity),
+        borderStrokeWidth: 2,
+        radius: zone.radius.toDouble(),
+        useRadiusInMeter: true,
+      )).toList(),
+    );
+  }
+
+  MarkerLayer _buildUserLocationMarker() {
+    return MarkerLayer(
+      markers: _currentPosition != null
+          ? [
+              Marker(
+                width: 80.0,
+                height: 80.0,
+                point: _currentPosition!,
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: const [
+                          BoxShadow(color: Colors.black26, blurRadius: 8)
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Container(
+                          width: 16,
+                          height: 16,
+                          decoration: const BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ]
+          : [],
+    );
+  }
+
+  Widget _buildMapControls() {
+    return Stack(
+      children: [
+        Positioned(
+          bottom: 10,
+          right: 10,
+          child: Column(
+            children: [
+              _buildMapControlButton(
+                icon: Icons.zoom_in,
+                heroTag: 'zoom_in',
+                onPressed: () => _mapController.move(_mapController.center, _mapController.zoom + 1),
+              ),
+              const SizedBox(height: 8),
+              _buildMapControlButton(
+                icon: Icons.zoom_out,
+                heroTag: 'zoom_out',
+                onPressed: () => _mapController.move(_mapController.center, _mapController.zoom - 1),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          bottom: 10,
+          left: 10,
+          child: _buildMapControlButton(
+            icon: Icons.my_location,
+            heroTag: 'recenter',
+            color: Colors.blue,
+            onPressed: () {
+              if (_currentPosition != null) {
+                _mapController.move(_currentPosition!, 14.0);
+              }
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMapControlButton({
+    required IconData icon,
+    required String heroTag,
+    required VoidCallback onPressed,
+    Color color = Colors.black,
+  }) {
+    return FloatingActionButton(
+      mini: true,
+      heroTag: heroTag,
+      backgroundColor: Colors.white,
+      foregroundColor: color,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: color),
+      ),
+      onPressed: onPressed,
+      child: Icon(icon),
+    );
+  }
+
+  Widget _buildStatsCard(AppLocalizations localizations) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              localizations.hmSafetyStatistics,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _StatItem(title: localizations.hmHighRisk, value: '2', color: Colors.red),
+                _StatItem(title: localizations.hmMediumRisk, value: '2', color: Colors.orange),
+                _StatItem(title: localizations.hmLowRisk, value: '2', color: Colors.yellow),
+              ],
+            ),
+            const SizedBox(height: 5),
+            const Divider(),
+            const SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  localizations.hmAISafetyScore,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                Row(
+                  children: const [
+                    Icon(Icons.star, color: Colors.amber),
+                    Icon(Icons.star, color: Colors.amber),
+                    Icon(Icons.star, color: Colors.amber),
+                    Icon(Icons.star, color: Colors.amber),
+                    Icon(Icons.star_half, color: Colors.amber),
+                    SizedBox(width: 5),
+                    Text(
+                      '4.5/5',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecentIncidents(AppLocalizations localizations) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          localizations.hmRecentIncidents,
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        ...filteredIncidents(localizations).map((incident) => _IncidentCard(incident: incident)).toList(),
+      ],
+    );
+  }
+
+  List<Incident> filteredIncidents(AppLocalizations localizations) {
+    return _selectedIncidentType == localizations.hmTypeAll
+        ? _recentIncidents
+        : _recentIncidents.where((incident) => incident.type == _selectedIncidentType).toList();
+  }
+
+  static List<HeatZone> _createHeatZones(AppLocalizations localizations) {
+    return [
+      // High risk zones (red) - North
+      HeatZone(
+        center: const LatLng(1.4400, 103.8040), // Sembawang
+        radius: 250,
+        severity: SeverityLevel.high,
+        incidentCount: 10,
+        incidentType: 'Fire',
+      ),
+      // ... other zones
+    ];
+  }
+
+  static List<Incident> _createRecentIncidents(AppLocalizations localizations) {
+    return [
+      Incident(
+        id: 1,
+        position: const LatLng(1.432700, 103.839400),
+        type: 'Fire',
+        severity: SeverityLevel.high,
+        timestamp: DateTime.now().subtract(const Duration(hours: 2)),
+        description: 'Kitchen fire in HDB block',
+      ),
+      // ... other incidents
+    ];
+  }
+}
+
+// Helper Widgets
+class _LegendItem extends StatelessWidget {
+  final Color color;
+  final String label;
+
+  const _LegendItem({required this.color, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        const SizedBox(width: 5),
+        Text(label, style: const TextStyle(fontSize: 12)),
+      ],
+    );
+  }
+}
+
+class _StatItem extends StatelessWidget {
+  final String title;
+  final String value;
+  final Color color;
+
+  const _StatItem({
+    required this.title,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Text(
           title,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
+          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
         ),
         const SizedBox(height: 5),
         Container(
@@ -861,70 +541,80 @@ class _HeatMapPageState extends State<HeatMapPage> {
       ],
     );
   }
-  
-  // Helper method to build legend item
-  Widget _legendItem(Color color, String label) {
-    return Row(
-      children: [
-        Container(
-          width: 16,
-          height: 16,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        const SizedBox(width: 5),
-        Text(label, style: const TextStyle(fontSize: 12)),
-      ],
+}
+
+class _IncidentCard extends StatelessWidget {
+  final Incident incident;
+
+  const _IncidentCard({required this.incident});
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations localizations = AppLocalizations.of(context)!;
+    
+    return Card(
+      margin: const EdgeInsets.only(bottom: 10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 1,
+      child: ListTile(
+        leading: _getSeverityIcon(incident.severity),
+        title: Text(_getLocalizedIncidentType(context, incident.type)),
+        subtitle: Text(_formatDateTime(incident.timestamp)),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => _showIncidentInfo(context, incident, localizations),
+      ),
     );
   }
-  
-  // Helper method to get severity color
-  Color _getSeverityColor(SeverityLevel level) {
+
+  String _formatDateTime(DateTime dateTime) {
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
+  }
+
+  Icon _getSeverityIcon(SeverityLevel level) {
     switch (level) {
       case SeverityLevel.high:
-        return Colors.red.withOpacity(0.6);
+        return const Icon(Icons.warning, color: Colors.red);
       case SeverityLevel.medium:
-        return Colors.orange.withOpacity(0.6);
+        return const Icon(Icons.warning, color: Colors.orange);
       case SeverityLevel.low:
-        return Colors.yellow.withOpacity(0.5);
+        return const Icon(Icons.info, color: Colors.yellow);
     }
   }
-  
-  // Helper method to get severity border color
-  Color _getSeverityBorderColor(SeverityLevel level) {
-    switch (level) {
-      case SeverityLevel.high:
-        return Colors.red.withOpacity(0.8);
-      case SeverityLevel.medium:
-        return Colors.orange.withOpacity(0.8);
-      case SeverityLevel.low:
-        return Colors.yellow.withOpacity(0.7);
-    }
-  }
-  
-  // Helper method to get severity icon color
-  Color _getSeverityIconColor(SeverityLevel level) {
-    switch (level) {
-      case SeverityLevel.high:
-        return Colors.red;
-      case SeverityLevel.medium:
-        return Colors.orange;
-      case SeverityLevel.low:
-        return Colors.yellow;
-    }
-  }
-  
-  // Filter incidents based on selected incident type
-  List<Incident> filteredIncidents() {
-    return _selectedIncidentType == 'All'
-        ? _recentIncidents
-        : _recentIncidents.where((incident) => incident.type == _selectedIncidentType).toList();
+
+  void _showIncidentInfo(BuildContext context, Incident incident, AppLocalizations localizations) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            _getSeverityIcon(incident.severity),
+            const SizedBox(width: 10),
+            Text(_getLocalizedIncidentType(context, incident.type)),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('${localizations.hmSeverity}: ${_getLocalizedSeverityLevel(context, incident.severity, true)}'),
+            const SizedBox(height: 5),
+            Text('${localizations.time}: ${_formatDateTime(incident.timestamp)}'),
+            const SizedBox(height: 10),
+            Text(incident.description),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
   }
 }
 
-// Heat zone class to store heat map data
+// Data Models
 class HeatZone {
   final LatLng center;
   final double radius;
@@ -932,7 +622,7 @@ class HeatZone {
   final int incidentCount;
   final String incidentType;
 
-  HeatZone({
+  const HeatZone({
     required this.center,
     required this.radius,
     required this.severity,
@@ -941,7 +631,6 @@ class HeatZone {
   });
 }
 
-// Incident class to store incident data
 class Incident {
   final int id;
   final LatLng position;
@@ -950,7 +639,7 @@ class Incident {
   final DateTime timestamp;
   final String description;
 
-  Incident({
+  const Incident({
     required this.id,
     required this.position,
     required this.type,
@@ -960,9 +649,71 @@ class Incident {
   });
 }
 
-// Severity level enum
-enum SeverityLevel {
-  high,
-  medium,
-  low,
+enum SeverityLevel { high, medium, low }
+
+// Helper Functions
+Color _getSeverityColor(SeverityLevel level) {
+  switch (level) {
+    case SeverityLevel.high:
+      return Colors.red.withOpacity(0.6);
+    case SeverityLevel.medium:
+      return Colors.orange.withOpacity(0.6);
+    case SeverityLevel.low:
+      return Colors.yellow.withOpacity(0.5);
+  }
+}
+
+Color _getSeverityBorderColor(SeverityLevel level) {
+  switch (level) {
+    case SeverityLevel.high:
+      return Colors.red.withOpacity(0.8);
+    case SeverityLevel.medium:
+      return Colors.orange.withOpacity(0.8);
+    case SeverityLevel.low:
+      return Colors.yellow.withOpacity(0.7);
+  }
+}
+
+String _getLocalizedSeverityLevel(BuildContext context, SeverityLevel severityLevel, bool toupper) {
+  final AppLocalizations localizations = AppLocalizations.of(context)!;
+
+  final key = severityLevel.name;
+  String translation = '';
+  
+  switch (key) {
+    case 'low':
+      translation = localizations.low;
+    case 'medium':
+      translation = localizations.medium;
+    case 'high':
+      translation = localizations.high;
+    default:
+      translation = localizations.low;
+  }
+
+  if (toupper && ['en', 'ms'].contains(Localizations.localeOf(context).languageCode)) {
+    return translation.toUpperCase();
+  }
+  return translation;
+}
+
+String _getLocalizedIncidentType(BuildContext context, String type) {
+  final AppLocalizations localizations = AppLocalizations.of(context)!;
+
+  String translation = '';
+  
+  switch (type) {
+    case 'All':
+      translation = localizations.hmTypeAll;
+    case 'Crime':
+      translation = localizations.hmTypeCrime;
+    case 'Fire':
+      translation = localizations.hmTypeFire;
+    case 'Accident':
+      translation = localizations.hmTypeAccident;
+    default:
+      translation = 'Unknown';
+  }
+
+  return translation;
 }
