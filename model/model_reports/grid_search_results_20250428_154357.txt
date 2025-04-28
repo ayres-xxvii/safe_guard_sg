@@ -1,0 +1,52 @@
+Model: 5min
+Best Parameters: {'max_depth': 1, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 200}
+Classification Report:
+              precision    recall  f1-score   support
+
+           0      0.985     0.956     0.970        68
+           1      0.667     0.857     0.750         7
+
+    accuracy                          0.947        75
+   macro avg      0.826     0.907     0.860        75
+weighted avg      0.955     0.947     0.950        75
+
+--------------------------------------------------
+Model: 10min
+Best Parameters: {'max_depth': 3, 'max_features': 'sqrt', 'min_samples_leaf': 4, 'min_samples_split': 2, 'n_estimators': 100}
+Classification Report:
+              precision    recall  f1-score   support
+
+           0      0.970     0.941     0.955        68
+           1      0.556     0.714     0.625         7
+
+    accuracy                          0.920        75
+   macro avg      0.763     0.828     0.790        75
+weighted avg      0.931     0.920     0.924        75
+
+--------------------------------------------------
+Model: 15min
+Best Parameters: {'max_depth': 2, 'max_features': 'sqrt', 'min_samples_leaf': 3, 'min_samples_split': 2, 'n_estimators': 100}
+Classification Report:
+              precision    recall  f1-score   support
+
+           0      0.970     0.941     0.955        68
+           1      0.556     0.714     0.625         7
+
+    accuracy                          0.920        75
+   macro avg      0.763     0.828     0.790        75
+weighted avg      0.931     0.920     0.924        75
+
+--------------------------------------------------
+Model: 30min
+Best Parameters: {'max_depth': 1, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 100}
+Classification Report:
+              precision    recall  f1-score   support
+
+           0      0.985     0.941     0.962        68
+           1      0.600     0.857     0.706         7
+
+    accuracy                          0.933        75
+   macro avg      0.792     0.899     0.834        75
+weighted avg      0.949     0.933     0.938        75
+
+--------------------------------------------------

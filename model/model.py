@@ -13,17 +13,24 @@ from sklearn.metrics import recall_score, confusion_matrix, classification_repor
 
 import pickle
 
-df = pd.read_csv(r"data/final_5mins_full_2013-2025.csv")
+df = pd.read_csv(r"data/superfinal_5mins_full_2013-2025.csv")
 
 # Step 1: Split the data FIRST
 X_train, X_test, y_train, y_test = train_test_split(
-    df[["rainfall_1hr_prior","rainfall_2hr_prior",
-        "rainfall_3hr_prior", "rainfall_5min_prior",
-        "rainfall_10min_prior","rainfall_15min_prior",
-        "rainfall_20min_prior","rainfall_25min_prior",
-        "rainfall_30min_prior","rainfall_35min_prior",
-        "rainfall_40min_prior","rainfall_45min_prior",
-        "nearest_station_distance", "is_floodprone"]],
+    df[["rainfall_5min_prior",
+        "rainfall_10min_prior",
+        "rainfall_15min_prior",
+        "rainfall_20min_prior",
+        "rainfall_25min_prior",
+        "rainfall_30min_prior",
+        "rainfall_35min_prior",
+        "rainfall_40min_prior",
+        "rainfall_45min_prior",
+        "rainfall_50min_prior",
+        "rainfall_55min_prior",
+        "rainfall_1hr_prior", 
+        "is_floodprone"]],
+
     df["is_flooded"],
     stratify=df["is_flooded"],
     test_size=0.2,
@@ -53,7 +60,7 @@ grid_search = GridSearchCV(
     verbose=2  # Print progress
 )
 
-cols_to_drop = ["rainfall_5min_prior", "rainfall_10min_prior","rainfall_15min_prior","rainfall_20min_prior","rainfall_25min_prior"]
+# cols_to_drop = ["rainfall_5min_prior", "rainfall_10min_prior","rainfall_15min_prior","rainfall_20min_prior","rainfall_25min_prior"]
 
 try:
     # Fit the search
@@ -61,17 +68,17 @@ try:
     best_rf = grid_search.best_estimator_
     prediction_models["5min"] = {"model": best_rf, "params": grid_search.best_params_,"classification_report": classification_report(y_test, best_rf.predict(X_test), digits=3)}
 
-    grid_search.fit(X_train.drop(columns=[cols_to_drop[0]]), y_train)
+    grid_search.fit(X_train.drop(columns=["rainfall_5min_prior"]), y_train)
     best_rf = grid_search.best_estimator_
-    prediction_models["10min"] = {"model": best_rf, "params": grid_search.best_params_,"classification_report": classification_report(y_test, best_rf.predict(X_test.drop(columns=[cols_to_drop[0]])), digits=3)}
+    prediction_models["10min"] = {"model": best_rf, "params": grid_search.best_params_,"classification_report": classification_report(y_test, best_rf.predict(X_test.drop(columns=["rainfall_5min_prior"])), digits=3)}
 
-    grid_search.fit(X_train.drop(columns=[cols_to_drop[1]]), y_train)
+    grid_search.fit(X_train.drop(columns=["rainfall_10min_prior"]), y_train)
     best_rf = grid_search.best_estimator_
-    prediction_models["15min"] = {"model": best_rf, "params": grid_search.best_params_,"classification_report": classification_report(y_test, best_rf.predict(X_test.drop(columns=[cols_to_drop[1]])), digits=3)}
+    prediction_models["15min"] = {"model": best_rf, "params": grid_search.best_params_,"classification_report": classification_report(y_test, best_rf.predict(X_test.drop(columns=["rainfall_10min_prior"])), digits=3)}
 
-    grid_search.fit(X_train.drop(columns=cols_to_drop[2:]), y_train)
+    grid_search.fit(X_train.drop(columns=["rainfall_15min_prior","rainfall_20min_prior","rainfall_25min_prior"]), y_train)
     best_rf = grid_search.best_estimator_
-    prediction_models["30min"] = {"model": best_rf, "params": grid_search.best_params_,"classification_report": classification_report(y_test, best_rf.predict(X_test.drop(columns=cols_to_drop[2:])), digits=3)}
+    prediction_models["30min"] = {"model": best_rf, "params": grid_search.best_params_,"classification_report": classification_report(y_test, best_rf.predict(X_test.drop(columns=["rainfall_15min_prior","rainfall_20min_prior","rainfall_25min_prior"])), digits=3)}
 
 finally:
     for key, value in prediction_models.items():
