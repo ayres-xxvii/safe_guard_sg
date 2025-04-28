@@ -107,6 +107,7 @@ print('Received predictions: ${predictions.length}');
     int highRisk = 0, mediumRisk = 0, lowRisk = 0;
     
     for (final prediction in predictions) {
+      // print(prediction);
       final lat = prediction['latitude'];
       final lng = prediction['longitude'];
       final severity = _parseSeverity(prediction['severity']);

@@ -1,7 +1,13 @@
 from flask import Flask, request, jsonify
 import joblib
+import os
+import glob
 import numpy as np
 import pandas as pd
+import math
+import re
+from datetime import datetime, timedelta
+import requests
 from flask_cors import CORS
 import random  # For demo purposes
 
@@ -9,52 +15,107 @@ app = Flask(__name__)
 CORS(app)
 
 # Load the trained model and label encoder
+model_files = [
+    'model_5min.pkl',
+    'model_10min.pkl',
+    'model_15min.pkl',
+    'model_30min.pkl',
+]
+models = []
+
+# Load label encoder
 try:
-    model = joblib.load('flood_model.pkl')
     label_encoder = joblib.load('label_encoder.pkl')
-    # Get the feature names used during model training
-    model_features = model.feature_names_in_ if hasattr(model, 'feature_names_in_') else []
-    print(f"Model loaded successfully with features: {model_features}")
+    print(f"Label encoder model loaded successfully")
 except Exception as e:
-    print(f"Warning: Could not load model properly: {str(e)}")
-    model = None
+    print(f"Warning: Could not load label encoder model properly: {str(e)}")
     label_encoder = None
-    model_features = []
+
+for fileName in model_files:
+    # Load all models
+    try:
+        model = joblib.load(os.path.join(os.path.dirname(__file__), "models", fileName))
+        models.append(model)
+        print(f"Model loaded successfully")
+    except Exception as e:
+        print(f"Warning: Could not load model properly: {str(e)}")
+
+all_locations = pd.read_csv(os.path.join(os.path.dirname(__file__), '', 'locations.csv'), dtype=str) # Replace with database results
 
 # Get example weather data (in a real app, this would come from weather API)
-def get_weather_data():
-    return {
-        'air-temperature-0.5h-prior': random.uniform(24, 32),
-        'air-temperature-1.0h-prior': random.uniform(24, 32),
-        'air-temperature-1.5h-prior': random.uniform(24, 32),
-        'air-temperature-2.0h-prior': random.uniform(24, 32),
-        'air-temperature-2.5h-prior': random.uniform(24, 32),
-        'rainfall-0.5h-prior': random.uniform(0, 20),
-        'rainfall-1.0h-prior': random.uniform(0, 20),
-        'rainfall-1.5h-prior': random.uniform(0, 20),
-        'rainfall-2.0h-prior': random.uniform(0, 20),
-        'rainfall-2.5h-prior': random.uniform(0, 20),
-        'relative-humidity-0.5h-prior': random.uniform(70, 95),
-        'relative-humidity-1.0h-prior': random.uniform(70, 95),
-        'relative-humidity-1.5h-prior': random.uniform(70, 95),
-        'relative-humidity-2.0h-prior': random.uniform(70, 95),
-        'relative-humidity-2.5h-prior': random.uniform(70, 95),
-        'wind-direction-0.5h-prior': random.uniform(0, 360),
-        'wind-direction-1.0h-prior': random.uniform(0, 360),
-        'wind-direction-1.5h-prior': random.uniform(0, 360),
-        'wind-direction-2.0h-prior': random.uniform(0, 360),
-        'wind-direction-2.5h-prior': random.uniform(0, 360),
-        'wind-speed-0.5h-prior': random.uniform(0, 30),
-        'wind-speed-1.0h-prior': random.uniform(0, 30),
-        'wind-speed-1.5h-prior': random.uniform(0, 30),
-        'wind-speed-2.0h-prior': random.uniform(0, 30),
-        'wind-speed-2.5h-prior': random.uniform(0, 30),
-        'elevation': random.uniform(0, 20),
-        'drain-density': random.uniform(0.1, 0.9),
-        'land-use': random.choice(['urban', 'residential', 'green']),
-        'soil-type': random.choice(['clay', 'sandy', 'loam']),
-        'slope-gradient': random.uniform(0, 10)
-    }
+def get_weather_data(location, readings, stations):
+    def haversine_distance(lat1, lon1, lat2, lon2):
+        """
+        Calculates the distance between two geographic coordinates using the Haversine formula
+        
+        Args:
+            lat1 (float): Latitude of the first point in degrees
+            lon1 (float): Longitude of the first point in degrees
+            lat2 (float): Latitude of the second point in degrees
+            lon2 (float): Longitude of the second point in degrees
+        
+        Returns:
+            float: Distance in kilometers
+        """
+        # Earth's radius in kilometers
+        R = 6371.0
+        
+        # Convert degrees to radians
+        lat1_rad = math.radians(lat1)
+        lon1_rad = math.radians(lon1)
+        lat2_rad = math.radians(lat2)
+        lon2_rad = math.radians(lon2)
+        
+        # Differences
+        dlat = lat2_rad - lat1_rad
+        dlon = lon2_rad - lon1_rad
+        
+        # Haversine formula
+        a = math.sin(dlat / 2)**2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(dlon / 2)**2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        distance = R * c
+        
+        return distance
+
+    def find_nearest_station(target_lat, target_lon, stations):
+        """
+        Finds the nearest station to a given latitude and longitude
+        
+        Args:
+            target_lat (float): Target latitude in degrees
+            target_lon (float): Target longitude in degrees
+            stations (list): List of station dictionaries with location information
+        
+        Returns:
+            float: Distance to the nearest station in kilometers
+        """
+        
+        nearest_station = None
+        min_distance = float('inf')
+        
+        for station in stations:
+            station_lat = station['location']['latitude']
+            station_lon = station['location']['longitude']
+            
+            distance = haversine_distance(target_lat, target_lon, station_lat, station_lon)
+            
+            if distance < min_distance:
+                min_distance = distance
+                nearest_station = station
+
+        return nearest_station['id']
+
+    nearest_station_id = find_nearest_station(location['latitude'], location['latitude'], stations)
+    rainfall_reading = 0
+    for reading_data in readings:
+        if reading_data['stationId'] == nearest_station_id:
+            rainfall_reading = reading_data['value']
+            break
+
+    new_location_data = location
+    new_location_data['rainfall_value'] = rainfall_reading
+
+    return new_location_data
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -108,80 +169,101 @@ def predict():
 @app.route('/batch_predict', methods=['POST'])
 def batch_predict():
     print("Received batch prediction request!")
+
     try:
         data = request.get_json()
         locations = data.get('locations', [])
         print(f"Processing {len(locations)} locations")
-        
+
         results = []
+        predict_batch = {
+            "rainfall_5min_prior": [],
+            "rainfall_10min_prior": [],
+            "rainfall_15min_prior": [],
+            "rainfall_20min_prior": [],
+            "rainfall_25min_prior": [],
+            "rainfall_30min_prior": [],
+            "rainfall_35min_prior": [],
+            "rainfall_40min_prior": [],
+            "rainfall_45min_prior": [],
+            "rainfall_50min_prior": [],
+            "rainfall_55min_prior": [],
+            "rainfall_1hr_prior": [], 
+            "is_floodprone": []
+        }
+
+        api_data = {
+            'readings': [],
+            'stations': []
+        }
+
+        for mins in range(5, 65, 5):
+            # datetime.now()
+            request_datetime = datetime(2018, 1, 8, 7, 0, 0) - timedelta(minutes=mins)
+            request_date = request_datetime.strftime("%Y-%m-%d")
+            request_time = request_datetime.strftime("%H:%M:%S")
+
+            api_url = f"https://api-open.data.gov.sg/v2/real-time/api/rainfall?date={request_date}T{request_time}"
+            response = requests.get(api_url)
+
+            if response.status_code == 200:
+                data = response.json()
+                api_data['readings'].append(data['data']['readings'][0].get('data', []))
+                api_data['stations'].append(data['data'].get('stations', []))
+            elif response.status_code == 404:
+                print(f"Error URL: {api_url}")
+                print("Error: No data available for the specified date and time.")
+                return []
+
+            else:
+                print(f"Error URL: {api_url}")
+                print(f"Error: {response.status_code} - {response.text}")
+                return []
+
         for location in locations:
-            try:
-                # Extract location data
-                latitude = location.get('latitude')
-                longitude = location.get('longitude')
-                
-                # For demo purposes or if model is not loaded
-                if model is None or not model_features:
-                    # Generate random predictions
-                    risk_levels = ['low', 'medium', 'high']
-                    weights = [0.5, 0.3, 0.2]  # More low risk areas than high risk
-                    
-                    # Use location to affect probability (more risk in certain areas)
-                    risk_level = random.choices(risk_levels, weights=weights)[0]
-                    
-                    # Add to results
-                    results.append({
-                        'latitude': latitude,
-                        'longitude': longitude,
-                        'prediction': f"{risk_level}_risk",
-                        'severity': risk_level
-                    })
-                    continue
-                
-                # Get weather and environmental data for this location
-                additional_features = get_weather_data()
-                
-                # Create feature dictionary
-                features = {
-                    'latitude': latitude,
-                    'longitude': longitude,
-                    **additional_features
-                }
-                
-                # Create DataFrame
-                features_df = pd.DataFrame([features])
-                
-                # Ensure all model features are present
-                for feature in model_features:
-                    if feature not in features_df.columns:
-                        features_df[feature] = 0  # Default value
-                
-                # Keep only the features needed by the model
-                features_df = features_df[model_features]
-                
-                # Make prediction
-                prediction_numeric = model.predict(features_df)[0]
-                prediction_label = label_encoder.inverse_transform([prediction_numeric])[0]
-                
-                # Map to severity
-                severity = map_to_severity(prediction_label)
-                
-                results.append({
-                    'latitude': latitude,
-                    'longitude': longitude,
-                    'prediction': prediction_label,
-                    'severity': severity
-                })
-            except Exception as e:
-                print(f"Error processing location {latitude}, {longitude}: {str(e)}")
-                # Add a default low risk for this location
-                results.append({
-                    'latitude': latitude,
-                    'longitude': longitude,
-                    'prediction': 'error',
-                    'severity': 'low'
-                })
+            # form rainfall_xmin_prior column
+            for i in range(1, 13):
+                try:
+                    location_rainfalls = get_weather_data(location, api_data['readings'][i-1], api_data['stations'][i-1])
+                    if i*5 < 60:
+                        predict_batch[f'rainfall_{i*5}min_prior'].append(location_rainfalls['rainfall_value'])
+                    else:
+                        predict_batch['rainfall_1hr_prior'].append(location_rainfalls['rainfall_value'])
+                except Exception as e:
+                    print(f"Error processing location {location}: {str(e)}")
+            predict_batch['is_floodprone'].append(False)
+            results.append({
+                'latitude': location_rainfalls['latitude'], 
+                'longitude': location_rainfalls['longitude'],
+                'severity': 'none'
+            })
         
+        # Predict the batch and assign to their respective lat long set
+        predict_batch = pd.DataFrame(predict_batch)
+        drop_columns = [
+            [],
+            ["rainfall_5min_prior"],
+            ["rainfall_10min_prior"],
+            ["rainfall_15min_prior","rainfall_20min_prior","rainfall_25min_prior"]
+        ]
+
+        # When model predicts high accuracy of flood in 5min model, returns severity high. Remaining unclassified
+        # locations continues down 10min model, 15min and 30min for severity classification. Remaining locations get removed
+        severity_classification = ['high', 'high', 'medium', 'low']
+        classified_j = []
+        for i in range(len(models)):
+            predict_batch_copy = predict_batch.copy()
+            predict_batch_copy = predict_batch_copy.drop(columns=drop_columns[i])
+
+            predict_results = models[i].predict(predict_batch_copy).tolist()
+            print(predict_results)
+
+            for j in range(len(results)):
+                if j not in classified_j and predict_results[j]:
+                    results[j]['severity'] = severity_classification[i]
+                    classified_j.append(j)
+
+        results = list(filter(lambda x: x['severity'] != 'none', results))
         return jsonify(results)
     
     except Exception as e:
