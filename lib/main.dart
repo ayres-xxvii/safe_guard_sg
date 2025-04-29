@@ -8,10 +8,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // if you used flutterfire CLI
 import 'singpass_login.dart';
 import '../services/notification_service.dart';
-import 'package:safe_guard_sg/providers/app_language.dart';
-import 'package:provider/provider.dart';
-
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,8 +58,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final appLanguage = Provider.of<AppLanguage>(context);
-    
     return MaterialApp(
       title: 'SafeGuardSG',
       debugShowCheckedModeBanner: false,
@@ -71,7 +65,7 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF4DD0C7)),
         fontFamily: 'Poppins',
       ),
-      locale: appLanguage.appLocale, // Use the provider's locale
+      locale: _locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -89,11 +83,8 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-
 // Your existing OnboardingPage code stays the same
 class OnboardingPage extends StatelessWidget {
-
-  
   const OnboardingPage({super.key});
 
   @override

@@ -16,8 +16,8 @@ class HeatMapPage extends StatefulWidget {
 
 class _HeatMapPageState extends State<HeatMapPage> {
   final MapController _mapController = MapController();
-  final List<HeatZone> _heatZones = [];
-  final List<Incident> _recentIncidents = _createRecentIncidents();
+  List<HeatZone> _heatZones = [];
+  List<Incident> _recentIncidents = _createRecentIncidents();
   final FloodPredictionService _predictionService = FloodPredictionService();
   
   LatLng? _currentPosition;
@@ -216,7 +216,7 @@ print('Received predictions: ${predictions.length}');
     _selectedTimeFrame = localizations.hmDurationDay;
 
     _heatZones = _createHeatZones(localizations);
-    _recentIncidents = _createRecentIncidents(localizations);
+    _recentIncidents = _createRecentIncidents();
 
     final filteredHeatZones = _selectedIncidentType == localizations.hmTypeAll
         ? _heatZones
@@ -249,7 +249,6 @@ print('Received predictions: ${predictions.length}');
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildFilterControls(localizations),
             const SizedBox(height: 15),
             _buildLegend(localizations),
             const SizedBox(height: 15),
@@ -267,81 +266,71 @@ print('Received predictions: ${predictions.length}');
             const SizedBox(height: 20),
             _buildStatsCard(localizations),
             const SizedBox(height: 20),
-            _buildRecentIncidents(localizations),
+            // _buildRecentIncidents(localizations)
           ],
         ),
       ),
     );
   }
 
-  Widget _buildFilterControls(AppLocalizations localizations) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          DropdownButton<String>(
-            value: _selectedIncidentType,
-            items: [
-              localizations.hmTypeAll,
-              localizations.hmTypeFire,
-              localizations.hmTypeCrime,
-              localizations.hmTypeAccident
-            ].map((value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (newValue) => setState(() => _selectedIncidentType = newValue!),
-          ),
-          const SizedBox(width: 20),
-          DropdownButton<String>(
-            value: _selectedTimeFrame,
-            items: [
-              localizations.hmDurationDay,
-              localizations.hmDurationWeek,
-              localizations.hmDurationMonth
-            ].map((value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (newValue) => setState(() => _selectedTimeFrame = newValue!),
-          ),
-          const SizedBox(width: 20),
-          TextButton(
-            onPressed: _selectDate,
-            child: Row(
-              children: [
-                const Icon(Icons.calendar_today, size: 16),
-                const SizedBox(width: 5),
-                Text('${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}'),
-              ],
-            ),
-          ),
-          const SizedBox(width: 20),
-          // Toggle for flood predictions
-          Row(
-            children: [
-              const Text('Flood Predictions'),
-              Switch(
-                value: _showFloodPredictions,
-                onChanged: (value) {
-                  setState(() => _showFloodPredictions = value);
-                  if (value) {
-                    _loadFloodPredictions();
-                  } else {
-                    setState(() => _heatZones.clear());
-                  }
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildFilterControls(AppLocalizations localizations) {
+  //   return SingleChildScrollView(
+  //     scrollDirection: Axis.horizontal,
+  //     child: Row(
+  //       children: [
+  //         DropdownButton<String>(
+  //           value: _selectedIncidentType,
+  //           items: [
+  //             localizations.hmTypeAll,
+  //             localizations.hmTypeFire,
+  //             localizations.hmTypeCrime,
+  //             localizations.hmTypeAccident
+  //           ].map((value) {
+  //             return DropdownMenuItem<String>(
+  //               value: value,
+  //               child: Text(value),
+  //             );
+  //           }).toList(),
+  //           onChanged: (newValue) => setState(() => _selectedIncidentType = newValue!),
+  //         ),
+  //         const SizedBox(width: 20),
+  //         DropdownButton<String>(
+  //           value: _selectedTimeFrame,
+  //           items: [
+  //             localizations.hmDurationDay,
+  //             localizations.hmDurationWeek,
+  //             localizations.hmDurationMonth
+  //           ].map((value) {
+  //             return DropdownMenuItem<String>(
+  //               value: value,
+  //               child: Text(value),
+  //             );
+  //           }).toList(),
+  //           onChanged: (newValue) => setState(() => _selectedTimeFrame = newValue!),
+  //         ),
+
+  //         const SizedBox(width: 20),
+  //         // Toggle for flood predictions
+  //         Row(
+  //           children: [
+  //             const Text('Flood Predictions'),
+  //             Switch(
+  //               value: _showFloodPredictions,
+  //               onChanged: (value) {
+  //                 setState(() => _showFloodPredictions = value);
+  //                 if (value) {
+  //                   _loadFloodPredictions();
+  //                 } else {
+  //                   setState(() => _heatZones.clear());
+  //                 }
+  //               },
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   
   Future<void> _selectDate() async {
     final picked = await showDatePicker(
@@ -660,7 +649,7 @@ print('Received predictions: ${predictions.length}');
     );
   }
   
-  Widget _buildRecentIncidents() {
+  Widget _buildRecentIncidents(AppLocalizations localizations) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -694,7 +683,7 @@ print('Received predictions: ${predictions.length}');
     ];
   }
 
-  static List<Incident> _createRecentIncidents(AppLocalizations localizations) {
+  static List<Incident> _createRecentIncidents() {
     return [
       Incident(
         id: 1,
