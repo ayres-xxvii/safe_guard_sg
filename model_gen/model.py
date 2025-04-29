@@ -13,8 +13,8 @@ from sklearn.metrics import recall_score, confusion_matrix, classification_repor
 
 import pickle
 
-df = pd.read_csv(r"data/superfinal_5mins_full_2013-2025.csv")
-
+df = pd.read_csv(r"past_model/batch5/tiny_superfinal_5mins_full_2013-2025.csv")
+print(df.shape)
 # Step 1: Split the data FIRST
 X_train, X_test, y_train, y_test = train_test_split(
     df[["rainfall_5min_prior",
@@ -28,8 +28,9 @@ X_train, X_test, y_train, y_test = train_test_split(
         "rainfall_45min_prior",
         "rainfall_50min_prior",
         "rainfall_55min_prior",
-        "rainfall_1hr_prior", 
-        "is_floodprone"]],
+        "rainfall_1hr_prior",
+        # "is_floodprone"
+        "nearest_station_distance"]],
 
     df["is_flooded"],
     stratify=df["is_flooded"],
@@ -47,7 +48,9 @@ param_grid = {
     'max_depth': [1, 2, 3, 4, 5, 6,7, 8, 9, 10, 20],
     'min_samples_split': [2, 4, 5, 8, 10],
     'min_samples_leaf': [1, 2, 3, 4],
-    'max_features': ['sqrt', 'log2']
+    'max_features': ['sqrt', 'log2'],
+    'class_weight': ['balanced'],
+    'random_state': [8]
 }
 
 # Set up GridSearchCV

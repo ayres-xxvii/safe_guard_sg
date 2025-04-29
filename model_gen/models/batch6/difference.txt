@@ -1,0 +1,6 @@
+
+[ Difference from batch5 ]
+
+(-) removed isfloodprone
+(+) added distance from nearest station
+using tiny_superfinal_5mins_full_2013

@@ -1,0 +1,52 @@
+Model: 5min
+Best Parameters: {'class_weight': 'balanced', 'max_depth': 2, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 100, 'random_state': 8}
+Classification Report:
+              precision    recall  f1-score   support
+
+           0      0.973     0.947     0.960        38
+           1      0.750     0.857     0.800         7
+
+    accuracy                          0.933        45
+   macro avg      0.861     0.902     0.880        45
+weighted avg      0.938     0.933     0.935        45
+
+--------------------------------------------------
+Model: 10min
+Best Parameters: {'class_weight': 'balanced', 'max_depth': 3, 'max_features': 'sqrt', 'min_samples_leaf': 2, 'min_samples_split': 2, 'n_estimators': 100, 'random_state': 8}
+Classification Report:
+              precision    recall  f1-score   support
+
+           0      0.973     0.947     0.960        38
+           1      0.750     0.857     0.800         7
+
+    accuracy                          0.933        45
+   macro avg      0.861     0.902     0.880        45
+weighted avg      0.938     0.933     0.935        45
+
+--------------------------------------------------
+Model: 15min
+Best Parameters: {'class_weight': 'balanced', 'max_depth': 1, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 100, 'random_state': 8}
+Classification Report:
+              precision    recall  f1-score   support
+
+           0      0.973     0.947     0.960        38
+           1      0.750     0.857     0.800         7
+
+    accuracy                          0.933        45
+   macro avg      0.861     0.902     0.880        45
+weighted avg      0.938     0.933     0.935        45
+
+--------------------------------------------------
+Model: 30min
+Best Parameters: {'class_weight': 'balanced', 'max_depth': 2, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 100, 'random_state': 8}
+Classification Report:
+              precision    recall  f1-score   support
+
+           0      0.973     0.947     0.960        38
+           1      0.750     0.857     0.800         7
+
+    accuracy                          0.933        45
+   macro avg      0.861     0.902     0.880        45
+weighted avg      0.938     0.933     0.935        45
+
+--------------------------------------------------
