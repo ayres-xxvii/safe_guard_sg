@@ -46,7 +46,9 @@ dependencies:
   url_launcher: ^6.2.5  # Use latest version
   qr_flutter: ^4.1.0
   firebase_auth: 5.5.2 # or latest version
-  
+  vibration: ^2.0.0  # Add this line for vibration support
+  flutter_local_notifications: ^16.1.0
+  permission_handler: ^11.0.0
 
 
 
