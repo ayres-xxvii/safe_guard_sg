@@ -42,8 +42,9 @@ for fileName in model_files:
 
 all_locations = pd.read_csv(os.path.join(os.path.dirname(__file__), '', 'locations.csv'), dtype=str) # Replace with database results
 
-# Get example weather data (in a real app, this would come from weather API)
 def get_weather_data(location, readings, stations):
+    # readings: rainfall values based off station id
+    # stations: stations data with their id
     def haversine_distance(lat1, lon1, lat2, lon2):
         """
         Calculates the distance between two geographic coordinates using the Haversine formula
@@ -87,8 +88,11 @@ def get_weather_data(location, readings, stations):
             stations (list): List of station dictionaries with location information
         
         Returns:
+            str: ID of the nearest station
             float: Distance to the nearest station in kilometers
         """
+        if not stations:
+            return None, float('inf')
         
         nearest_station = None
         min_distance = float('inf')
@@ -103,10 +107,13 @@ def get_weather_data(location, readings, stations):
                 min_distance = distance
                 nearest_station = station
 
-        return nearest_station['id']
+        return nearest_station['id'], min_distance
 
-    nearest_station_id = find_nearest_station(location['latitude'], location['latitude'], stations)
+    # Get the station closest to the location position
+    nearest_station_id, min_distance = find_nearest_station(location['latitude'], location['longitude'], stations)
+
     rainfall_reading = 0
+    # Loop through all stations' rainfall values
     for reading_data in readings:
         if reading_data['stationId'] == nearest_station_id:
             rainfall_reading = reading_data['value']
@@ -114,6 +121,7 @@ def get_weather_data(location, readings, stations):
 
     new_location_data = location
     new_location_data['rainfall_value'] = rainfall_reading
+    new_location_data['nearest_station_distance'] = min_distance
 
     return new_location_data
 
@@ -189,7 +197,8 @@ def batch_predict():
             "rainfall_50min_prior": [],
             "rainfall_55min_prior": [],
             "rainfall_1hr_prior": [], 
-            "is_floodprone": []
+            # "is_floodprone": [],
+            "nearest_station_distance": []
         }
 
         api_data = {
@@ -198,8 +207,8 @@ def batch_predict():
         }
 
         for mins in range(5, 65, 5):
-            # datetime.now()
-            request_datetime = datetime(2018, 1, 8, 7, 0, 0) - timedelta(minutes=mins)
+            # datetime.now() datetime(2018, 1, 24, 17, 15, 0)
+            request_datetime = datetime.now() - timedelta(minutes=mins)
             request_date = request_datetime.strftime("%Y-%m-%d")
             request_time = request_datetime.strftime("%H:%M:%S")
 
@@ -209,7 +218,7 @@ def batch_predict():
             if response.status_code == 200:
                 data = response.json()
                 api_data['readings'].append(data['data']['readings'][0].get('data', []))
-                api_data['stations'].append(data['data'].get('stations', []))
+                api_data['stations'] = data['data'].get('stations', [])
             elif response.status_code == 404:
                 print(f"Error URL: {api_url}")
                 print("Error: No data available for the specified date and time.")
@@ -219,19 +228,21 @@ def batch_predict():
                 print(f"Error URL: {api_url}")
                 print(f"Error: {response.status_code} - {response.text}")
                 return []
-
+        
         for location in locations:
             # form rainfall_xmin_prior column
-            for i in range(1, 13):
-                try:
-                    location_rainfalls = get_weather_data(location, api_data['readings'][i-1], api_data['stations'][i-1])
+            try:
+                for i in range(1, 13):
+                    # Get rainfall value based of the location position. Passes in the api 
+                    location_rainfalls = get_weather_data(location, api_data['readings'][i-1], api_data['stations'])
                     if i*5 < 60:
                         predict_batch[f'rainfall_{i*5}min_prior'].append(location_rainfalls['rainfall_value'])
                     else:
                         predict_batch['rainfall_1hr_prior'].append(location_rainfalls['rainfall_value'])
-                except Exception as e:
-                    print(f"Error processing location {location}: {str(e)}")
-            predict_batch['is_floodprone'].append(False)
+            except Exception as e:
+                print(f"Error processing location {location}: {str(e)}")
+            predict_batch['nearest_station_distance'].append(location_rainfalls['nearest_station_distance'])
+            # predict_batch['is_floodprone'].append(False)
             results.append({
                 'latitude': location_rainfalls['latitude'], 
                 'longitude': location_rainfalls['longitude'],
@@ -250,16 +261,19 @@ def batch_predict():
         # When model predicts high accuracy of flood in 5min model, returns severity high. Remaining unclassified
         # locations continues down 10min model, 15min and 30min for severity classification. Remaining locations get removed
         severity_classification = ['high', 'high', 'medium', 'low']
+        severity_weightage = [0.95, 0.95, 0.85, 0.7]
         classified_j = []
         for i in range(len(models)):
             predict_batch_copy = predict_batch.copy()
             predict_batch_copy = predict_batch_copy.drop(columns=drop_columns[i])
 
-            predict_results = models[i].predict(predict_batch_copy).tolist()
-            print(predict_results)
+            # predict_results = models[i].predict(predict_batch_copy).tolist()
+            predict_results = models[i].predict_proba(predict_batch_copy).tolist()
+            # print(predict_results)
 
             for j in range(len(results)):
-                if j not in classified_j and predict_results[j]:
+                probabilities = predict_results[j]
+                if j not in classified_j and probabilities[1] >= severity_weightage[i]:
                     results[j]['severity'] = severity_classification[i]
                     classified_j.append(j)
 
