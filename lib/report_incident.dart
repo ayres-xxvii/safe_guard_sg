@@ -74,6 +74,62 @@ class _ReportIncidentPageState extends State<ReportIncidentPage> {
     _descriptionController.dispose();
     super.dispose();
   }
+
+  // Add this function to your ReportIncidentPage class
+Future<void> _showSuccessModal(BuildContext context) async {
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.green, size: 28),
+            SizedBox(width: 10),
+            Text('Success!'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.checkpoint != null 
+                  ? 'Checkpoint submitted successfully!'
+                  : 'Report submitted successfully!',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 12),
+            Text(
+              'Thank you for your contribution.',
+              style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              'OK',
+              style: TextStyle(
+                fontSize: 16, 
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
 Future<void> _pickImage(ImageSource source, AppLocalizations localizations) async {
   try {
     final pickedFile = await _picker.pickImage(
@@ -545,7 +601,7 @@ try {
             ),
             const SizedBox(height: 30),
 
-           SizedBox(
+          SizedBox(
   width: double.infinity,
   child: ElevatedButton(
     onPressed: _isSubmitting
@@ -562,17 +618,20 @@ try {
               // After submitting, mark the checkpoint as reported
               if (widget.checkpoint != null) {
                 await _markCheckpointAsReported(widget.checkpoint!);
+              } else {
+                await _submitReport(localizations);
               }
 
-              else
-              {
-            await _submitReport(localizations);
-              }
-
-              // Optionally, navigate back to the previous page or show a success message
+              // Show success modal before navigating back
+              await _showSuccessModal(context);
+              
+              // Navigate back to the previous page
               Navigator.pop(context);  // Close the ReportIncidentPage
             } catch (e) {
               // Handle error (if submission failed)
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Error: ${e.toString()}')),
+              );
               setState(() {
                 _isSubmitting = false;
               });
@@ -604,7 +663,6 @@ try {
           ),
   ),
 ),
-
             
           ],
         ),

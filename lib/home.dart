@@ -201,45 +201,45 @@ void _showProximityAlert(CheckPoint incident) {
   if (!mounted) return;
   
   // Show a snackbar notification
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      behavior: SnackBarBehavior.floating,
-      margin: const EdgeInsets.only(bottom: 10.0, right: 10.0, left: 10.0),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.warning_amber_rounded, color: Colors.yellow),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  'Heads up! There\'s an incident reported near your location.',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 5),
-          Text(
-            incident.name,
-            style: TextStyle(fontSize: 14),
-            textAlign: TextAlign.start,
-          ),
-        ],
-      ),
-      backgroundColor: Colors.red[700],
-      duration: const Duration(seconds: 5),
-      action: SnackBarAction(
-        label: 'VIEW',
-        textColor: Colors.white,
-        onPressed: () {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          _showCheckpointInfo(context, incident);
-        },
-      ),
-    ),
-  );
+  // ScaffoldMessenger.of(context).showSnackBar(
+  //   SnackBar(
+  //     behavior: SnackBarBehavior.floating,
+  //     margin: const EdgeInsets.only(bottom: 10.0, right: 10.0, left: 10.0),
+  //     content: Column(
+  //       mainAxisSize: MainAxisSize.min,
+  //       children: [
+  //         Row(
+  //           children: [
+  //             Icon(Icons.warning_amber_rounded, color: Colors.yellow),
+  //             const SizedBox(width: 10),
+  //             Expanded(
+  //               child: Text(
+  //                 'Heads up! There\'s an incident reported near your location.',
+  //                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         const SizedBox(height: 5),
+  //         Text(
+  //           incident.name,
+  //           style: TextStyle(fontSize: 14),
+  //           textAlign: TextAlign.start,
+  //         ),
+  //       ],
+  //     ),
+  //     backgroundColor: Colors.red[700],
+  //     duration: const Duration(seconds: 5),
+  //     action: SnackBarAction(
+  //       label: 'VIEW',
+  //       textColor: Colors.white,
+  //       onPressed: () {
+  //         ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  //         _showCheckpointInfo(context, incident);
+  //       },
+  //     ),
+  //   ),
+  // );
 }
 
   // List to store incidents from the database
@@ -275,6 +275,18 @@ void _showProximityAlert(CheckPoint incident) {
       });
     });
   }
+
+  // Add this function to your HomePage or equivalent class
+void _refreshMapData() {
+  Navigator.pushReplacement(
+    context,
+    PageRouteBuilder(
+      pageBuilder: (context, animation1, animation2) => const MainPage(), // Replace with a valid widget or import MapPage
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero,
+    ),
+  );
+}
   
   // Load any previously submitted checkpoints from shared preferences
   Future<void> _loadSubmittedCheckpoints() async {
@@ -412,10 +424,10 @@ void _showProximityAlert(CheckPoint incident) {
     
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        behavior: SnackBarBehavior.floating,
+        behavior: SnackBarBehavior.floating,  
         margin: const EdgeInsets.only(bottom: 10.0, right: 10.0, left: 10.0),
         content: const Text(
-          'Welcome, Jane Ayres!',
+          'Welcome, John Doe!',
           style: TextStyle(fontSize: 16),
           textAlign: TextAlign.center,
         ),
@@ -599,7 +611,14 @@ Center(
               MaterialPageRoute(
                 builder: (context) => ReportIncidentPage(checkpoint: checkpoint),
               ),
-            );
+            ).then((value) {
+              // When returning from ReportIncidentPage, refresh the map
+              // This will trigger a rebuild of the UI with the updated checkpoint status
+              setState(() {
+                // Refresh map data if needed
+                _refreshMapData();
+              });
+            });
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blue,
@@ -615,19 +634,26 @@ Center(
         )
       : (checkpoint.isReported && !checkpoint.isFromDatabase)
           ? Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: Colors.grey[200],
+                color: Colors.green.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.green),
               ),
-              child: const Text(
-                'Checkpoint Already Submitted',
-                style: TextStyle(color: Colors.grey, fontSize: 16),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.check_circle, color: Colors.green, size: 20),
+                  SizedBox(width: 8),
+                  Text(
+                    'Checkpoint Submitted',
+                    style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             )
-          : SizedBox.shrink(), // Return an empty widget when the condition is not met
+          : Container(),
 ),
-
 
 
 if (checkpoint.isFromDatabase)
@@ -914,6 +940,12 @@ showDialog(
         ),
         automaticallyImplyLeading: false,
         actions: [
+
+            IconButton(
+    icon: const Icon(Icons.refresh),
+    tooltip: 'Refresh',
+    onPressed: _refreshMapData, // Call the refresh method
+  ),
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {},
