@@ -107,6 +107,56 @@
     },
 
 
+    "flagIncident": "Flag Incident",
+    "@flagIncident": {
+        "description": "Flag Incident"
+    },
+    "flagLabelReason": "Reason",
+    "@flagLabelReason": {
+        "description": "Reason label"
+    },
+    "flagLabelAdditional": "Additional Details (optional)",
+    "@flagLabelAdditional": {
+        "description": "Additional Details placeholder"
+    },
+    "flagSubmit": "Submit Flagging",
+    "@flagSubmit": {
+        "description": "Submit flagging button text"
+    },
+    "flagTypeMisreporting": "Misreporting",
+    "@flagTypeMisreporting": {
+        "description": "Flagged Misreporting"
+    },
+    "flagTypeOffensiveContent": "Offensive Content",
+    "@flagTypeOffensiveContent": {
+        "description": "Flagged Offensive Content"
+    },
+    "flagTypeSpam": "Spam",
+    "@flagTypeSpam": {
+        "description": "Flagged Spam"
+    },
+    "flagTypeIncorrectLocation": "Incorrect Location",
+    "@flagTypeIncorrectLocation": {
+        "description": "Flagged Incorrect Location"
+    },
+    "flagTypeOther": "Other",
+    "@flagTypeOther": {
+        "description": "Flagged Other"
+    },
+    "flagReportSubmitted": "Report Submitted",
+    "@flagReportSubmitted": {
+        "description": "Report Submitted"
+    },
+    "flagReportSuccess": "Your report has been successfully sent",
+    "@flagReportSuccess": {
+        "description": "Report success message"
+    },
+    "flagReportThankYou": "Thank you for helping us improve community safety",
+    "@flagReportThankYou": {
+        "description": "Report thank you message"
+    },
+
+
     "hmBarTitle": "Heat Map Analysis",
     "@hmBarTitle": {
         "description": "Heat Map page bar title"

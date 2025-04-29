@@ -481,6 +481,8 @@ Future<void> _getCurrentLocation() async {
 }
 
 void _showCheckpointInfo(BuildContext context, CheckPoint checkpoint) {
+  final AppLocalizations localizations = AppLocalizations.of(context)!;
+
   String distanceText = '';
   double? distanceInMeters;
   bool isNearby = false;
@@ -639,26 +641,26 @@ ElevatedButton(
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        String selectedReason = 'Misreporting';
+        String selectedReason = localizations.flagTypeMisreporting;
         TextEditingController detailsController = TextEditingController();
 
         return AlertDialog(
-          title: const Text('Flag Incident'),
+          title: Text(localizations.flagIncident),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               DropdownButtonFormField<String>(
                 value: selectedReason,
-                decoration: const InputDecoration(
-                  labelText: 'Reason',
+                decoration: InputDecoration(
+                  labelText: localizations.flagLabelReason,
                   border: OutlineInputBorder(),
                 ),
                 items: <String>[
-                  'Misreporting',
-                  'Offensive Content',
-                  'Spam',
-                  'Incorrect Location',
-                  'Other'
+                  localizations.flagTypeMisreporting,
+                  localizations.flagTypeOffensiveContent,
+                  localizations.flagTypeSpam,
+                  localizations.flagTypeIncorrectLocation,
+                  localizations.flagTypeOther
                 ].map((reason) {
                   return DropdownMenuItem<String>(
                     value: reason,
@@ -675,8 +677,8 @@ ElevatedButton(
               TextField(
                 controller: detailsController,
                 maxLines: 3,
-                decoration: const InputDecoration(
-                  labelText: 'Additional Details (optional)',
+                decoration: InputDecoration(
+                  labelText: localizations.flagLabelAdditional,
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -712,8 +714,8 @@ showDialog(
             size: 80,
           ),
           const SizedBox(height: 24),
-          const Text(
-            'Report Submitted!',
+          Text(
+            localizations.flagReportSubmitted,
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -721,9 +723,9 @@ showDialog(
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Your report has been successfully sent.\n\n'
-            'Thank you for helping us improve community safety!',
+          Text(
+            '${localizations.flagReportSuccess}.\n\n'
+            '${localizations.flagReportThankYou}!',
             style: TextStyle(
               fontSize: 16,
               color: Colors.black87,
@@ -760,7 +762,7 @@ showDialog(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
-              child: const Text('Report'),
+              child: Text(localizations.flagSubmit),
             ),
           ],
         );
@@ -773,8 +775,8 @@ showDialog(
       borderRadius: BorderRadius.circular(8),
     ),
   ),
-  child: const Text(
-    'Flag Incident',
+  child: Text(
+    localizations.flagIncident,
     style: TextStyle(color: Colors.white),
   ),
 ),
@@ -785,7 +787,7 @@ showDialog(
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+            child: Text(localizations.cancel),
           ),
         ],
       );
