@@ -15,20 +15,28 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import '../models/incident_report.dart';
-import '../services/incident_service.dart';
+import '../models/incident_report.dart' as incident_model;
+import '../services/incident_service.dart' as incident_service;
 import 'package:firebase_storage/firebase_storage.dart'; // For image storage
 import 'package:cloud_firestore/cloud_firestore.dart';
  import 'package:image_picker/image_picker.dart';
- import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:flutter_map/flutter_map.dart';
+import 'home.dart';
 
 // Import the IncidentReport model (assuming it's in a separate file)
 // If it's not, you can remove this import since you've provided the model class
 // import '../models/incident_report.dart';
 
 class ReportIncidentPage extends StatefulWidget {
-  const ReportIncidentPage({Key? key}) : super(key: key);
+
+  final CheckPoint? checkpoint;  // Add this field to hold the passed checkpoint
+
+  
+  const ReportIncidentPage({Key? key, this.checkpoint}) : super(key: key);
+  
 
   @override
   State<ReportIncidentPage> createState() => _ReportIncidentPageState();
@@ -176,7 +184,13 @@ Future<void> _pickImage(ImageSource source, AppLocalizations localizations) asyn
     }
   }
 
+  
+
   Future<void> _submitReport(AppLocalizations localizations) async {
+
+
+      // Get the checkpoint passed from the previous page
+      CheckPoint? checkpoint = widget.checkpoint;
 
       print("Submit function called"); // Add this line
 
@@ -317,6 +331,13 @@ try {
       ),
     );
   }
+
+  Future<void> _markCheckpointAsReported(CheckPoint checkpoint) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  // Mark the checkpoint as reported in SharedPreferences
+  await prefs.setBool('checkpoint_${checkpoint.id}_reported', true);
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -515,6 +536,8 @@ try {
                       const Icon(Icons.photo_library, size: 20),
                       const SizedBox(width: 8),
                       Text(localizations.riFromGallery),
+                      // Text('Checkpoint: ${widget.checkpoint?.name}'),
+                      
                     ],
                   ),
                 ),
@@ -522,48 +545,67 @@ try {
             ),
             const SizedBox(height: 30),
 
-            // Submit Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-            onPressed: _isSubmitting ? null : () => _submitReport(localizations),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF5252),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                child: _isSubmitting
-                    ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : Text(
-                        localizations.riSubmitReportBtnText,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-              ),
+           SizedBox(
+  width: double.infinity,
+  child: ElevatedButton(
+    onPressed: _isSubmitting
+        ? null
+        : () async {
+            setState(() {
+              _isSubmitting = true;
+            });
+
+            try {
+              // If it is a checkpoint, then dont submit
+              // Call your report submission function (for example, to Firebase)
+
+              // After submitting, mark the checkpoint as reported
+              if (widget.checkpoint != null) {
+                await _markCheckpointAsReported(widget.checkpoint!);
+              }
+
+              else
+              {
+            await _submitReport(localizations);
+              }
+
+              // Optionally, navigate back to the previous page or show a success message
+              Navigator.pop(context);  // Close the ReportIncidentPage
+            } catch (e) {
+              // Handle error (if submission failed)
+              setState(() {
+                _isSubmitting = false;
+              });
+            }
+          },
+    style: ElevatedButton.styleFrom(
+      backgroundColor: const Color(0xFFFF5252),
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+    ),
+    child: _isSubmitting
+        ? const SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(
+              color: Colors.white,
+              strokeWidth: 2,
             ),
-            const SizedBox(height: 10),
-            Center(
-              child: Text(
-                '*${localizations.riFalseReportWarning}',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+          )
+        : Text(
+            localizations.riSubmitReportBtnText,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
+          ),
+  ),
+),
+
+            
           ],
         ),
       ),
@@ -600,6 +642,8 @@ class _CameraPageState extends State<CameraPage> {
     _controller.dispose();
     super.dispose();
   }
+
+  
 
   @override
   Widget build(BuildContext context) {

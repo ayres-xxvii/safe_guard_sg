@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // if you used flutterfire CLI
 import 'singpass_login.dart';
+import '../services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +17,8 @@ void main() async {
   // Load saved language preference on app start
   final prefs = await SharedPreferences.getInstance();
   final String? savedLanguage = prefs.getString('language');
+    // Initialize notification service
+  await NotificationService().init();
 
   runApp(MyApp(initLocale: savedLanguage != null ? Locale(savedLanguage) : null));
 }
