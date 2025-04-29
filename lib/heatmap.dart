@@ -3,32 +3,44 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import '../services/flood_prediction_service.dart';
 import 'shared_layer/shared_scaffold.dart';
 
 class HeatMapPage extends StatefulWidget {
   const HeatMapPage({Key? key}) : super(key: key);
-
+  
   @override
   State<HeatMapPage> createState() => _HeatMapPageState();
 }
 
 class _HeatMapPageState extends State<HeatMapPage> {
   final MapController _mapController = MapController();
-  List<HeatZone> _heatZones = [];
-  List<Incident> _recentIncidents = [];
+  final List<HeatZone> _heatZones = [];
+  final List<Incident> _recentIncidents = _createRecentIncidents();
+  final FloodPredictionService _predictionService = FloodPredictionService();
   
   LatLng? _currentPosition;
   bool _isLoading = true;
+  bool _isLoadingPredictions = false;
   DateTime _selectedDate = DateTime.now();
   String _selectedTimeFrame = 'Day';
   String _selectedIncidentType = 'All';
-
+  bool _showFloodPredictions = true;
+  
   // Singapore's bounding coordinates
   static final LatLngBounds singaporeBounds = LatLngBounds(
     const LatLng(1.15, 103.6), // Southwest
     const LatLng(1.47, 104.05), // Northeast
+    
   );
-
+  
+  // Statistics for dashboard
+  int _highRiskZones = 0;
+  int _mediumRiskZones = 0;
+  int _lowRiskZones = 0;
+  double _safetyScore = 0.0;
+  
   @override
   void initState() {
     super.initState();
@@ -37,37 +49,137 @@ class _HeatMapPageState extends State<HeatMapPage> {
     });
     _getCurrentLocation();
   }
-
+  
   @override
   void dispose() {
     _mapController.dispose();
     super.dispose();
   }
-
+  
   Future<void> _getCurrentLocation() async {
     try {
       final permission = await _checkLocationPermission();
       if (!permission) return;
-
       final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
-      
+          if (mounted) {
       setState(() {
         _currentPosition = LatLng(position.latitude, position.longitude);
         _isLoading = false;
-        _mapController.move(_currentPosition!, 15.0);
       });
-
+          
+      _mapController.move(_currentPosition!, 15.0);
       _setupLocationUpdates();
+      _loadFloodPredictions();
+          }
     } catch (e) {
       setState(() {
         _isLoading = false;
         _currentPosition = const LatLng(1.429387, 103.835090); // Default
       });
+      _loadFloodPredictions();
     }
   }
+  
+ // Update the _loadFloodPredictions method in _HeatMapPageState class
+Future<void> _loadFloodPredictions() async {
+  if (!_showFloodPredictions) return;
+  
+  setState(() {
+    _isLoadingPredictions = true;
+  });
+  
+  try {
+    // Generate a grid of points across Singapore
+    final List<LatLng> grid = _generateGridPoints(
+      singaporeBounds.southWest, 
+      singaporeBounds.northEast,
+      gridSize: 0.02, // Adjust based on your needs
+    );
+    
+    // Get flood predictions for these points
+print('Attempting to fetch predictions...');
+final predictions = await _predictionService.batchPredict(grid);
+print('Received predictions: ${predictions.length}');    
+    // Convert predictions to heat zones
+    final List<HeatZone> predictionZones = [];
+    int highRisk = 0, mediumRisk = 0, lowRisk = 0;
+    
+    for (final prediction in predictions) {
+      // print(prediction);
+      final lat = prediction['latitude'];
+      final lng = prediction['longitude'];
+      final severity = _parseSeverity(prediction['severity']);
+      
+      // Update counters
+      if (severity == SeverityLevel.high) highRisk++;
+      else if (severity == SeverityLevel.medium) mediumRisk++;
+      else if (severity == SeverityLevel.low) lowRisk++;
+      
+      predictionZones.add(HeatZone(
+        center: LatLng(lat, lng),
+        radius: 100, // Adjust radius as needed
+        severity: severity,
+        incidentCount: 1,
+        incidentType: 'Flood',
+      ));
+    }
+    
+    // Calculate safety score (simple algorithm - can be improved)
+    final totalZones = highRisk + mediumRisk + lowRisk;
+    if (totalZones > 0) {
+      final weightedScore = (lowRisk * 5 + mediumRisk * 3 + highRisk * 1) / totalZones;
+      final safetyScore = (weightedScore / 5) * 5; // Scale to 5
+      
 
+
+      setState(() {
+        _safetyScore = safetyScore;
+      });
+    }
+    
+    setState(() {
+      _heatZones.clear();
+      _heatZones.addAll(predictionZones);
+      _highRiskZones = highRisk;
+      _mediumRiskZones = mediumRisk;
+      _lowRiskZones = lowRisk;
+      _isLoadingPredictions = false;
+    });
+  } catch (e) {
+    print('Error loading predictions: $e');
+    setState(() {
+      _isLoadingPredictions = false;
+    });
+  }
+}
+  
+  List<LatLng> _generateGridPoints(LatLng southwest, LatLng northeast, {double gridSize = 0.01}) {
+    final List<LatLng> points = [];
+    
+    for (double lat = southwest.latitude; lat <= northeast.latitude; lat += gridSize) {
+      for (double lng = southwest.longitude; lng <= northeast.longitude; lng += gridSize) {
+        points.add(LatLng(lat, lng));
+      }
+    }
+    
+    return points;
+  }
+  
+  SeverityLevel _parseSeverity(String severity) {
+    switch (severity.toLowerCase()) {
+      case 'high':
+        return SeverityLevel.high;
+      case 'medium':
+        return SeverityLevel.medium;
+      case 'low':
+        return SeverityLevel.low;
+      default:
+        return SeverityLevel.low;
+    }
+  }
+  
   Future<bool> _checkLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -77,14 +189,13 @@ class _HeatMapPageState extends State<HeatMapPage> {
         return false;
       }
     }
-
     if (permission == LocationPermission.deniedForever) {
       setState(() => _isLoading = false);
       return false;
     }
     return true;
   }
-
+  
   void _setupLocationUpdates() {
     Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
@@ -97,7 +208,7 @@ class _HeatMapPageState extends State<HeatMapPage> {
       }
     });
   }
-
+  
   @override
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
@@ -110,14 +221,14 @@ class _HeatMapPageState extends State<HeatMapPage> {
     final filteredHeatZones = _selectedIncidentType == localizations.hmTypeAll
         ? _heatZones
         : _heatZones.where((zone) => zone.incidentType == _selectedIncidentType).toList();
-
+    
     return SharedScaffold(
       currentIndex: 1,
       appBar: AppBar(
         title: Text(
           localizations.hmBarTitle,
           style: TextStyle(
-                fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.bold,
           ),
         ),
         backgroundColor: Colors.white,
@@ -142,7 +253,17 @@ class _HeatMapPageState extends State<HeatMapPage> {
             const SizedBox(height: 15),
             _buildLegend(localizations),
             const SizedBox(height: 15),
-            _buildMap(filteredHeatZones),
+            _isLoadingPredictions
+                ? Center(
+                    child: Column(
+                      children: const [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 10),
+                        Text('Loading flood predictions...'),
+                      ],
+                    ),
+                  )
+                : _buildMap(filteredHeatZones),
             const SizedBox(height: 20),
             _buildStatsCard(localizations),
             const SizedBox(height: 20),
@@ -199,11 +320,29 @@ class _HeatMapPageState extends State<HeatMapPage> {
               ],
             ),
           ),
+          const SizedBox(width: 20),
+          // Toggle for flood predictions
+          Row(
+            children: [
+              const Text('Flood Predictions'),
+              Switch(
+                value: _showFloodPredictions,
+                onChanged: (value) {
+                  setState(() => _showFloodPredictions = value);
+                  if (value) {
+                    _loadFloodPredictions();
+                  } else {
+                    setState(() => _heatZones.clear());
+                  }
+                },
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
-
+  
   Future<void> _selectDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -213,6 +352,7 @@ class _HeatMapPageState extends State<HeatMapPage> {
     );
     if (picked != null && picked != _selectedDate) {
       setState(() => _selectedDate = picked);
+      _loadFloodPredictions(); // Reload predictions for new date
     }
   }
 
@@ -228,7 +368,7 @@ class _HeatMapPageState extends State<HeatMapPage> {
       ],
     );
   }
-
+  
   Widget _buildMap(List<HeatZone> heatZones) {
     return SizedBox(
       height: 350,
@@ -258,7 +398,7 @@ class _HeatMapPageState extends State<HeatMapPage> {
       ),
     );
   }
-
+  
   CircleLayer _buildHeatZonesLayer(List<HeatZone> zones) {
     return CircleLayer(
       circles: zones.map((zone) => CircleMarker(
@@ -271,7 +411,7 @@ class _HeatMapPageState extends State<HeatMapPage> {
       )).toList(),
     );
   }
-
+  
   MarkerLayer _buildUserLocationMarker() {
     return MarkerLayer(
       markers: _currentPosition != null
@@ -309,7 +449,7 @@ class _HeatMapPageState extends State<HeatMapPage> {
           : [],
     );
   }
-
+  
   Widget _buildMapControls() {
     return Stack(
       children: [
@@ -349,7 +489,7 @@ class _HeatMapPageState extends State<HeatMapPage> {
       ],
     );
   }
-
+  
   Widget _buildMapControlButton({
     required IconData icon,
     required String heroTag,
@@ -403,16 +543,16 @@ class _HeatMapPageState extends State<HeatMapPage> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 Row(
-                  children: const [
+                  children: [
                     Icon(Icons.star, color: Colors.amber),
                     Icon(Icons.star, color: Colors.amber),
                     Icon(Icons.star, color: Colors.amber),
-                    Icon(Icons.star, color: Colors.amber),
-                    Icon(Icons.star_half, color: Colors.amber),
-                    SizedBox(width: 5),
+                    Icon(_safetyScore >= 4.0 ? Icons.star : Icons.star_half, color: Colors.amber),
+                    Icon(_safetyScore >= 4.5 ? Icons.star : Icons.star_border, color: Colors.amber),
+                    const SizedBox(width: 5),
                     Text(
-                      '4.5/5',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      '${_safetyScore.toStringAsFixed(1)}/5',
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -423,8 +563,104 @@ class _HeatMapPageState extends State<HeatMapPage> {
       ),
     );
   }
-
-  Widget _buildRecentIncidents(AppLocalizations localizations) {
+  
+  Widget _buildFloodRiskDashboard() {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Flood Risk Dashboard',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            // Simple bar chart
+            SizedBox(
+              height: 150,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  _buildBarChartBar('High', _highRiskZones, Colors.red),
+                  _buildBarChartBar('Medium', _mediumRiskZones, Colors.orange),
+                  _buildBarChartBar('Low', _lowRiskZones, Colors.yellow),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Weather and prediction info
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Current Weather:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text('Rainy, 28°C'),
+                    const SizedBox(height: 8),
+                    const Text('Rainfall Prediction:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text('Heavy rain expected in next 12 hours'),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Model Confidence:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text('89%'),
+                    const SizedBox(height: 8),
+                    const Text('Last Updated:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('${DateTime.now().hour}:${DateTime.now().minute}'),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // General advice
+            const Text(
+              'Safety Recommendations:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              _selectedIncidentType == 'Flood' ? 
+                'Avoid low-lying areas. Keep emergency supplies ready. Stay tuned to weather updates.' :
+                'Follow standard safety protocols for the selected incident type.',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildBarChartBar(String label, int value, Color color) {
+    // Calculate height based on value (with min and max)
+    final int maxValue = [_highRiskZones, _mediumRiskZones, _lowRiskZones, 1].reduce((a, b) => a > b ? a : b);
+    final double height = value > 0 ? (value / maxValue) * 100 : 10;
+    
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Text('$value', style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 5),
+        Container(
+          width: 40,
+          height: height,
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.7),
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(label),
+      ],
+    );
+  }
+  
+  Widget _buildRecentIncidents() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -468,7 +704,15 @@ class _HeatMapPageState extends State<HeatMapPage> {
         timestamp: DateTime.now().subtract(const Duration(hours: 2)),
         description: 'Kitchen fire in HDB block',
       ),
-      // ... other incidents
+      // Add a flood incident
+      Incident(
+        id: 2,
+        position: const LatLng(1.3521, 103.8198),
+        type: 'Flood',
+        severity: SeverityLevel.medium,
+        timestamp: DateTime.now().subtract(const Duration(hours: 4)),
+        description: 'Flash flooding in downtown area after heavy rainfall',
+      ),
     ];
   }
 }
@@ -477,9 +721,8 @@ class _HeatMapPageState extends State<HeatMapPage> {
 class _LegendItem extends StatelessWidget {
   final Color color;
   final String label;
-
   const _LegendItem({required this.color, required this.label});
-
+  
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -503,13 +746,12 @@ class _StatItem extends StatelessWidget {
   final String title;
   final String value;
   final Color color;
-
   const _StatItem({
     required this.title,
     required this.value,
     required this.color,
   });
-
+  
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -545,9 +787,8 @@ class _StatItem extends StatelessWidget {
 
 class _IncidentCard extends StatelessWidget {
   final Incident incident;
-
   const _IncidentCard({required this.incident});
-
+  
   @override
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
@@ -565,11 +806,11 @@ class _IncidentCard extends StatelessWidget {
       ),
     );
   }
-
+  
   String _formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
-
+  
   Icon _getSeverityIcon(SeverityLevel level) {
     switch (level) {
       case SeverityLevel.high:
@@ -621,7 +862,6 @@ class HeatZone {
   final SeverityLevel severity;
   final int incidentCount;
   final String incidentType;
-
   const HeatZone({
     required this.center,
     required this.radius,
@@ -638,7 +878,6 @@ class Incident {
   final SeverityLevel severity;
   final DateTime timestamp;
   final String description;
-
   const Incident({
     required this.id,
     required this.position,
