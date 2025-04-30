@@ -16,7 +16,7 @@ class HeatMapPage extends StatefulWidget {
 
 class _HeatMapPageState extends State<HeatMapPage> {
   final MapController _mapController = MapController();
-  List<HeatZone> _heatZones = [];
+  final List<HeatZone> _heatZones = [];
   List<Incident> _recentIncidents = _createRecentIncidents();
   final FloodPredictionService _predictionService = FloodPredictionService();
   
@@ -101,13 +101,13 @@ Future<void> _loadFloodPredictions() async {
     // Get flood predictions for these points
 print('Attempting to fetch predictions...');
 final predictions = await _predictionService.batchPredict(grid);
-print('Received predictions: ${predictions.length}');    
+print('Received predictions: ${predictions.length}');
+
     // Convert predictions to heat zones
     final List<HeatZone> predictionZones = [];
     int highRisk = 0, mediumRisk = 0, lowRisk = 0;
     
     for (final prediction in predictions) {
-      // print(prediction);
       final lat = prediction['latitude'];
       final lng = prediction['longitude'];
       final severity = _parseSeverity(prediction['severity']);
@@ -215,7 +215,6 @@ print('Received predictions: ${predictions.length}');
     _selectedIncidentType = localizations.hmTypeAll;
     _selectedTimeFrame = localizations.hmDurationDay;
 
-    _heatZones = _createHeatZones(localizations);
     _recentIncidents = _createRecentIncidents();
 
     final filteredHeatZones = _selectedIncidentType == localizations.hmTypeAll
