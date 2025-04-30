@@ -207,7 +207,7 @@ def batch_predict():
         }
 
         for mins in range(5, 65, 5):
-            # datetime.now() datetime(2018, 1, 24, 17, 15, 0)
+            # datetime(2025, 4, 21, 15, 25, 0)
             request_datetime = datetime.now() - timedelta(minutes=mins)
             request_date = request_datetime.strftime("%Y-%m-%d")
             request_time = request_datetime.strftime("%H:%M:%S")
@@ -261,7 +261,7 @@ def batch_predict():
         # When model predicts high accuracy of flood in 5min model, returns severity high. Remaining unclassified
         # locations continues down 10min model, 15min and 30min for severity classification. Remaining locations get removed
         severity_classification = ['high', 'high', 'medium', 'low']
-        severity_weightage = [0.95, 0.95, 0.85, 0.7]
+        severity_weightage = [0.95, 0.9, 0.85, 0.7]
         classified_j = []
         for i in range(len(models)):
             predict_batch_copy = predict_batch.copy()
