@@ -3,7 +3,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async'; // Added for timer functionality
+import 'dart:typed_data'; // Added for Uint8List
 import 'dart:math' show sin; // Added for bobbing animation
+import 'dart:convert'; // Added for base64 decoding
 import 'package:cloud_firestore/cloud_firestore.dart'; // Added for database access
 import 'heatmap.dart';
 import 'report_incident.dart';
@@ -325,48 +327,55 @@ void _refreshMapData() {
     await prefs.setInt('submitted_checkpoints_count', _submittedCheckpointsCount);
   }
   
-  Future<void> _loadIncidentsFromDatabase() async {
-    try {
-      // Query Firestore collection of incidents
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('incidents')
-          .orderBy('timestamp', descending: true)
-          .limit(10) // Limit to 10 most recent incidents
-          .get();
+ Future<void> _loadIncidentsFromDatabase() async {
+  try {
+    // Query Firestore collection of incidents
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('incidents')
+        .orderBy('timestamp', descending: true)
+        .limit(10) // Limit to 10 most recent incidents
+        .get();
+    
+    // Process each document
+    List<CheckPoint> loadedIncidents = [];
+    int idCounter = 100; // Start ID counter for database incidents
+    
+    for (var doc in querySnapshot.docs) {
+      final data = doc.data();
       
-      // Process each document
-      List<CheckPoint> loadedIncidents = [];
-      int idCounter = 100; // Start ID counter for database incidents
-      
-      for (var doc in querySnapshot.docs) {
-        final data = doc.data();
-        
-        // Check if latitude and longitude are available
-        if (data['latitude'] != null && data['longitude'] != null) {
-          loadedIncidents.add(
-            CheckPoint(
-              id: idCounter++,
-              position: LatLng(data['latitude'], data['longitude']),
-              name: data['title'] ?? 'Unknown Incident',
-              description: data['description'] ?? 'No description',
-              severity: CheckpointSeverity.high, // Set high severity for database incidents
-              isReported: true, // Always treated as reported
-              reportedTime: (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
-              isFromDatabase: true, // Mark as coming from database
-            ),
-          );
+      // Check if latitude and longitude are available
+      if (data['latitude'] != null && data['longitude'] != null) {
+        // Get the imageBase64List if it exists
+        List<String>? images;
+        if (data['imageBase64List'] != null) {
+          images = List<String>.from(data['imageBase64List']);
         }
+        
+        loadedIncidents.add(
+          CheckPoint(
+            id: idCounter++,
+            position: LatLng(data['latitude'], data['longitude']),
+            name: data['title'] ?? 'Unknown Incident',
+            description: data['description'] ?? 'No description',
+            severity: CheckpointSeverity.high, // Set high severity for database incidents
+            isReported: true, // Always treated as reported
+            reportedTime: (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
+            isFromDatabase: true, // Mark as coming from database
+            imageBase64List: images, // Add the images
+          ),
+        );
       }
-      
-      // Update state with loaded incidents
-      setState(() {
-        _databaseIncidents = loadedIncidents;
-      });
-      
-    } catch (e) {
-      print('Error loading incidents from database: $e');
     }
+    
+    // Update state with loaded incidents
+    setState(() {
+      _databaseIncidents = loadedIncidents;
+    });
+    
+  } catch (e) {
+    print('Error loading incidents from database: $e');
   }
+}
   
   void _checkReportedStatus() {
     // Check each checkpoint's reported status
@@ -520,160 +529,258 @@ void _showCheckpointInfo(BuildContext context, CheckPoint checkpoint) {
     final int minutesRemaining = 60 - difference.inMinutes % 60;
     countdownText = 'Status resets in: $hoursRemaining hours, $minutesRemaining minutes';
   }
-  
 
-  Future<void> _verifyIncident(CheckPoint checkpoint) async {
-    try {
-      // Find the corresponding Firestore document based on location (or a better unique ID if you have it)
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('incidents')
-          .where('latitude', isEqualTo: checkpoint.position.latitude)
-          .where('longitude', isEqualTo: checkpoint.position.longitude)
-          .limit(1)
-          .get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        final docRef = querySnapshot.docs.first.reference;
-
-        await docRef.update({
-          'verificationCount': FieldValue.increment(1), // Increment verification count by 1
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Thank you for verifying this incident!'),
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.9,
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
           ),
-        );
-      } else {
-        print('Incident document not found.');
-      }
-    } catch (e) {
-      print('Error verifying incident: $e');
-    }
-  }
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Title
+                Text(
+                  checkpoint.name,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                
+                // Content
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(checkpoint.description),
+                        const SizedBox(height: 10),
+                        
+                        // Display images if available (for database incidents)
+                        if (checkpoint.imageBase64List != null && checkpoint.imageBase64List!.isNotEmpty) ...[
+                          const SizedBox(height: 10),
+                          const SizedBox(height: 5),
+                          // Fixed image carousel implementation
+                          SizedBox(
+                            height: 200,
+                            child: PageView.builder(
+                              itemCount: checkpoint.imageBase64List!.length,
+                              itemBuilder: (context, index) {
+                                // Decode base64 image data
+                                Uint8List imageData;
+                                try {
+                                  imageData = base64Decode(checkpoint.imageBase64List![index]);
+                                } catch (e) {
+                                  return Container(
+                                    color: Colors.grey[300],
+                                    child: const Center(
+                                      child: Text("Invalid image data"),
+                                    ),
+                                  );
+                                }
+                                
+                                // Return image with proper error handling and size constraints
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Container(
+                                      width: double.infinity,
+                                      height: 200,
+                                      color: Colors.grey[200],
+                                      child: Image.memory(
+                                        imageData,
+                                        fit: BoxFit.contain,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          print("Error loading image: $error");
+                                          return Container(
+                                            color: Colors.grey[300],
+                                            child: const Center(
+                                              child: Icon(Icons.error, color: Colors.red),
+                                            ),
+                                          );
+                                        },
+                                        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                                          if (wasSynchronouslyLoaded) {
+                                            return child;
+                                          }
+                                          return AnimatedOpacity(
+                                            opacity: frame == null ? 0 : 1,
+                                            duration: const Duration(seconds: 1),
+                                            curve: Curves.easeOut,
+                                            child: child,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                        
+                        if (distanceText.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Text(distanceText),
+                          ),
 
+                        const SizedBox(height: 10),
+                        if (checkpoint.isReported)
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            child: Row(
+                              children: [
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      if (!checkpoint.isFromDatabase && countdownText.isNotEmpty)
+                                        Text(
+                                          countdownText,
+                                          style: TextStyle(color: Colors.grey[700]),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                color: checkpoint.getSeverityColor().withOpacity(0.7),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            Text(checkpoint.isFromDatabase ? 'Reported incident' : 'Checkpoint location'),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                
+                // Buttons section
+                const SizedBox(height: 20),
+                if (!checkpoint.isFromDatabase && isNearby && !checkpoint.isReported)
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the dialog first
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ReportIncidentPage(checkpoint: checkpoint),
+                        ),
+                      ).then((value) {
+                        setState(() {
+                          _refreshMapData();
+                        });
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'Submit Checkpoint',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  )
+                else if (checkpoint.isReported && !checkpoint.isFromDatabase)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.green),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.check_circle, color: Colors.green, size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'Checkpoint Submitted',
+                          style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                if (checkpoint.isFromDatabase) ...[
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the current dialog
+                      _showFlagIncidentDialog(context, checkpoint, localizations);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      localizations.flagIncident,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+                
+                const SizedBox(height: 10),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(localizations.cancel),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+
+// Separate method for showing flag incident dialog
+void _showFlagIncidentDialog(BuildContext context, CheckPoint checkpoint, AppLocalizations localizations) {
+  String selectedReason = localizations.flagTypeMisreporting;
+  TextEditingController detailsController = TextEditingController();
 
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text(checkpoint.name),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(checkpoint.description),
-            const SizedBox(height: 10),
-            if (distanceText.isNotEmpty) Text(distanceText),
-            const SizedBox(height: 10),
-            if (checkpoint.isReported)
-              Container(
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  children: [
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (!checkpoint.isFromDatabase && countdownText.isNotEmpty)
-                            Text(
-                              countdownText,
-                              style: TextStyle(color: Colors.grey[700]),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    color: checkpoint.getSeverityColor().withOpacity(0.7),
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 5),
-                Text(checkpoint.isFromDatabase ? 'Reported incident' : 'Checkpoint location'),
-              ],
-            ),
-         // In home.dart
-const SizedBox(height: 20),
-Center(
-  child: !checkpoint.isFromDatabase && isNearby && !checkpoint.isReported
-      ? ElevatedButton(
-          onPressed: () {
-            // Pass the checkpoint to the next page
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ReportIncidentPage(checkpoint: checkpoint),
-              ),
-            ).then((value) {
-              // When returning from ReportIncidentPage, refresh the map
-              // This will trigger a rebuild of the UI with the updated checkpoint status
-              setState(() {
-                // Refresh map data if needed
-                _refreshMapData();
-              });
-            });
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          child: const Text(
-            'Submit Checkpoint',
-            style: TextStyle(color: Colors.white, fontSize: 16),
-          ),
-        )
-      : (checkpoint.isReported && !checkpoint.isFromDatabase)
-          ? Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.green),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.check_circle, color: Colors.green, size: 20),
-                  SizedBox(width: 8),
-                  Text(
-                    'Checkpoint Submitted',
-                    style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            )
-          : Container(),
-),
-
-
-if (checkpoint.isFromDatabase)
-  Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: [
-ElevatedButton(
-  onPressed: () {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        String selectedReason = localizations.flagTypeMisreporting;
-        TextEditingController detailsController = TextEditingController();
-
-        return AlertDialog(
-          title: Text(localizations.flagIncident),
-          content: Column(
+        title: Text(localizations.flagIncident),
+        content: IntrinsicHeight(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               DropdownButtonFormField<String>(
                 value: selectedReason,
@@ -710,112 +817,91 @@ ElevatedButton(
               ),
             ],
           ),
-          actionsAlignment: MainAxisAlignment.center,
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                String reason = selectedReason;
-                String details = detailsController.text;
-
-                // TODO: Handle your reporting logic here
-                print('Flagging with reason: $reason');
-                print('Details: $details');
-
-                Navigator.of(context).pop(); // Close the flagging popup
-
-showDialog(
-  context: context,
-  builder: (BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(
-            Icons.check_circle_outline,
-            color: Colors.green,
-            size: 80,
-          ),
-          const SizedBox(height: 24),
-          Text(
-            localizations.flagReportSubmitted,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            '${localizations.flagReportSuccess}.\n\n'
-            '${localizations.flagReportThankYou}!',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black87,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 24),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pop(); // Close the confirmation popup
+              String reason = selectedReason;
+              String details = detailsController.text;
+
+              Navigator.of(context).pop(); // Close the flagging popup
+              _showFlagSuccessDialog(context, localizations);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              backgroundColor: Colors.red,
             ),
-            child: const Text(
-              'OK',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
+            child: Text(localizations.flagSubmit),
           ),
-        ],
-      ),
-    );
-  },
-);
-
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
-              child: Text(localizations.flagSubmit),
-            ),
-          ],
-        );
-      },
-    );
-  },
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.red,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8),
-    ),
-  ),
-  child: Text(
-    localizations.flagIncident,
-    style: TextStyle(color: Colors.white),
-  ),
-),
-
-    ],
-  ),]),
-
-        actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(localizations.cancel),
           ),
         ],
+      );
+    },
+  );
+}
+
+// Separate method for showing flag success dialog
+void _showFlagSuccessDialog(BuildContext context, AppLocalizations localizations) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.check_circle_outline,
+              color: Colors.green,
+              size: 80,
+            ),
+            const SizedBox(height: 24),
+            Text(
+              localizations.flagReportSubmitted,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              '${localizations.flagReportSuccess}.\n\n'
+              '${localizations.flagReportThankYou}!',
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the confirmation popup
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              ),
+              child: const Text(
+                'OK',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     },
   );
@@ -1422,15 +1508,17 @@ enum CheckpointSeverity {
   high,
 }
 
+
 class CheckPoint {
   final int id;
   final LatLng position;
   final String name;
   final String description;
   final CheckpointSeverity severity;
-  bool isReported;              // Flag to track if an incident is reported
-  DateTime? reportedTime;       // Time when the incident was reported
-  final bool isFromDatabase;    // Flag to indicate if this is from the database
+  bool isReported;
+  DateTime? reportedTime;
+  final bool isFromDatabase;
+  final List<String>? imageBase64List;  // List of base64 encoded images
 
   CheckPoint({
     required this.id,
@@ -1438,9 +1526,10 @@ class CheckPoint {
     required this.name,
     required this.description,
     required this.severity,
-    required this.isReported,   // Made required to avoid null issues
+    required this.isReported,
     this.reportedTime,
     required this.isFromDatabase,
+    this.imageBase64List,  // Optional list of base64 encoded images
   });
 
   Color getSeverityColor() {
