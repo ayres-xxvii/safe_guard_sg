@@ -17,7 +17,7 @@ class OpenRouterService {
     try {
       IncidentService incidentService = IncidentService();
       incidents = await incidentService.getIncidentsByDateRange(
-        DateTime.now().subtract(const Duration(days: 30)), DateTime.now(),
+        DateTime.now().subtract(const Duration(days: 14)), DateTime.now(),
       );
 
       print(incidents.map((e) => '${e.type.toString().split('.').last} at ${e.location} on ${e.date}').toList());
@@ -35,8 +35,7 @@ class OpenRouterService {
               'content': '''
                           Incidents: ${incidents.map((e) => '${e.type.toString().split('.').last} at ${e.location} on ${e.date}').toList()}
 
-
-                          You are part of a public safety app, SafeGuardSG in Singapore where people can report incidents like floods, fires, and other emergencies. Only use the incidents provided. If there were none, please do not make up any incidents.
+                          Your role: You are part of a public safety app, SafeGuardSG in Singapore where people can report incidents like floods, fires, and other emergencies. 
 
                           Your job is to:
                           1. Spot trends in the reported incidents above (example: There have been an influx of floods in the Northern part of singapore, notably in Yishun).
@@ -56,11 +55,12 @@ class OpenRouterService {
       );
 
       final data = jsonDecode(utf8.decode(response.bodyBytes));
-      print(data['choices'][0]['message']['content']);
       if (response.statusCode == 200) {
         return data['choices'][0]['message']['content'];
       } else {
-        return 'Error: ${data['error']['message'] ?? 'Failed to generate article'}';
+        print(data);
+        return 'News article generation service is currently not available. Please try again later.';
+        // return 'Error: ${data['error']['message'] ?? 'Failed to generate article'}';
       }
     } catch (e) {
       return 'Error: $e';
