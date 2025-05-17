@@ -20,7 +20,7 @@ void main() async {
   final String? savedLanguage = prefs.getString('language');
     // Initialize notification service
   await NotificationService().init();
-
+  await dotenv.load(fileName: "../.env");
   runApp(MyApp(initLocale: savedLanguage != null ? Locale(savedLanguage) : null));
 }
 

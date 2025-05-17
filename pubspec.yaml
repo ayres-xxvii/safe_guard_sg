@@ -60,7 +60,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
-  dotenv: ^4.2.0
+  flutter_dotenv: ^5.2.1
+  flutter_markdown: ^0.7.7+1
 
 dev_dependencies:
   flutter_test:
@@ -94,6 +95,7 @@ flutter:
     - assets/images/logo.jpeg
     - assets/images/safeguardlogo.png
     - assets/images/test.jpg
+    - .env
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

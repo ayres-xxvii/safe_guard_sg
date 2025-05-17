@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 // Service for handling API calls to OpenRouter
 class OpenRouterService {
   final String apiKey;
+  // var incidents;
 
   OpenRouterService({
     required this.apiKey,
+    // incidents = const [],
   });
 
   Future<String> generateNewsArticle() async {
@@ -18,24 +22,33 @@ class OpenRouterService {
           'Authorization': 'Bearer $apiKey',
         },
         body: jsonEncode({
-          'model': 'deepseek/deepseek-coder',
+          'model': 'deepseek/deepseek-r1:free',
           'messages': [
             {
-              'role': 'system',
-              'content': 'You are a helpful AI that generates news articles based on recent incident data.'
-            },
-            {
               'role': 'user',
-              'content': 'Generate a news article about recently reported incidents. Include analysis of latest trends and potential upcoming incidents. Use a formal journalistic style suitable for a news publication. Keep it under 500 words.'
+              'content': '''
+                          You are analyzing recent incident reports (e.g. floods, fires) in Singapore submitted through a community reporting app. Based on the data provided, identify emerging trends such as repeated incidents in specific areas (e.g. "frequent flooding in Yishun and Jalan Kayu"). Summarize these trends in a short, informative report.
+                            The report should:
+                            - Highlight hotspots or clusters of incidents.
+                            - Identify the type of incident most common in each area.
+                            - Mention any unusual or noteworthy patterns.
+                            - Provide actionable safety tips or precautions related to the trend (e.g. flood preparedness).
+                            - Be clear, engaging, and easy to read (around 100–150 words, bullet points or short paragraphs).
+
+                          Incidents: [Yishun - flood, Jalan Kayu - flood, Yishun - flood, Yishun - flood, Jalan Kayu - flood, Yishun - flood, Yishun - flood, Yishun - flood, Yishun - flood, Yishun - flood]
+                          
+                          The format of the response should be able to be directly used in a Text widget in Flutter.
+                          Please consider including some emojis to make it more engaging.
+                          Please only return the article, without any additional text or explanation or prompts.      
+                          '''
             }
           ],
           'temperature': 0.7,
-          'max_tokens': 1000,
         }),
       );
 
-      final data = jsonDecode(response.body);
-      
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      print(data['choices'][0]['message']['content']);
       if (response.statusCode == 200) {
         return data['choices'][0]['message']['content'];
       } else {
@@ -66,7 +79,7 @@ class _NewsPopupState extends State<NewsPopup> with SingleTickerProviderStateMix
   late AnimationController _controller;
   late Animation<double> _animation;
   final OpenRouterService _service = OpenRouterService(
-    apiKey: dotenv.env["OPENROUTER_API_KEY"], // Replace with your actual API key
+    apiKey: dotenv.env["OPENROUTER_API_KEY"]!, // Replace with your actual API key
   );
 
   @override
@@ -177,6 +190,7 @@ class _NewsPopupState extends State<NewsPopup> with SingleTickerProviderStateMix
                               ),
                             ),
                           ),
+                          // Expanded(child: Markdown(data: _article)),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
                             child: Row(
@@ -202,6 +216,7 @@ class _NewsPopupState extends State<NewsPopup> with SingleTickerProviderStateMix
 
 // Function to show the news popup
 void showNewsPopup(BuildContext context) {
+  
   OverlayState? overlayState = Overlay.of(context);
   OverlayEntry? overlayEntry;
   
