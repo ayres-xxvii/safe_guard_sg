@@ -35,6 +35,33 @@ Future<String> addIncident(IncidentReport incident) async {
             .toList());
   }
 
+  // Get incidents within a date range
+  Future<List<IncidentReport>> getIncidentsByDateRange(DateTime startDate, DateTime endDate) async {
+    try {
+      // Convert dates to Timestamp for Firestore query
+      Timestamp startTimestamp = Timestamp.fromDate(startDate);
+      // Add 1 day to endDate and subtract 1 millisecond to make it inclusive of the entire end date
+      Timestamp endTimestamp = Timestamp.fromDate(
+        endDate.add(Duration(days: 1)).subtract(Duration(milliseconds: 1))
+      );
+      
+      QuerySnapshot snapshot = await _db
+          .collection(_collection)
+          .where('timestamp', isGreaterThanOrEqualTo: startTimestamp)
+          .where('timestamp', isLessThanOrEqualTo: endTimestamp)
+          .orderBy('timestamp', descending: true)
+          .get();
+
+      return snapshot.docs
+          .map((doc) => IncidentReport.fromFirestore(doc))
+          .toList();
+
+    } catch (e) {
+      print('Error getting incidents by date range: $e');
+      throw e;
+    }
+  }
+
   // Get a specific incident by ID
   Future<IncidentReport?> getIncidentById(String id) async {
     try {
@@ -83,3 +110,4 @@ Future<void> updateIncident(String id, IncidentReport incident) async {
     }
   }
 }
+

@@ -946,7 +946,7 @@ showDialog(
           IconButton(
             icon: const Icon(Icons.newspaper),
             onPressed: () {
-              showNewsPopup(context);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => NewsPage()));
             },
           ),
           IconButton(
