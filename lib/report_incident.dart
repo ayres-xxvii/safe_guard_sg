@@ -8,6 +8,9 @@ import 'package:camera/camera.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'shared_layer/shared_scaffold.dart';
+import 'services/user_points_service.dart' as UserPointsService;
+
+// Ensure the library contains the 'addPoints' function or define it below if missing
 
 import 'dart:io';
 import 'dart:convert'; // For Base64 encoding
@@ -326,6 +329,15 @@ try {
   await FirebaseFirestore.instance.collection('incidents').add(newIncident.toMap());
   
   print("Successfully saved to Firestore.");
+
+    // Only add points if this is NOT a checkpoint submission
+    if (checkpoint == null) {
+      final int newPointsTotal = await UserPointsService.UserPointsService.addPoints(200);
+      _showSuccessWithPoints(localizations.riReportSubmittedSuccess, 200, newPointsTotal);
+    } else {
+      // Just show regular success message without points for checkpoint submissions
+      _showSuccess(localizations.riReportSubmittedSuccess);
+    }
   
   // Clear form after successful submission
   _titleController.clear();
@@ -338,7 +350,9 @@ try {
     _base64Images = [];
   });
 
-  _showSuccess(localizations.riReportSubmittedSuccess);
+
+
+  // _showSuccess(localizations.riReportSubmittedSuccess);
 } catch (e) {
   print("ERROR in submission process: ${e.toString()}");
   print("Stack trace: ${StackTrace.current}");
@@ -387,6 +401,92 @@ try {
       ),
     );
   }
+
+  // 3. Add a new success method that shows points earned
+void _showSuccessWithPoints(String message, int pointsEarned, int totalPoints) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.green, size: 28),
+            SizedBox(width: 10),
+            Text('Success!'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.checkpoint != null 
+                  ? 'Checkpoint submitted successfully!'
+                  : 'Report submitted successfully!',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 12),
+            Text(
+              'Thank you for your contribution.',
+              style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+            ),
+            SizedBox(height: 20),
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Color(0xFF68d7cf).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Color(0xFF68d7cf).withOpacity(0.3)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.stars, color: Color(0xFF68d7cf), size: 24),
+                  SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '+$pointsEarned points earned!',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF68d7cf),
+                        ),
+                      ),
+                      Text(
+                        'Total: $totalPoints points',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: Text(
+              'OK',
+              style: TextStyle(
+                fontSize: 16, 
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 
   Future<void> _markCheckpointAsReported(CheckPoint checkpoint) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -616,10 +716,14 @@ try {
               // Call your report submission function (for example, to Firebase)
 
               // After submitting, mark the checkpoint as reported
-              if (widget.checkpoint != null) {
+            if (widget.checkpoint != null) {
                 await _markCheckpointAsReported(widget.checkpoint!);
+                // Show success modal for checkpoint
+                // await _showSuccessModal(context);
               } else {
+                // For regular incident reports, _submitReport already shows _showSuccessWithPoints
                 await _submitReport(localizations);
+                // Don't call _showSuccessModal here
               }
 
               // Show success modal before navigating back

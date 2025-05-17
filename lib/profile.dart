@@ -3,7 +3,8 @@ import 'shared_layer/shared_scaffold.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'recent_incident.dart';
-import 'l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'voucher.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -112,34 +113,72 @@ class _ProfilePageState extends State<ProfilePage> {
             
             const SizedBox(height: 40),
             
-            // My Reports button
-            ElevatedButton(
-            onPressed: () {
-              // Navigate to RecentIncidentsPage
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const RecentIncidentsPage()));
-            },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                backgroundColor: themeColor,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.description),
-                  SizedBox(width: 10),
-                  Text(
-                    localizations.profileMyReports,
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
+        // Buttons Column with proper spacing
+Column(
+  mainAxisSize: MainAxisSize.min,
+  children: [
+    // My Reports button
+    ElevatedButton(
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const RecentIncidentsPage()));
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+        backgroundColor: themeColor,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        minimumSize: Size(double.infinity, 50), // Make buttons full width
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.description),
+          SizedBox(width: 10),
+          Text(
+            localizations.profileMyReports,
+            style: TextStyle(
+              fontSize: 16,
             ),
+          ),
+        ],
+      ),
+    ),
+
+    SizedBox(height: 16), // Add spacing between buttons
+
+    // My Vouchers button
+    ElevatedButton(
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const VouchersPage()));
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+        backgroundColor: themeColor,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        minimumSize: Size(double.infinity, 50), // Make buttons full width
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.card_giftcard), // Changed to a more appropriate icon
+          SizedBox(width: 10),
+          Text(
+            "My Vouchers",
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+    ),
+  ],
+),
+
             
             const SizedBox(height: 20),
             

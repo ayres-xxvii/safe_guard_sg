@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/Ayres/Desktop/safeguardsg/safe_guard_sg/linux/flutter",
-      "program": "c:/Users/Ayres/Desktop/safeguardsg/safe_guard_sg/linux/flutter/build/Debug/outDebug",
+      "cwd": "c:/Users/Ayres/Desktop/safeguardsg/safe_guard_sg/windows/flutter",
+      "program": "c:/Users/Ayres/Desktop/safeguardsg/safe_guard_sg/windows/flutter/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
