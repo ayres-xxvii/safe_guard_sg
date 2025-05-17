@@ -6,7 +6,7 @@ import '../services/incident_service.dart';
 import 'dart:convert'; // For base64Decode
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 class IncidentDetailsPage extends StatefulWidget {
   final IncidentReport incident;

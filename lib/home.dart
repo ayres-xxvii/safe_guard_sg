@@ -5,13 +5,14 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:async'; // Added for timer functionality
 import 'dart:math' show sin; // Added for bobbing animation
 import 'package:cloud_firestore/cloud_firestore.dart'; // Added for database access
+import 'package:safe_guard_sg/news.dart';
 import 'heatmap.dart';
 import 'report_incident.dart';
 import 'recent_incident.dart';
 import 'languages.dart';
 import 'incident_details.dart';
 import 'shared_layer/shared_scaffold.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/incident_report.dart'; // Add this import for the IncidentReport model
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -146,7 +147,7 @@ class _MainPageState extends State<MainPage> {
       final testIncident = CheckPoint(
         id: 999, // Special ID for test incident
         position: LatLng(
-          _currentPosition!.latitude + 0.0001, // Slightly offset
+          _currentPosition!.latitude + 0.0001, // Slightly offset`
           _currentPosition!.longitude + 0.0001,
         ),
         name: "Test Incident Near You",
@@ -942,12 +943,17 @@ showDialog(
         ),
         automaticallyImplyLeading: false,
         actions: [
-
-            IconButton(
-    icon: const Icon(Icons.refresh),
-    tooltip: 'Refresh',
-    onPressed: _refreshMapData, // Call the refresh method
-  ),
+          IconButton(
+            icon: const Icon(Icons.newspaper),
+            onPressed: () {
+              showNewsPopup(context);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: _refreshMapData, // Call the refresh method
+          ),
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {},

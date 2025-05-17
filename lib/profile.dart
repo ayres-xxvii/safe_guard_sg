@@ -3,7 +3,7 @@ import 'shared_layer/shared_scaffold.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'recent_incident.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
