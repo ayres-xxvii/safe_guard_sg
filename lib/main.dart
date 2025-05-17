@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // if you used flutterfire CLI
 import 'singpass_login.dart';
 import '../services/notification_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +20,7 @@ void main() async {
   final String? savedLanguage = prefs.getString('language');
     // Initialize notification service
   await NotificationService().init();
-
+  await dotenv.load(fileName: "../.env");
   runApp(MyApp(initLocale: savedLanguage != null ? Locale(savedLanguage) : null));
 }
 

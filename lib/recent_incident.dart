@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/incident_report.dart';
 import '../services/incident_service.dart';
 import 'incident_details.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 class RecentIncidentsPage extends StatefulWidget {
   const RecentIncidentsPage({super.key});

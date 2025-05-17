@@ -5,8 +5,8 @@ import 'package:latlong2/latlong.dart';
 
 class FloodPredictionService {
   // Update this URL to your actual Flask API endpoint
-  final String apiUrl = 'http://10.0.2.2:5000'; // For Android Emulator
-  // String apiUrl = 'http://127.0.0.1:5000';
+  // final String apiUrl = 'http://10.0.2.2:5000'; // For Android Emulator
+  String apiUrl = 'http://127.0.0.1:8000';
   // Use 'http://127.0.0.1:5000' for iOS simulator or local testing
 
   // Single point prediction

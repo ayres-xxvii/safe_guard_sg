@@ -23,7 +23,7 @@ import '../services/incident_service.dart' as incident_service;
 import 'package:firebase_storage/firebase_storage.dart'; // For image storage
 import 'package:cloud_firestore/cloud_firestore.dart';
  import 'package:image_picker/image_picker.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_map/flutter_map.dart';

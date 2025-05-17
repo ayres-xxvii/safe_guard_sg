@@ -295,4 +295,4 @@ def map_to_severity(prediction):
     return severity_map.get(prediction, 'low')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=8000)

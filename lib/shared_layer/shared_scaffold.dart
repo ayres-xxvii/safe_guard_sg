@@ -3,7 +3,7 @@ import 'package:safe_guard_sg/home.dart';
 import 'package:safe_guard_sg/heatmap.dart';
 import 'package:safe_guard_sg/report_incident.dart';
 import 'package:safe_guard_sg/profile.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 class SharedScaffold extends StatelessWidget {
   final Widget body;
